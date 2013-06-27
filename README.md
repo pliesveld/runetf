@@ -10,7 +10,7 @@ The original Quake Runes mod was a free-for-all player deathmatch. Many of the r
 
 When designing new runes, the focus was to complement team-play more than buffing individual players. Some runes can become more effective when used in coordination with the team. Because of the random nature of the rune drops, runes that only effect certain classes were avoided. However some runes are certainly more effective in the hands of certain classes. As such, runes can be shared with teammates by dropping them on the ground.
 
-Although most runes have passive abilities, some runes require activating with the command +USE.
+Although most runes have passive abilities, some runes require activating with the command `+use`.
 
 
 List of Runes
@@ -18,13 +18,13 @@ List of Runes
 
 Aware - Periodically scans your nearby surroundings. Shows class and health of nearby players.
 
-Recall - Teleport to a previous location. +USE sets or clears teleport destination. When far enough away, teleports player to destination.
+Recall - Teleport to a previous location. `+use` sets or clears teleport destination. When far enough away, teleports player to destination.
 
-Blink - Teleports between two locations. +USE to toggle destinations.
+Blink - Teleports between two locations. `+use` to toggle destinations.
 
 IronDome - Launches interceptor rockets upon death. Interceptor rockets cause knockback only.
 
-DeadMansTrigger - Triggers explosion upon death. +USE to activate with greater effect. When fully detonated the affected players are temporarily stunned. Contact with interceptor rockets negate this rune's effects.
+DeadMansTrigger - Triggers explosion upon death. `+use` to activate with greater effect. When fully detonated the affected players are temporarily stunned. Contact with interceptor rockets negate this rune's effects.
 
 Sharing - Healthkits and ammokits picked up are shared with nearby teammates.
 
@@ -38,7 +38,7 @@ Diamond Skin - Damage reduced by 10. The bleed, jarate, milk, and stun condition
 
 Engineering - Grants speed boost when carrying objects. Steals enemy sentries upon death.
 
-Ammo - Passively replenishes ammo. Active with +USE to restore your weapon clip. Additionally, engineers gain metal, and spies gain cloak time.
+Ammo - Passively replenishes ammo. Active with `+use` to restore your weapon clip. Additionally, engineers gain metal, and spies gain cloak time.
 
 Pounce - Passively grants more control over movement when in the air.
 
