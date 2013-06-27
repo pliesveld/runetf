@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/quake/rune_01"
+	"$bumpmap" "models/quake/rune_01n"
+}

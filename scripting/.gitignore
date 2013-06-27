@@ -1,0 +1,6 @@
+compiled/
+umc/
+disabled_runes/
+bot_test.sp
+compile.sh
+spcomp

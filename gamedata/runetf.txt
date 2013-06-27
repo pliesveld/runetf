@@ -1,0 +1,84 @@
+Aware
+{
+	description="Periodically scans your nearby suroundings.  Can be activated on demand with +USE"
+}
+Recall
+{
+	description="Teleport to a previous location.  +USE to set/reset/teleport location."
+}
+Blink
+{
+	description="Teleports between two locations.  +USE to activate."
+}
+IronDome
+{
+	description="Launches interceptor rockets upon death.  Can be activated with +USE at a small cost."
+}
+DeadMansTrigger
+{
+	description="Triggers bomb upon death.  +USE to activate with greater effect."
+}
+Sharing
+{
+	description="Share healthkits and ammokits with nearby teammates."
+}
+Rage
+{
+	description="Increases rate of fire upon damaging an enemy.  Prolonged usage can cause adverse effects."
+}
+Powerplay
+{
+	description="Instantly respawns fallen teammates when you kill atleast three enemies under 30 seconds."
+}
+Sacrifice
+{
+	description="Incoming damage is divided among nearby teammates."
+}
+Diamondskin
+{
+	description="Damage reduced by 10.  Various conditions have no effect."
+}
+Engineering
+{
+	description="Grants speed boost when carrying objects.  Steals enemy sentries upon death."
+}
+Ammo
+{
+	description="Passively replenishes ammo.  Active with +USE to restore your weapon clip."
+}
+Pounce
+{
+	description="Passively grants more control over movement when in the air."
+}
+Vault
+{
+	description="Passively increases height of jumps."
+}
+Assault
+{
+	description="Grants a speed boost when ubered."
+}
+Vanguard
+{
+	description="Redirects damage from nearby weaker teammates to you."
+}
+AirBud
+{
+	description="Increased air movement. Decreased gravity."
+}
+Sabatoge
+{
+	description="Deal extra damage to builds.  Take extra damage from engineers."
+}
+Melee
+{
+	description="Melee attacks only.  Damage increased"
+}
+Haste
+{
+	description="Slight buff to player movement speed.  Penality when under the effects of jarate, bleed, milk, or daze."
+}
+Repulsion
+{
+	description="Enemy rockets, flares, and arrows are pushed away from the player."
+}
