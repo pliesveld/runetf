@@ -75,7 +75,7 @@ Currently, only stock maps have rune spawn points.  But an in-game menu is provi
 cvars
 ===
 
-``rune_enable
+rune_enable
 rune_spawn_interval
 rune_spawn_lifetime
 rune_spawn_droptime
@@ -85,7 +85,7 @@ rune_round_end_clear
 rune_vote_threshold
 rune_vote_allow_enable
 rune_vote_allow_disable
-``
+
 
 You can change these cvars on a per map basis by adding them to a cfg/mapname.cfg file.
 
@@ -104,13 +104,17 @@ Dev Commands
 ===
 
 ``!spawn_rune`` _spawn a specific rune_
+
 ``/toggle_spawn_rune`` _enable !spawn__rune for everyone_
 
 ``!menu_rune`` _add rune spawn points to the map using the in-game menu_
+
 ``sm_gen``  _modify rune spawn points in the map_
+
 @args create, display, set, merge, load, drop, cluster, event
 
 Create a new cluster with `sm_gen` cluster create <clustername>
+
 Add a range of cluster ids with `sm_gen` cluster add|remove <clustername> [lower-upper]
 
 ``sm_cluster`` _create clusters of rune spawn points_
@@ -118,6 +122,7 @@ Add a range of cluster ids with `sm_gen` cluster add|remove <clustername> [lower
 ``sm_it`` _low-level spawn point manipulations_
 
 ``sm_gen_save`` _saves current spawn points and events to disk_
+
 ``spawn_test`` _reloads from disk spawn points of map_
 
 Spawn points have unique numbers assiociated with them.  You can group spawn points with the `sm_gen cluster create` command.  Clusters can be attached to events that will either add/remove or toggle those spawn points to the list of spawn points.  Additionally clusters of runes can be instantly spawned when events are triggered.
