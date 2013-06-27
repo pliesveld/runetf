@@ -92,7 +92,7 @@ You can change these cvars on a per map basis by adding them to a cfg/mapname.cf
 
 User Commands
 ===
-+use _players must have bound a key to +use_
+``+use`` _players must have bound a key to +use_
 
 ``!drop`` _drop your currently held rune_
 
@@ -118,9 +118,9 @@ Dev Commands
 
 @args create, display, set, merge, load, drop, cluster, event
 
-Create a new cluster with `sm_gen` cluster create <clustername>
+Create a new cluster with `sm_gen cluster create <clustername>`
 
-Add a range of cluster ids with `sm_gen` cluster add|remove <clustername> [lower-upper]
+Add a range of cluster ids with `sm_gen cluster add|remove <clustername> [lower-upper]`
 
 ``sm_cluster`` _create clusters of rune spawn points_
 
