@@ -93,10 +93,15 @@ You can change these cvars on a per map basis by adding them to a cfg/mapname.cf
 User Commands
 ===
 +use _players must have bound a key to +use_
+
 ``!drop`` _drop your currently held rune_
+
 ``!inspect_rune`` _shows rune held by player or targeting_
+
 ``!runes`` _vote to enable runetf_
+
 ``!norunes`` _vote to disable runetf_
+
 ``!info_rune`` _display a rune's abilities_
 
 
