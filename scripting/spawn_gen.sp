@@ -21,6 +21,10 @@
 #include <runetf/spawn_rune>
 
 
+#define PLUGIN_NAME "Rune Spawner"
+#define PLUGIN_DESCRIPTION "Core spawning logic for runetf."
+
+
 #include <runetf/spawn_gen/spawn_gen_vars>
 #include <runetf/spawn_gen/spawn_gen_cvars>
 new Handle:g_SpawnTimer = INVALID_HANDLE;
@@ -36,8 +40,6 @@ new Handle:g_SpawnTimer = INVALID_HANDLE;
 #undef REQUIRE_EXTENSIONS
 #include <steamtools>
 
-#define PLUGIN_NAME "Rune Spawner"
-#define PLUGIN_DESCRIPTION "Core spawning logic for runetf."
 
 public Plugin:myinfo = {
 	name = PLUGIN_NAME,

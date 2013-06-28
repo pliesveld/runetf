@@ -1,7 +1,10 @@
 #include <sourcemod>
+
+#include <runetf/runetf>
 #undef REQUIRE_PLUGIN
 #include <updater>
-#include <runetf/runetf>
+
+#define DEBUG
 
 
 #define PLUGIN_NAME "Rune Auto-Updater"
@@ -15,16 +18,17 @@ public Plugin:myinfo = {
 	url = PLUGIN_URL
 }
 
-#define UPDATE_URL_BASE   "https://raw.github.com/pliesveld/runetf"
-#define UPDATE_URL_BARNCH "master"
+//#define UPDATE_URL_BASE   "https://raw.github.com/pliesveld/runetf"
+#define UPDATE_URL_BASE   "http://localhost/runetf"
+#define UPDATE_URL_BRANCH "master"
 #define UPDATE_URL_FILE   "updateplugin.txt"
 #define UPDATE_URL_CFG    "updatemapcfg.txt"
 
 new Handle:hCvarBranch = INVALID_HANDLE;
 new Handle:hCvarCfg = INVALID_HANDLE;
 
-decl String:g_URL[256] = "";
-decl String:g_URLMap[256] = "";
+new String:g_URL[256] = "";
+new String:g_URLMap[256] = "";
 
 new bool:g_bUpdateRegistered = false;
 new bool:g_bUpdateMapCfg = true;
@@ -42,19 +46,19 @@ public OnPluginStart()
 	hCvarCfg = CreateConVar("rune_update_mapcfg", "1", "Auto-update rune spawn generator map configuration files.", true, 0.0, true, 1.0);
 	g_bUpdateMapCfg = GetConVarInt(hCvarCfg);
 
-	decl sBranch[32]=""
-	GetConVarString(g_cVarBranch,branch,sizeof(branch));
+	decl String:branch[32]="";
+	GetConVarString(hCvarBranch,branch,sizeof(branch));
 
-	if(!VerifyBranch(sBranch,sizeof(sBranch)))
+	if(!VerifyBranch(branch,sizeof(branch)))
 	{
-		SetConVarString(sBranch,UPDATE_URL_BRANCH);
+		SetConVarString(hCvarBranch,UPDATE_URL_BRANCH);
 #if defined DEBUG
 		LogMessage("Resetting branch to %s", UPDATE_URL_BRANCH);
 #endif
 	}
 
-	Format(g_URL,sizeof(g_URL),"%s/%s/%s",UPDATE_URL_BASE,sBranch,UPDATE_URL_FILE);
-	Format(g_URLMap,sizeof(g_URLMap),"%s/%s/%s",UPDATE_URL_BASE,sBranch,UPDATE_URL_CFG);
+	Format(g_URL,sizeof(g_URL),"%s/%s/%s",UPDATE_URL_BASE,branch,UPDATE_URL_FILE);
+	Format(g_URLMap,sizeof(g_URLMap),"%s/%s/%s",UPDATE_URL_BASE,branch,UPDATE_URL_CFG);
 	
 	if (LibraryExists("updater"))
 	{
@@ -64,7 +68,7 @@ public OnPluginStart()
 
 		g_bUpdateRegistered = true;
 	} else {
-#ifdef DEBUG
+#if defined DEBUG
 		LogMessage("Updater not found.");
 #endif
 	}
@@ -73,12 +77,9 @@ public OnPluginStart()
 
 stock bool:VerifyBranch(String:branch[],len)
 {
-	decl String:branch[32]="";
-
 	if(!strcmp(branch,"master"))
 		return true;
 
-	new len = strlen(branch);
 	for(new idx; idx < len;++idx)
 	{
 		if(!IsCharAlpha(branch[idx]))
@@ -133,6 +134,9 @@ public OnLibraryAdded(const String:name[])
 {
     if (StrEqual(name, "updater"))
     {
-        Updater_AddPlugin(UPDATE_URL)
+        Updater_AddPlugin(g_URL)
+				if(g_bUpdateMapCfg)
+        	Updater_AddPlugin(g_URLMap)
+					
     }
 }

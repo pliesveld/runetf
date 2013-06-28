@@ -19,23 +19,6 @@
 /*****************************************************************
 P L U G I N   I N F O
 *****************************************************************/
-#define PLUGIN_NAME				"Rune of Pounce"
-#define PLUGIN_DESCRIPTION		"Based on Chanz's rune of infinite-jumping."
-
-
-#undef PLUGIN_AUTHOR
-#undef PLUGIN_URL
-#define PLUGIN_AUTHOR			"Chanz"
-#define PLUGIN_URL				"http://forums.alliedmods.net/showthread.php?p=1239361 OR http://www.mannisfunhouse.eu/"
-
-public Plugin:myinfo = {
-	name = PLUGIN_NAME,
-	author = PLUGIN_AUTHOR,
-	description = PLUGIN_DESCRIPTION,
-	version = PLUGIN_VERSION,
-	url = PLUGIN_URL
-}
-
 #include <sourcemod>
 #include <sdktools>
 #include <smlib>
@@ -45,6 +28,23 @@ public Plugin:myinfo = {
 #include <runetf/runetf>
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
+
+
+
+#define PLUGIN_NAME				"Rune of Pounce"
+#define PLUGIN_DESCRIPTION		"Based on Chanz's rune of infinite-jumping."
+
+
+#define THIS_PLUGIN_AUTHOR			"Chanz"
+#define THIS_PLUGIN_URL				"http://forums.alliedmods.net/showthread.php?p=1239361 OR http://www.mannisfunhouse.eu/"
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = THIS_PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = THIS_PLUGIN_URL
+}
 
 
 #define TIMER_THINK 10.0

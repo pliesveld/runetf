@@ -21,8 +21,8 @@
 #undef PLUGIN_AUTHOR
 #undef PLUGIN_URL
 
-#define PLUGIN_AUTHOR "MasterOfTheXP + happs"
-#define PLUGIN_URL "http://forums.alliedmods.net/showthread.php?p=1678732"
+#define THIS_PLUGIN_AUTHOR "MasterOfTheXP + happs"
+#define THIS_PLUGIN_URL "http://forums.alliedmods.net/showthread.php?p=1678732"
 
 
 #define PLUGIN_NAME "Rune of IronDome and DeadMansTrigger"
@@ -30,10 +30,10 @@
 
 public Plugin:myinfo = {
 	name = PLUGIN_NAME,
-	author = PLUGIN_AUTHOR,
+	author = THIS_PLUGIN_AUTHOR,
 	description = PLUGIN_DESCRIPTION,
 	version = PLUGIN_VERSION,
-	url = PLUGIN_URL
+	url = THIS_PLUGIN_URL
 }
 
 
