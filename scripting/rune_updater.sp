@@ -39,12 +39,12 @@ public OnPluginStart()
 	RegAdminCmd("rune_update_force", Command_Update, ADMFLAG_RCON, "Forces update check of plugin");
 #endif
 
-	decl sDesc[128]="";
+	decl String:sDesc[128]="";
 	Format(sDesc,sizeof(sDesc),"Select a branch folder from %s to update from.", UPDATE_URL_BASE);
 	hCvarBranch = CreateConVar("rune_update_branch", UPDATE_URL_BRANCH,
 	sDesc, FCVAR_NOTIFY);
-	hCvarCfg = CreateConVar("rune_update_mapcfg", "1", "Auto-update rune spawn generator map configuration files.", true, 0.0, true, 1.0);
-	g_bUpdateMapCfg = GetConVarInt(hCvarCfg);
+	hCvarCfg = CreateConVar("rune_update_mapcfg", "1", "Auto-update rune spawn generator map configuration files.", FCVAR_NOTIFY,true, 0.0, true, 1.0);
+	g_bUpdateMapCfg = bool:GetConVarInt(hCvarCfg);
 
 	decl String:branch[32]="";
 	GetConVarString(hCvarBranch,branch,sizeof(branch));
@@ -72,7 +72,6 @@ public OnPluginStart()
 		LogMessage("Updater not found.");
 #endif
 	}
-	return Plugin_Continue;
 }
 
 stock bool:VerifyBranch(String:branch[],len)
@@ -132,11 +131,10 @@ public Updater_OnPluginUpdated()
 
 public OnLibraryAdded(const String:name[])
 {
-    if (StrEqual(name, "updater"))
-    {
-        Updater_AddPlugin(g_URL)
-				if(g_bUpdateMapCfg)
-        	Updater_AddPlugin(g_URLMap)
-					
-    }
+	if (StrEqual(name, "updater"))
+	{
+		Updater_AddPlugin(g_URL)
+		if(g_bUpdateMapCfg)
+			Updater_AddPlugin(g_URLMap)
+	}
 }

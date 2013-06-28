@@ -52,7 +52,7 @@ native RunePluginsStop();
 
 	@return Handle: to a Rune. 
 */
-native Handle:AddRune(String:rune[], RuneTFPickup:cb_on_pickup, RuneTFPickup:cb_on_drop,id );
+native AddRune(String:rune[], RuneTFPickup:cb_on_pickup, RuneTFPickup:cb_on_drop,id );
 
 /* returns a unique Id of the rune held by a player.
    0 if no player has no rune

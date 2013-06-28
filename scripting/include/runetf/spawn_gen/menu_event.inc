@@ -42,7 +42,7 @@ Handle:CreateEventMenu(client)
 	new Handle:hMenu = CreateMenu(Handler_EventMenu,RUNE_MENU_ACTIONS_DEFAULT);
 		// CloseHandle(hMenu) on fail??
 	SetMenuExitBackButton(hMenu,true);
-	if(m_Event[ClusterType] == ClusterType:GenEvent_None)
+	if(m_Event[ClusterType] == ClusterGenType:GenEvent_None)
 	{
 		for(new i = 1; i < sizeof(actionString);++i)
 		{
@@ -59,7 +59,7 @@ Handle:CreateEventMenu(client)
 	} else if(m_Event[EventOutput][0] == '\0') {
 		BuildEntityOutputMenu(hMenu, m_Event[EventCName]);
 		return hMenu;
-	} else if(m_Event[EventType] == 0) {
+	} else if(m_Event[EventType] == EventHookType:GenEvent_None) {
 		for(new i = 1; i < sizeof(entityString);++i)
 		{
 			AddMenuItem(hMenu,entityString[i],entityString[i],(i > 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT));
@@ -104,7 +104,7 @@ Handle:CreateEventMenu(client)
 				for(new j; j < GetArraySize(hEvent);++j)
 				{
 					new j_Event[GenEvent];
-					GetArrayArray(hEvent,j, j_Event, EVENT_BLOCK_SIZE);
+					GetArrayArray(hEvent,j, j_Event, RUNE_BLOCK_SIZE);
 					if(IsEventSame(m_Event,j_Event))
 					{
 						found = true;

@@ -107,9 +107,9 @@ SetSpeedPenalityConditions(client)
 
 stock SetCustomSpeedVars(client)
 {
-	new iClass = TF2_GetPlayerClass(client);
-	g_Effect[client][fCustomSpeed] = g_Speed[iClass-1][fSpeedMax];
-	g_Effect[client][fPenalitySpeed] = FloatMul( g_Effect[client][fSpeed], g_Speed[iClass-1][fSpeedPenality]);
+	new TFClass:iClass = TFClass:TF2_GetPlayerClass(client);
+	g_Effect[client][fCustomSpeed] = g_Speed[iClass-TFClass:1][fSpeedMax];
+	g_Effect[client][fPenalitySpeed] = FloatMul( g_Effect[client][fSpeed], g_Speed[iClass-TFClass:1][fSpeedPenality]);
 #if defined DEBUG_RUNE
 	LogMessage("ori speed %f; new speed %f; penality speed %f", g_Effect[client][fSpeed], g_Effect[client][fCustomSpeed],g_Effect[client][fPenalitySpeed]);
 #endif
@@ -146,7 +146,6 @@ public event_PlayerClassChange_Pre(Handle:event, const String:name[], bool:dontB
 		}
 		CreateTimer(0.50, Timer_SetDefaultSpeed, client);
 	}
-	return Plugin_Continue;
 }
 
 public event_PlayerClassChange(Handle:event, const String:name[], bool:dontBroadcast)
@@ -223,7 +222,7 @@ public TF2_OnConditionAdded(client, TFCond:cond)
 		}
 		default:
 		{
-			return Plugin_Continue;
+			return;
 		}
 	}
 
@@ -233,7 +232,6 @@ public TF2_OnConditionAdded(client, TFCond:cond)
 
 	if( g_Effect[client][bSpeedPenality] != true)
  		g_Effect[client][bSpeedPenality] = true;
-	return Plugin_Continue;
 }
 
 public TF2_OnConditionRemoved(client,TFCond:cond)
@@ -258,7 +256,7 @@ public TF2_OnConditionRemoved(client,TFCond:cond)
 		}
 		default:
 		{
-			return Plugin_Continue;
+			return;
 		}
 	}
 
@@ -271,7 +269,6 @@ public TF2_OnConditionRemoved(client,TFCond:cond)
 			|| g_Cond[client][bDaze]
 			|| g_Cond[client][bMilk];
 
-	return Plugin_Continue;
 }
 
 

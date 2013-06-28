@@ -74,7 +74,7 @@ stock BuildTeamInfo(client, String:sRedTeam[], String:sBlueTeam[], iClient)
 		!IsPlayerAlive(iClient))
 		return;
 
-	new pClass = g_aClientInfo[iClient][iClass];
+	new TFClassType:pClass = TFClassType:g_aClientInfo[iClient][iClass];
 	Format(sClient,sizeof(sClient),"%s%s %d / %d\n",
 	( g_aClientInfo[iClient][bUbered] ? "UBER" : ""),
 	( pClass == TFClass_Scout ? "Scout" : 
@@ -142,7 +142,6 @@ public OnMapStart()
  	PrecacheSound(SND_PING);
 	PrecacheSound(SND_PONG);
 	PrecacheSound("buttons/button17.wav");
-	return Plugin_Continue;
 }
 
 public OnPluginEnd()
@@ -277,7 +276,7 @@ public Action:TimerSoundPing(Handle:timer, any:data)
 	//PrintToConsole(client,"client %d, vol %f, pitch %d from %d", client, vol, pitch, other);
 
 	//EmitSoundToClient(client, "buttons/button17.wav", _, _, level, _, 1.0, pitch,_,pos);
-	EmitSoundToClient(client, "buttons/button17.wav", other, vol, 80, _, 1.0, pitch);
+	EmitSoundToClient(client, "buttons/button17.wav", other, _, 80, _, vol, pitch);
 	//EmitSoundToClient(client, SND_PONG, other, _, 120, _, 1.0, pitch);
 
 	return Plugin_Continue;
@@ -339,7 +338,7 @@ stock bool:TF2_UpdateClientInfo(client)
 	g_aClientInfo[client][iChargeEffect] = 0;
 
 	g_aClientInfo[client][iClass] = TF2_GetPlayerClass(client);
-	g_aClientInfo[client][iTeam] = GetClientTeam(client);
+	g_aClientInfo[client][iTeam] = TFTeam:GetClientTeam(client);
 	g_aClientInfo[client][iHealth] = GetClientHealth(client);
 	g_aClientInfo[client][iMaxHealth] = TF2_GetPlayerResourceData(client, TFResource_MaxHealth);
 	return true;
@@ -354,7 +353,7 @@ stock bool:TF2_UpdateMedicInfo(client)
 		new entityIndex = GetPlayerWeaponSlot(client, 1);
 		g_aClientInfo[client][iChargeLevel] = FloatMul(GetEntPropFloat(entityIndex, Prop_Send, "m_flChargeLevel"),100.0);
 		new ubered_ent;
-		if( (g_aClientInfo[client][bUbered] = GetEntProp(entityIndex,Prop_Send,"m_bChargeRelease")) == true 
+		if( (g_aClientInfo[client][bUbered] = bool:GetEntProp(entityIndex,Prop_Send,"m_bChargeRelease")) == true 
 				&& (ubered_ent = TF2_GetHealingTarget(client)) != -1)
 		{
 			g_aClientInfo[ubered_ent][bUbered] = true;

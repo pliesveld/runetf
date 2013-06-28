@@ -82,8 +82,7 @@ public Action:Command_PluginRune(client, args)
 }
 
 
-new g_LogFileHandle = INVALID_HANDLE;
-
+//new Handle:g_LogFileHandle = INVALID_HANDLE;
 
 public OnPluginStart()
 {
@@ -102,21 +101,21 @@ public OnPluginStart()
 	new String:RuneLogFile[64];
 	BuildPath(Path_SM,RuneLogDir,sizeof(RuneLogDir), "logs/runetf/");
 	if(!DirExists(RuneLogDir))
-	{
 		if(!CreateDirectory(RuneLogDir,493))
 			return ThrowError("Could not create logs/runetf");
-	}
 	
 	new String:RuneFileTimeStr[32];
 	FormatTime(RuneFileTimeStr, sizeof(RuneFileTimeStr), "%b%d%H%M%S");
 	Format(RuneLogFile, sizeof(RuneLogFile), "%s%s", RuneLogDir, RuneFileTimeStr);
 	
-	g_LogFileHandle	= OpenFile(RuneLogFile, "a");
-	if(g_LogFileHandle == INVALID_HANDLE)
-		return ThrowError("Could not open log file %s", RuneLogFile);
+//	g_LogFileHandle	= OpenFile(RuneLogFile, "a");
+//	if(g_LogFileHandle == INVALID_HANDLE)
+//		return ThrowError("Could not open log file %s", RuneLogFile);
 
-	LogToOpenFile(g_LogFileHandle, "log started");
-	return Plugin_Continue;
+//	LogToOpenFile(g_LogFileHandle, "log started");
+// todo ;; clone methods for sharing log file handle for other plugins
+
+	return _:Plugin_Continue;
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -150,7 +149,6 @@ public OnMapStart()
 #if defined DEBUG
 	PrintToServer("DBG DBG === Runes added to download table and rune model cached.")
 #endif
-	return Plugin_Continue;
 }
 
 public OnMapEnd()

@@ -143,7 +143,8 @@ public Action:OnIterateCmd(client, args)
 				GetCmdArg(2,cmd,sizeof(cmd));
 				//find cluster array
 			} else {
-				return ThrowError("Expected cluster name to iterate");
+				ReplyToCommand(client,"Expected cluster name to iterate");
+				return Plugin_Handled;
 			}
 		} else if(!strcmp(cmd,"disabled"))
 			a_runegen = g_vGenDisabled;
@@ -211,10 +212,6 @@ public DescCvarChanged(Handle:cvar, const String:oldVal[], const String:newVal[]
 
 
 
-public OnMapStart()
-{
-	return Plugin_Continue;
-}
 
 public OnMapEnd()
 {

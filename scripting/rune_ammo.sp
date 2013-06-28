@@ -210,7 +210,7 @@ public Action:cb_regen_ammo(Handle:timer, any:client)
 
 		}
 	}
-	if(class ==  TFClassType:TFClass_Engineer)
+	if(class == TFClassType:TFClass_Engineer)
 	{
 		new prev_metal = TF2_GetMetalAmount(client);
 		if(prev_metal < 200 )
@@ -228,7 +228,7 @@ public Action:cb_regen_ammo(Handle:timer, any:client)
 }
 
 
-new g_AmmoTable[TFClass_Engineer][2] =
+new _:g_AmmoTable[_:TFClass_Engineer][2] =
 {
 	//ammo
 	// { slot prim, slot sec } 
@@ -248,7 +248,8 @@ GetAmmoInc(client,TFClassType:class, weapon_slot, String:weapon_name[], &weapon)
 {
 	new increment = 0;
 	weapon = GetPlayerWeaponSlot(client, weapon_slot);
-	increment = g_AmmoTable[_:(class-1)][weapon_slot];
+	new class_slot = _:class - 1;
+	increment = g_AmmoTable[class_slot][weapon_slot];
 
 	if(StrEqual(weapon_name,"tf_weapon_sandvich"))
 	{
@@ -309,7 +310,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 	}
 
 	new iClass;
-	if((iClass = TF2_GetPlayerClass(client)) == TFClass_Spy)
+	if((iClass = _:TF2_GetPlayerClass(client)) == _:TFClass_Spy)
 	{
 		new Float:prev_cloak;
 		if(cloakoff > 0 && (prev_cloak = GetEntDataFloat(client,cloakoff)) < 100.0)
@@ -321,7 +322,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 			SetEntDataFloat(client, cloakoff, prev_cloak);
 			changed = true;
 		}
-	} else if(iClass == TFClass_Engineer) {
+	} else if(iClass == _:TFClass_Engineer) {
 		new prev_ammo = TF2_GetMetalAmount(client);
 		if(prev_ammo < 200)
 		{

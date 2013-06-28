@@ -65,7 +65,7 @@ public OnPluginStart()
 	rune_clients = CreateArray();
 
 	g_hFwdRuneToggle  = CreateGlobalForward("OnRuneToggle",  ExecType:ET_Event,ParamType:Param_Cell);
-	new Handle:hRuneCvar = CreateConVar("rune_enable", "1", "Enables runetf mod.", FCVAR_NOTIFY, true, 0, true, 0);
+	new Handle:hRuneCvar = CreateConVar("rune_enable", "1", "Enables runetf mod.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	HookConVarChange(hRuneCvar, Handle_RuneCvarToggle);
 	
 
@@ -82,7 +82,6 @@ public OnPluginStart()
 				++nPlayers;
 	}
 	
-	return Plugin_Continue;
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -99,8 +98,8 @@ RegisterVoteConVars()
 	hCvarVoteAllowDisable    = CreateConVar("rune_vote_allow_disable", "1.0", "Allow players to vote to disable runetf.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 
 	fToggleThreshold = GetConVarFloat(hCvarVoteToggleThreshold);
-	bAllowEnable     = GetConVarInt(hCvarVoteAllowEnable);
-	bAllowDisable    = GetConVarInt(hCvarVoteAllowDisable);
+	bAllowEnable     = bool:GetConVarInt(hCvarVoteAllowEnable);
+	bAllowDisable    = bool:GetConVarInt(hCvarVoteAllowDisable);
 
 	HookConVarChange(hCvarVoteToggleThreshold,  Handle_RuneVoteCvar);
 	HookConVarChange(hCvarVoteAllowEnable,      Handle_RuneVoteCvar);
@@ -114,9 +113,9 @@ public Handle_RuneVoteCvar(Handle:convar, const String:oldValue[], const String:
 		fToggleThreshold = StringToFloat(newValue);
 		CheckRuneToggleThreshold();
 	} else if(convar == hCvarVoteAllowEnable) {
-		bAllowEnable = StringToInt(newValue);
+		bAllowEnable = bool:StringToInt(newValue);
 	} else if(convar == hCvarVoteAllowDisable) {
-		bAllowDisable = StringToInt(newValue);
+		bAllowDisable = bool:StringToInt(newValue);
 	} else {
 		LogMessage("Warning; Handle_RuneVoteCvar: invalid convar.");
 	}
@@ -250,7 +249,7 @@ public Handle_RuneCvarToggle(Handle:convar, const String:oldValue[], const Strin
 
 	if(StrEqual(cvar_str,"rune_enable"))
 	{
-		new bool:bEnabled = StringToInt(newValue);
+		new bool:bEnabled = bool:StringToInt(newValue);
 		if(bEnabled && StringToInt(oldValue))
 			return;  // still true
 
@@ -262,9 +261,9 @@ public Handle_RuneCvarToggle(Handle:convar, const String:oldValue[], const Strin
 		Call_Finish();
 		ClearArray(rune_clients);
 	} else if(StrEqual(cvar_str,"rune_vote_allow_enable")) {
-		bAllowEnable = StringToInt(newValue);
+		bAllowEnable = bool:StringToInt(newValue);
 	} else if(StrEqual(cvar_str,"rune_vote_allow_disable")) {
-		bAllowDisable = StringToInt(newValue);
+		bAllowDisable = bool:StringToInt(newValue);
 	} else if(StrEqual(cvar_str,"rune_vote_threshold")) {
 		fToggleThreshold = StringToFloat(newValue);
 		CheckRuneToggleThreshold();

@@ -156,11 +156,11 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public Action:Event_Built(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event,"userid"));
-	decl sName[24]=""
-	decl sBuf[128]="";
+	decl String:sName[24]=""
+	decl String:sBuf[128]="";
 	GetClientName(client,sName,sizeof(sName));
 	
-	new TFObjectType:obj = GetEventInt(event,"object");
+	new TFObjectType:obj = TFObjectType:GetEventInt(event,"object");
 	new ent = GetEventInt(event,"index");
 	
 	Format(sBuf,sizeof(sBuf),"%s built %s health %d",

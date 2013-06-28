@@ -1,4 +1,4 @@
-enum RuneGen
+enum _:RuneGen
 {
 	Id,
 	Float:g_ori[3],

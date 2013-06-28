@@ -37,8 +37,6 @@ stock InitRuneConvars()
 	hCvarRuneEnable= CreateConVar("rune_enable", RUNEENABLE,
 	"Enables runetf.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 
-	decl String:s_ver[64]="";
-
 	CreateConVar("rune_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 }
 

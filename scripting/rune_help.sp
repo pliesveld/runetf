@@ -80,7 +80,7 @@ new MsgTypeInfo:g_HelpState;
 public OnMapStart()
 {
 	g_WaitingForPlayers = true;
-	g_HelpState = Help_MapStart;
+	g_HelpState = MsgTypeInfo:Help_MapStart;
 }
 
 public TF2_OnWaitingForPlayersStart()
@@ -100,7 +100,7 @@ public OnMapEnd()
 
 public OnRuneToggle(bool:rune_enable)
 {
-	g_HelpState = rune_enable;
+	g_HelpState = (rune_enable ? Help_MsgRuneOn : Help_MsgRuneOff);
 
 	new i;
 	for(i = 1;i <= GetMaxClients();++i)
@@ -237,7 +237,7 @@ public OnClientPutInServer(client)
 	g_Msg[client][FirstSpawn] = true;
 	g_Msg[client][TimerMsg] = INVALID_HANDLE;
 	g_Msg[client][MsgIdx] = 0;
-	g_Msg[client][Annoy] = g_HelpState;
+	g_Msg[client][Annoy] = (g_HelpState == Help_MsgRuneOn ? true : false);
 
 }
 
