@@ -52,8 +52,12 @@ stock VerifyRunePlugins(bool:bDisable)
 				new plug_res;
 				Call_StartFunction(hPlug, fPlugFunc);
 				Call_Finish(plug_res);
+#if defined DEBUG_RUNE_PAUSE
 				new ext_res;
 				ext_res = RunesPause(hPlug);
+#else
+				RunesPause(hPlug)
+#endif
 				
 #if defined DEBUG_RUNE_PAUSE
 				LogMessage("Stopped %s: ret %d", s_plug,plug_res);
@@ -72,7 +76,12 @@ stock VerifyRunePlugins(bool:bDisable)
 
 			if(!bRunning)
 			{
+#if defined DEBUG_RUNE_PAUSE
 				new ext_res = RunesUnpause(hPlug);
+#else
+				RunesUnpause(hPlug);
+
+#endif
 				new plug_res;
 				Call_StartFunction(hPlug, fPlugFunc);
 				Call_Finish(plug_res);

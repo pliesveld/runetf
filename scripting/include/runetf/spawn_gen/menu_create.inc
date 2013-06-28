@@ -4,6 +4,8 @@
 
 Handle:CreateClusterGeneratorMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new size;
 	if( (size = GetArraySize(g_ClusterNames)) == 0)
 	{
@@ -32,6 +34,8 @@ Handle:CreateClusterGeneratorMenu(client)
 Handle:CreateClusterDefaultMenu(client)
 {
 	new size;
+	if(client <= 0)
+		return INVALID_HANDLE;
 
 	new Handle:hMenu = CreateMenu(Handler_ClusterDefaultMenu,RUNE_MENU_ACTIONS_DEFAULT|MenuAction_Cancel);
 
@@ -102,6 +106,8 @@ stock BuildClusterNameMenu(&Handle:hMenu)
 
 Handle:CreateClusterDropGeneratorMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:hMenu = CreateMenu(Handler_ClusterDropGeneratorMenu,RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DrawItem);
 	BuildClusterNameMenu(hMenu);
 
@@ -111,6 +117,8 @@ Handle:CreateClusterDropGeneratorMenu(client)
 
 Handle:CreateClusterLoadGeneratorMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:hMenu = CreateMenu(Handler_ClusterLoadGeneratorMenu,RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DrawItem);
 	BuildClusterNameMenu(hMenu);
 

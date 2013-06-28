@@ -5,6 +5,17 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+#define PLUGIN_NAME "Rune of Assault"
+#define PLUGIN_DESCRIPTION "Grants speed burst when ubered."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
 
 
 enum RuneInfo
@@ -14,24 +25,20 @@ enum RuneInfo
 
 new g_Effect[MAXPLAYERS][RuneInfo];
 
-new g_AssaultRune = INVALID_HANDLE;
-
 
 public RunePluginStart()
 {
-	PrintToServer("AssaultRunePluginStart\n");
 }
 
 public RunePluginStop()
 {
-	PrintToServer("AssaultRunePluginStop\n");
 }
 
 
 public OnPluginStart()
 {
 
-	g_AssaultRune = AddRune("Assault",AssaultRunePickup, AssaultRuneDrop,1);
+	AddRune("Assault",AssaultRunePickup, AssaultRuneDrop,1);
 
 #if defined DEBUG
 	for(new i =1;i <= GetMaxClients();++i)
@@ -95,7 +102,6 @@ public OnInvuln(Handle:event, const String:name[], bool:bDontbroadcast)
 	LogMessage("%s invuln %s", sMedic, sTarget);
 #endif
 
-	return Plugin_Continue;
 }
 
 public OnChargeDeployed(Handle:event, const String:name[], bool:bDontbroadcast)
@@ -103,11 +109,16 @@ public OnChargeDeployed(Handle:event, const String:name[], bool:bDontbroadcast)
 
 	new client = GetClientOfUserId(GetEventInt(event,"userid"));
 	new targetid = GetEventInt(event,"targetid")
-	new target;
 
 	if(g_Effect[client][Active])
 	{
 		TF2_AddCondition(client,TFCond_SpeedBuffAlly,8.0);
+	} 
+
+	new target = GetClientOfUserId(targetid);
+	if(g_Effect[target][Active])
+	{
+		TF2_AddCondition(targetid,TFCond_SpeedBuffAlly,8.0);
 	}
 	
 
@@ -116,13 +127,12 @@ public OnChargeDeployed(Handle:event, const String:name[], bool:bDontbroadcast)
 	decl String:sMedic[32];
 	if(targetid > 0)
 	{
-		target = GetClientOfUserId(targetid);
+		//target = GetClientOfUserId(targetid);
 		GetClientName(target, sTarget, sizeof(sTarget));
 	}
 	GetClientName(client, sMedic, sizeof(sMedic));
 	LogMessage("%s deployed %s", sMedic, sTarget);
 #endif
-	return Plugin_Continue;
 }
 
 #if defined DEBUG

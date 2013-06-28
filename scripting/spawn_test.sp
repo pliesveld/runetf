@@ -20,6 +20,20 @@
 
 #include <runetf/spawn_rune>
 
+
+#define PLUGIN_NAME "Rune Spawner Utilities"
+#define PLUGIN_DESCRIPTION "Core Rune-related player and developer commands."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 public Action:Command_DelRune(client, args)
 {
 	new cnt = 0;
@@ -30,9 +44,7 @@ public Action:Command_DelRune(client, args)
 			continue;
 		if(isEntaRune(entity))
 		{
-			//LogMessage("tname%d:%s",strlen(tname),tname);
-			//RemoveEdict(entity);
-    	AcceptEntityInput(entity, "KillHierarchy");
+			AcceptEntityInput(entity, "KillHierarchy");
 			++cnt;
 		}
 	}
@@ -58,7 +70,6 @@ public Action:Command_DumpRune(client, args)
 public Action:Command_PluginRune(client, args)
 {
 	decl String:cmdstr[64];
-	decl String:arg[16];
 	GetCmdArgString(cmdstr,sizeof(cmdstr));
 
 	if(!strncmp(cmdstr,"stop",4))
@@ -76,15 +87,14 @@ new g_LogFileHandle = INVALID_HANDLE;
 
 public OnPluginStart()
 {
-  RegConsoleCmd("sm_del", Command_DelRune, "drop rune");
-  RegConsoleCmd("sm_dump", Command_DumpRune, "dump runes");
-  RegConsoleCmd("drop", Command_DropRune,"drop rune");
 
-
+	RegConsoleCmd("drop", Command_DropRune,"drop rune");
 	//RegConsoleCmd("sm_plugin", Command_PluginRune, "rune plugins");
-  //RegConsoleCmd("sm_drop", Command_DropRune, "drop rune");
+	//RegConsoleCmd("sm_drop", Command_DropRune, "drop rune");
 	//RegConsoleCmd("sm_give", Command_GiveRune, "gives a rune");
-  RegAdminCmd("sm_take", Command_TakeRune,ADMFLAG_CHEATS, "take rune from a player");
+	RegAdminCmd("sm_del", Command_DelRune, ADMFLAG_CHEATS,"debug delete rune");
+	RegAdminCmd("sm_dump", Command_DumpRune, ADMFLAG_CHEATS,"debug dump rune info");
+	RegAdminCmd("sm_take", Command_TakeRune,ADMFLAG_CHEATS, "take rune from a player");
 	RegAdminCmd("sm_give", Command_GiveRune,ADMFLAG_CHEATS, "give a specific rune to a player.");
 
 
@@ -117,7 +127,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-new Handle:g_FileLog;
 
 public OnMapStart()
 {
@@ -125,17 +134,17 @@ public OnMapStart()
 	AddRunesToDownloadTable();
 	
 /*
-  if( PrecacheModel("models/quake/rune_01.vmt") == 0)
+ if( PrecacheModel("models/quake/rune_01.vmt") == 0)
 		LogError("MODEL ERROR: Failed to cache model %d", ++i);
 
-  if(PrecacheGeneric("materials/models/quake/rune_01.vtf",true) == 0)
+ if(PrecacheGeneric("materials/models/quake/rune_01.vtf",true) == 0)
 		LogError("Failed to cache model %d", ++i);
 
-  if(PrecacheGeneric("materials/models/quake/rune_01n.vtf",true) == 0)
+ if(PrecacheGeneric("materials/models/quake/rune_01n.vtf",true) == 0)
 		LogError("Failed to cache model %d", ++i);
 */
 
-  if(PrecacheModel(RUNE_MODEL,true) == 0)
+	if(PrecacheModel(RUNE_MODEL,true) == 0)
 		LogError("MODEL ERROR: Failed to cache model %d", ++i);
 
 #if defined DEBUG
@@ -168,7 +177,7 @@ public Action:Command_DropRune(client, args)
 		new ret;
 		if( (ret = PlayerDropRune(client)) < 0 )
 		{
-			PrintToConsole(client,"Invalid rune\n")
+			PrintToConsole(client,"Invalid rune %d\n",rId)
 			LogError("Player has invalid rune %s", buffer);
 			PlayerDropRune(client,true); // force remove
 			return Plugin_Handled;
@@ -179,13 +188,13 @@ public Action:Command_DropRune(client, args)
 			return Plugin_Handled;
 		}
 		PrintToConsole(client,"PlayerDropRune(%s) returned %d", buffer, ret);
-    GetClientEyePosition(client, ori)
-    GetClientEyeAngles(client, ang);
+		GetClientEyePosition(client, ori)
+		GetClientEyeAngles(client, ang);
 
-    loc[0] = (ori[0]+(100*((Cosine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));
-    loc[1] = (ori[1]+(100*((Sine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));
-    ang[0] -= (2*ang[0]);
-    loc[2] = (ori[2]+(100*(Sine(DegToRad(ang[0])))));
+		loc[0] = (ori[0]+(100*((Cosine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));
+		loc[1] = (ori[1]+(100*((Sine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));
+		ang[0] -= (2*ang[0]);
+		loc[2] = (ori[2]+(100*(Sine(DegToRad(ang[0])))));
 
 		GetAngleVectors(ang,vec,NULL_VECTOR,NULL_VECTOR);
 		ScaleVector(vec,425.0);

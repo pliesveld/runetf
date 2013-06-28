@@ -17,6 +17,17 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+#define PLUGIN_NAME "Rune of Engineer"
+#define PLUGIN_DESCRIPTION "Building related runes."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
 
 //particles  tpdamage_4
 		// spark_electric01
@@ -31,7 +42,6 @@ enum RuneInfo
 
 
 new g_Effect[MAXPLAYERS][RuneInfo];
-new g_SentryRune = INVALID_HANDLE;
 
 
 #define RUNE_ENGINEERING 1
@@ -40,7 +50,7 @@ new g_SentryRune = INVALID_HANDLE;
 public OnPluginStart()
 {
 	HookEvent("player_builtobject",Event_Built);
-	g_SentryRune = AddRune("Engineering", EngineerRunePick, EngineerRuneDrop,RUNE_ENGINEERING);
+	AddRune("Engineering", EngineerRunePick, EngineerRuneDrop,RUNE_ENGINEERING);
 	AddRune("Sabatoge",WreckRunePick, WreckRuneDrop, RUNE_WRECK);
 
 	HookWrecker();
@@ -194,7 +204,7 @@ public ObjDamaged_Wrecker(const String:output[], caller, activator, Float:delay)
 	//if(g_Effect[activator][Active] != RUNE_WRECK)
 	//	return;
 
-	new client = GetEntDataEnt2(caller, FindSendPropOffs("CObjectSapper","m_hBuilder"));
+//	new client = GetEntDataEnt2(activator, FindSendPropOffs("CObjectSapper","m_hBuilder"));
 
 	//LogMessage("damaged %d",Entity_GetHealth(caller));
 	new n_dmg = - (15 + GetURandomInt()%50);
@@ -239,8 +249,8 @@ public ObjSapped_Wrecker(const String:output[], caller, activator, Float:delay)
 
 public Action:Event_Drop(Handle:event, const String:name[], bool:dontBroadcast)
 {
-  new client = GetClientOfUserId( GetEventInt(event,"userid"));
-	new obj = GetEventInt(event,"object");
+	new client = GetClientOfUserId( GetEventInt(event,"userid"));
+//	new obj = GetEventInt(event,"object");
 	new objIndex = GetEventInt(event,"index");
 	if( g_Effect[client][Active] )
 	{
@@ -279,12 +289,11 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 
 	if (!strcmp(netclass, "CObjectSentrygun"))
 	{
-		new client = GetClientOfUserId(userid)
 		new iTeam = GetClientTeam(client);
 
 	// SetEntProp(iSentry, Prop_Send, "m_bHasSapper", 0, 2);
 	// SetEntProp(iDispenser, Prop_Send, "m_bDisabled", 0, 2);
-  //     SetEntPropFloat(iTeleporter, Prop_Send, "m_flPercentageConstructed",     1.0);
+	//     SetEntPropFloat(iTeleporter, Prop_Send, "m_flPercentageConstructed",     1.0);
 
 
 		if( GetURandomFloat() < 0.07 )
@@ -305,32 +314,35 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	return Plugin_Continue;
 }
 
-public Action:TimerEnableSentry(Handle:timer, any:data)                                                  { 
-  decl String:netclass[32];  
+public Action:TimerEnableSentry(Handle:timer, any:data)
+{ 
+	decl String:netclass[32];  
 
 	new iSentry = EntRefToEntIndex(data);
 
-  if(iSentry == INVALID_ENT_REFERENCE || !IsValidEntity(iSentry))
-    return Plugin_Stop;
+	if(iSentry == INVALID_ENT_REFERENCE || !IsValidEntity(iSentry))
+		return Plugin_Stop;
 
-  GetEntityNetClass(iSentry, netclass, sizeof(netclass));
-  if (!strcmp(netclass, "CObjectSentrygun")) 
-  {
-  	SetEntData( iSentry, FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 0 , 2 , true );
+	GetEntityNetClass(iSentry, netclass, sizeof(netclass));
+	if (!strcmp(netclass, "CObjectSentrygun")) 
+	{
+		SetEntData( iSentry, FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 0 , 2 , true );
 	}
 
-  return Plugin_Continue;                                                                                }       
+	return Plugin_Continue;
+}       
 
 public Action:Event_Destroy(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	new index = GetEventInt(event,"index");
+//	new index = GetEventInt(event,"index");
 	new userid = GetEventInt(event,"attacker");
 	if(userid > 0)
 	{
 		new attacker = GetClientOfUserId(userid);
 		if( g_Effect[attacker][Active] == RUNE_WRECK )
 		{
-
+			TF2_AddCondition(attacker,TFCond_MarkedForDeath,4.0);
+			TF2_AddCondition(attacker,TFCond_Jarated,2.5);
 		}
 	}
 
@@ -340,7 +352,8 @@ public Action:Event_Destroy(Handle:event, const String:name[], bool:dontBroadcas
 		new assister = GetClientOfUserId(userid);
 		if( g_Effect[assister][Active] == RUNE_WRECK )
 		{
-
+			TF2_AddCondition(assister,TFCond_MarkedForDeath,2.0);
+			TF2_AddCondition(assister,TFCond_Jarated,1.5);
 		}
 	}
 

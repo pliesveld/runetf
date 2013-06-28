@@ -11,6 +11,19 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+
+#define PLUGIN_NAME "Rune of PowerPlay"
+#define PLUGIN_DESCRIPTION "Respawns fallen teammates when on a kill-streak."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 new g_Effect[MAXPLAYERS] = {0};
 
 enum TrackKills
@@ -21,12 +34,10 @@ enum TrackKills
 
 new g_TrackKills[MAXPLAYERS][TrackKills];
 
-new g_PowerPlayRune = INVALID_HANDLE;
-
 public OnPluginStart()
 {
 	ResetAllTrack();
-	g_PowerPlayRune = AddRune("Powerplay", PowerPlayRunePick,PowerPlayRuneDrop,1);
+	AddRune("Powerplay", PowerPlayRunePick,PowerPlayRuneDrop,1);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)

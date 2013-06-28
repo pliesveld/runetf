@@ -12,6 +12,19 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+#define PLUGIN_NAME "Rune of Rage and Vanguard"
+#define PLUGIN_DESCRIPTION "Increases rate of fire on hit.  Redirects damage from nearby weaker teammates."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 enum RuneInfo
 {
 	Active,
@@ -30,7 +43,6 @@ enum RuneInfo
 
 new g_Effect[MAXPLAYERS][RuneInfo];
 
-new g_RageRune = INVALID_HANDLE;
 new g_bPlayersHooked = false;
 
 #define RUNE_RAGE 1
@@ -51,7 +63,7 @@ public OnPluginStart()
 
 
 
-	g_RageRune = AddRune("Rage", RageRunePick,RageRuneDrop, RUNE_RAGE);
+	AddRune("Rage", RageRunePick,RageRuneDrop, RUNE_RAGE);
 	AddRune("Vanguard",VanguardRunePick, VanguardRuneDrop, RUNE_VANGUARD);
 	g_bPlayersHooked = false;
 
@@ -246,7 +258,7 @@ public Action:OnRageDmg(victim, &attacker, &inflictor, &Float:damage, &damagetyp
 
 	if(TF2_GetPlayerClass(victim) == TFClass_Medic)
 	{
-		new best_i = TF2_GetHealingTarget(victim);
+		best_i = TF2_GetHealingTarget(victim);
 		if(best_i > 0 && g_Effect[best_i][Active] == RUNE_VANGUARD)
 		{
 			SDKHooks_TakeDamage(best_i, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);

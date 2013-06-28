@@ -49,8 +49,8 @@ stock NearPlayer(client, team, clients[], Float:distance = 475.0)
 
 stock OriginNearPlayer(client, Float:loc[3], range = 100)
 {
-  new Float:ori[3];
-  new Float:ang[3];
+	new Float:ori[3];
+	new Float:ang[3];
 	GetClientEyePosition(client, ori)
 	GetClientEyeAngles(client, ang); 
 

@@ -15,6 +15,19 @@ enum RuneProp
   bool:active,
 }
 
+
+#define PLUGIN_NAME "Rune of Berserker"
+#define PLUGIN_DESCRIPTION "Restricts weapon to melee, and grants crits on hit."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 // faster movement speed
 // melee crits
 // drain rate
@@ -28,15 +41,15 @@ new g_Effect[MAXPLAYERS][RuneProp]
 
 public MeleeRunePickup(client,rune)
 {
-  if(g_Effect[client][active])
-    return LogError("client %d already active",client);
+	if(g_Effect[client][active])
+		return LogError("client %d already active",client);
 
-  new weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-  if(Client_GetActiveWeapon(client) != weapon)
-    Client_SetActiveWeapon(client, weapon);
+	new weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	if(Client_GetActiveWeapon(client) != weapon)
+		Client_SetActiveWeapon(client, weapon);
 
-  SDKHook(client,SDKHook_WeaponCanSwitchTo,BlockWeaponSwitch);
-  g_Effect[client][active] = true;
+	SDKHook(client,SDKHook_WeaponCanSwitchTo,BlockWeaponSwitch);
+	g_Effect[client][active] = true;
   
 	return Plugin_Continue;
 }
@@ -44,11 +57,11 @@ public MeleeRunePickup(client,rune)
 
 public MeleeRuneDrop(client,rune)
 {
-  if(!g_Effect[client][active])
-    return LogError("client %d not active",client);
+	if(!g_Effect[client][active])
+		return LogError("client %d not active",client);
 
-  SDKUnhook(client,SDKHook_WeaponCanSwitchTo, BlockWeaponSwitch);
-  g_Effect[client][active] = false;
+	SDKUnhook(client,SDKHook_WeaponCanSwitchTo, BlockWeaponSwitch);
+	g_Effect[client][active] = false;
 	return Plugin_Continue;
 }
 
@@ -76,12 +89,10 @@ public Action:TF2_CalcIsAttackCritical(client, weapon, String:weaponname[], &boo
 
 public RunePluginStart()
 {
-	PrintToServer("MeleeRunePluginStart\n");
 }
 
 public RunePluginStop()
 {
-	PrintToServer("MeleeRunePluginStop\n");
 }
 
 

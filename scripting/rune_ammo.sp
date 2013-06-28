@@ -15,8 +15,16 @@
 #define AMMO_PICKUP_SND "items/ammo_pickup.wav"
 #define AMMO_CLIP_RELOAD "items/battery_pickup.wav"
 
-//particles
-// teleported_flash
+#define PLUGIN_NAME "Rune of Ammo"
+#define PLUGIN_DESCRIPTION "Replenishes ammo and weapon clip."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
 
 
 enum RuneProp
@@ -38,28 +46,23 @@ static MaxSecondaryAmmo[MAXPLAYERS + 1];
 new Handle:ClientWeaponName[MAXPLAYERS + 1] = {INVALID_HANDLE,...};
 #define MAX_WEAPONNAME_LEN 32
 
-new g_AmmoRune = INVALID_HANDLE;
 
 public OnPluginStart() 
 {
-	new cloakoff = FindSendPropInfo("CTFPlayer","m_flCloakMeter");
-	//PrecacheSound(AMMO_PICKUP_SND,true);
-	//PrecacheSound(AMMO_CLIP_RELOAD,true);
-	g_AmmoRune = AddRune("Ammo", AmmoRunePickup, AmmoRuneDrop, 1);
+	cloakoff = FindSendPropInfo("CTFPlayer","m_flCloakMeter");
+	AddRune("Ammo", AmmoRunePickup, AmmoRuneDrop, 1);
 	HookEvent("player_spawn",event_PlayerSpawn);
 	HookEvent("post_inventory_application",event_PlayerSpawn);
 }
 
 public OnPluginEnd()
 {
-	//CloseHandle(g_AmmoRune);
 }
 
 public OnMapStart()
 {
 	PrecacheSound(AMMO_PICKUP_SND,true);
 	PrecacheSound(AMMO_CLIP_RELOAD,true);
-	return Plugin_Continue;
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -105,15 +108,15 @@ SetAmmoCount(client, weapon, ammo)
 public Action:getMaxClipAmmo(Handle:timer, any:client)
 {
 	new slot0, slot1;
-  MaxPrimaryClip[client] =   ((slot0 = GetPlayerWeaponSlot(client,TFWeaponSlot_Primary)) == -1) ? 0 : Weapon_GetPrimaryClip(slot0);
-  MaxSecondaryClip[client] = ((slot1 = GetPlayerWeaponSlot(client,TFWeaponSlot_Secondary)) == -1) ? 0 : Weapon_GetPrimaryClip(slot1);
+	MaxPrimaryClip[client] =   ((slot0 = GetPlayerWeaponSlot(client,TFWeaponSlot_Primary)) == -1) ? 0 : Weapon_GetPrimaryClip(slot0);
+	MaxSecondaryClip[client] = ((slot1 = GetPlayerWeaponSlot(client,TFWeaponSlot_Secondary)) == -1) ? 0 : Weapon_GetPrimaryClip(slot1);
 
-  MaxPrimaryAmmo[client] =  (slot0 == -1 ? 0 : GetAmmoCount(client,slot0));
-  MaxSecondaryAmmo[client] = (slot1 == -1 ? 0 : GetAmmoCount(client,slot1));
+	MaxPrimaryAmmo[client] =  (slot0 == -1 ? 0 : GetAmmoCount(client,slot0));
+	MaxSecondaryAmmo[client] = (slot1 == -1 ? 0 : GetAmmoCount(client,slot1));
 
 	SetWeaponNameArray( slot0, slot1,ClientWeaponName[client]);
 	
-#if 0
+#if defined DEBUG_RUNE
 	new String:buffer[1024];
 	Format(buffer,sizeof(buffer), "client %d: Class: %dMaxAmmo:\nprimary   clip %d\nsecondary clip %d\nprimary   ammo %d\nsecondary ammo%d",client,TF2_GetPlayerClass(client),
 		MaxPrimaryClip[client], MaxSecondaryClip[client], MaxPrimaryAmmo[client], MaxSecondaryAmmo[client]);
@@ -200,9 +203,9 @@ public Action:cb_regen_ammo(Handle:timer, any:client)
 				if(prev_ammo > max_ammo)
 					prev_ammo = max_ammo;
 				++changed;
-			//Client_SetWeaponPlayerAmmoEx(client, weapon, prev_ammo);
-		//Weapon_SetPrimaryAmmoCount(weapon, prev_ammo);
-			  SetAmmoCount(client,weapon,prev_ammo);
+				//Client_SetWeaponPlayerAmmoEx(client, weapon, prev_ammo);
+				//Weapon_SetPrimaryAmmoCount(weapon, prev_ammo);
+				SetAmmoCount(client,weapon,prev_ammo);
 			}
 
 		}
@@ -225,7 +228,7 @@ public Action:cb_regen_ammo(Handle:timer, any:client)
 }
 
 
-new g_AmmoTable[TFClass_Engineer ][2] =
+new g_AmmoTable[TFClass_Engineer][2] =
 {
 	//ammo
 	// { slot prim, slot sec } 
@@ -245,9 +248,8 @@ GetAmmoInc(client,TFClassType:class, weapon_slot, String:weapon_name[], &weapon)
 {
 	new increment = 0;
 	weapon = GetPlayerWeaponSlot(client, weapon_slot);
-	increment = g_AmmoTable[class-1][weapon_slot];
+	increment = g_AmmoTable[_:(class-1)][weapon_slot];
 
-/*
 	if(StrEqual(weapon_name,"tf_weapon_sandvich"))
 	{
 		increment = 0;
@@ -255,7 +257,6 @@ GetAmmoInc(client,TFClassType:class, weapon_slot, String:weapon_name[], &weapon)
 	{
 		increment = 5;
 	}
-*/
 	return increment;
 	
 }
@@ -264,16 +265,15 @@ GetAmmoInc(client,TFClassType:class, weapon_slot, String:weapon_name[], &weapon)
 /* use forward ?*/
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {
-  if( !g_Effect[ client ] [ g_active ] )
-    return Plugin_Continue;
-  if(! (buttons & IN_USE) )
-    return Plugin_Continue;
+	if( !g_Effect[ client ] [ g_active ] )
+		return Plugin_Continue;
+	if(! (buttons & IN_USE) )
+		return Plugin_Continue;
 
-  if( GetGameTime() < g_Effect[client][g_timestamp] )
-    return Plugin_Continue;
+	if( GetGameTime() < g_Effect[client][g_timestamp] )
+		return Plugin_Continue;
 
-  g_Effect[client][g_timestamp] = GetGameTime() + 4.0;
-  //g_Effect[client][g_timestamp] = GetGameTime() + 30.0;
+	g_Effect[client][g_timestamp] = GetGameTime() + 4.0;
 
 	new max_pri = MaxPrimaryClip[client];
 	new max_sec = MaxSecondaryClip[client];
@@ -314,7 +314,11 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		new Float:prev_cloak;
 		if(cloakoff > 0 && (prev_cloak = GetEntDataFloat(client,cloakoff)) < 100.0)
 		{
-			SetEntDataFloat(client, cloakoff, 100.0);
+			prev_cloak += prev_cloak + 34.0;
+			if(prev_cloak > 100.0)
+				prev_cloak = 100.0;
+
+			SetEntDataFloat(client, cloakoff, prev_cloak);
 			changed = true;
 		}
 	} else if(iClass == TFClass_Engineer) {

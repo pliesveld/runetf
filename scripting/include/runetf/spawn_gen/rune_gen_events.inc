@@ -9,7 +9,6 @@ stock MapEntityFound(ent, String:class[], idx, Handle:DEPRECATED_array_ent, &Han
 	decl String:s_name[MAX_EVENTGEN_CNAME]="";
 	if(!strcmp(class,"trigger_capture_area"))
 	{
-		new c_ent; 
 		GetEntPropString(ent,Prop_Data,"m_iszCapPointName",s_name,sizeof(s_name));
 		Format(s_name,sizeof(s_name),"%s",s_name);
 	} else {
@@ -149,7 +148,7 @@ stock FreeHookedEvents()
 	}
 }
 
-RemoveEventHook(const String:event[], action = -1)
+stock RemoveEventHook(const String:event[], action = -1)
 {
 	new String:cname[MAX_EVENTGEN_CNAME];
 	new String:output[MAX_EVENTGEN_CNAME];
@@ -222,7 +221,7 @@ stock HookMapEvents()
 
 stock UnhookMapEvents()
 {
-	return;
+#if 0
 	UnhookEvent("teamplay_round_start", Event_Round);
 	UnhookEvent("teamplay_round_win",Event_Round);
 	UnhookEvent("teamplay_round_active",Event_Round);
@@ -239,9 +238,9 @@ stock UnhookMapEvents()
 
 	UnhookEvent("teamplay_flag_event", Event_Flag);
 	UnhookEvent("ctf_flag_captured", Event_Flag_Captured);
+#endif
 }
 
-new g_CurrRound;
 
 public Action:Event_Round(Handle:event, const String:strName[], bool:bDontBroadcast)
 {
@@ -296,16 +295,17 @@ public Action:Event_Round(Handle:event, const String:strName[], bool:bDontBroadc
 
 public Action:Event_Point(Handle:event, const String:strName[], bool:bDontBroadcast)
 {
-	new cpIdx = -1;
 	decl String:capStr[64]="";
 	decl String:capPlayerStr[64]="";
-	new iTeam = -1;
 
-	cpIdx = GetEventInt(event,"cp"); // index of point that was captured
 	GetEventString(event,"cpname",capStr,sizeof(capStr)); // name of point
-	iTeam = GetEventInt(event,"team");
 
 #if defined DEBUG_GEN_EVENT
+
+	new iTeam = -1;
+	new cpIdx = GetEventInt(event,"cp"); // index of point that was captured
+	iTeam = GetEventInt(event,"team");
+
 	LogMessage("CP Event %s: %s %d %s",strName,
 		capStr, cpIdx, (iTeam == 1 ? "by Red" : iTeam == 2 ? "by Blue" : ""));
 #endif
@@ -459,7 +459,6 @@ DisplayMapEntityByType(class_idx, client = 0)
 DisplayMapEntities(String:name[] = "",client = 0)
 {
 	new bool:found = false;
-	new class_idx = -1;
 
 	for(new i; i < sizeof(class_type);++i)
 	{
@@ -633,7 +632,7 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 	}
 
 	new hCount;
-	new bool:bHookedByNamedEnt = false;
+	//new bool:bHookedByNamedEnt = false;
 
 	new Handle:hActionArray = GetArrayCell(g_MapEventEntities,class_idx,1);
 	new Handle:hClassActionTrie = GetArrayCell(hActionArray,action,0);
@@ -668,15 +667,15 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 						RemoveFromTrie(hNamedActionTrie,event);
 					else
 						SetTrieValue(hNamedActionTrie,event,hCount);
-					bHookedByNamedEnt = true;
+					//bHookedByNamedEnt = true;
 				}
 			}
 		}
 	}
 	//hCount is the number of clusters in the string array pointed to by Trie g_HookedEvent[action] keyed with event.
 
-	new ClassOutRef = GetTrieSize(hClassActionTrie);
-	new NamedEntRef = GetTrieSize(hNamedActionTrie);
+	//new ClassOutRef = GetTrieSize(hClassActionTrie);
+	//new NamedEntRef = GetTrieSize(hNamedActionTrie);
 	new bool:bHook = false;
 	new bool:bUnhook = false;
 
@@ -696,7 +695,6 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 			SetTrieValue(hClassActionTrie,baseEvent,value);
 		}
 	} else if (hCount == 0 && remove) {
-		new value;
 		decl String:baseEvent[MAX_EVENT_ENTITY_OUTPUT];
 		Format(baseEvent,sizeof(baseEvent),"%s.%s",cname,output);
 		if(!GetTrieValue(hClassActionTrie,baseEvent,value))
@@ -942,7 +940,7 @@ public EventHandler_EnableGen(const String:output[], caller, activator, Float:de
 
 public EventHandler_DisableGen(const String:output[], caller, activator, Float:delay)
 {
-	new String:testName[MAX_EVENT_ENTITY_OUTPUT];
+	//new String:testName[MAX_EVENT_ENTITY_OUTPUT];
 	decl String:sEventDebug[1024]="";
 	sEventDebug[0] = '\0';
 	

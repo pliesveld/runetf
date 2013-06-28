@@ -28,7 +28,7 @@ ResetTempEvent(a_Event[GenEvent])
 	a_Event[EventTriggered] = EntityOutput:HandleGenEvent;
 }
 
-SetClusterName(a_Cluster[RuneCluster], const String:name[])
+stock SetClusterName(a_Cluster[RuneCluster], const String:name[])
 {
 	strcopy( a_Cluster[ClusterName], sizeof(a_Cluster[ClusterName]), name);
 }
@@ -49,7 +49,7 @@ SetEventOutput(a_Event[GenEvent], const String:output[])
 }
 
 
-SetEventCallback(a_Event[GenEvent], EntityOutput:callback)
+stock SetEventCallback(a_Event[GenEvent], EntityOutput:callback)
 {
 	a_Cluster[GenEvent] = callback;
 }
@@ -73,9 +73,7 @@ stock bool:IsEventSame(lhs[GenEvent], rhs[GenEvent])
 
 stock CreateCluster(const String:name[], &Handle:a_cluster)
 {
-	new idx;
-
-	if( (idx = FindStringInArray(g_ClusterNames, name)) == -1)
+	if( FindStringInArray(g_ClusterNames, name) == -1)
 	{
 		PushArrayString(g_ClusterNames, name);
 #if defined DEBUG_GEN_CLUSTER
@@ -99,7 +97,7 @@ stock AddToCluster(const String:name[], id, bool:create = false)
 	{
 		if(!create)
 			return ret;
-			CreateCluster(name, c_array);
+		CreateCluster(name, c_array);
 	}
 	if(FindValueInArray(c_array,id) == -1)
 		ret = PushArrayCell(c_array, id);
@@ -189,6 +187,7 @@ stock bool:DoesClusterHaveId(const String:name[], id)
 	new Handle:c_array;
 	if(GetTrieValue(g_vGenCluster, name, c_array))
 		return FindValueInArray(c_array, id) != -1;
+	return false;
 }
 
 add_event_info(&Handle:cluster, a_Event[GenEvent])
@@ -383,7 +382,7 @@ public Action:OnClusterCmd(client, args)
 	{
 		new String:cname[MAX_CLUSTER_LEN];
 		GetArrayString(g_ClusterNames, i, cname, sizeof(cname));
-		new len = Format(buffer, sizeof(buffer), "Cluster %-14s: ", cname);
+		Format(buffer, sizeof(buffer), "Cluster %-14s: ", cname);
 		if(s_cluster[0] != '\0')
 		{
 			if(!strcmp(s_cluster,cname))

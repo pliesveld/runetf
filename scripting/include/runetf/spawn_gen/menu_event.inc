@@ -180,8 +180,8 @@ Handle:ClientSelectEventMenu(client,const String:item_str[])
 		new ClusterGenType:cType;
 		if( (cType = CheckClusterType(item_str)) == -1)
 			return INVALID_HANDLE;
-			m_Event[ClusterType] = cType;
-			return CreateEventMenu(client);
+		m_Event[ClusterType] = cType;
+		return CreateEventMenu(client);
 	} else if(m_Event[EventCName][0] == '\0') {
 		new class_idx;
 		if(!GetTrieValue(g_CNameTrie,item_str,class_idx))
@@ -209,7 +209,7 @@ Handle:ClientSelectEventMenu(client,const String:item_str[])
 		new class_idx;
 		if(!GetTrieValue(g_CNameTrie, m_Event[EventCName],class_idx))
 			return INVALID_HANDLE;
-  	new cnt = GetArrayCell(g_MapEventEntities,class_idx,0);
+		new cnt = GetArrayCell(g_MapEventEntities,class_idx,0);
 		if(cnt == 0)
 			return INVALID_HANDLE;
 
@@ -250,8 +250,8 @@ Handle:ClientSelectEventMenu(client,const String:item_str[])
 		}
 	}
 
-	PrintToConsole(client,"Unknown state.  Selected => %s", item_str);
-	return INVALID_HANDLE;
+//	PrintToConsole(client,"Unknown state.  Selected => %s", item_str);
+//	return INVALID_HANDLE;
 }
 
 

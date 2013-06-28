@@ -28,7 +28,7 @@ new Handle:g_vGenCluster 	= INVALID_HANDLE; //trie keyed by cluster, value is ar
 new Handle:g_ClusterNames = INVALID_HANDLE; //array of cluster names
 new Handle:g_vGenEvent 		= INVALID_HANDLE; // array of RuneClusters
 
-new bool:g_bMerge = false;
+//new bool:g_bMerge = false;
 new bool:g_bChanged = false;
 new bool:g_bEventsHooked = false;
 

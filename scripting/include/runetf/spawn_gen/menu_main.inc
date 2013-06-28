@@ -36,7 +36,7 @@ stock CreateMainMenu(client)
 {
 	new Handle:hMenu;
 	hMenu = CreateMenu(Handler_MainMenu, RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DrawItem);
-  SetMenuExitButton(hMenu, true);
+	SetMenuExitButton(hMenu, true);
 	for(new i; i < sizeof(menu_action);++i)
 		AddMenuItem(hMenu, menu_action[i], menu_text[i]);
 	//DisplayMenu(hMenu, client, MENU_TIME_FOREVER);
@@ -102,7 +102,6 @@ public Handler_MainMenu(Handle:menu, MenuAction:m_action, param1, param2)
 		case MenuAction_DrawItem:
 		{
 			new style;
-			new idx;
 			decl String:action[MAX_MENU_LEN];
 			GetMenuItem(menu,param2,action,sizeof(action),style);
 			if(!strcmp(MAIN_MENU_MERGE,action))
@@ -131,6 +130,7 @@ public Handler_MainMenu(Handle:menu, MenuAction:m_action, param1, param2)
 			CloseHandle(menu);
 		}
 	}
+	return 0;
 }
 
 

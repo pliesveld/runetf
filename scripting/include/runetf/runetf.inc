@@ -149,6 +149,13 @@ stock DbgPrint(const String:name[], ch, client = 0)
 	PrintToConsole(client,dbg_string);
 }
 
+#define PLUGIN_TAG				"ru"
+#define PLUGIN_PRINT_PREFIX	"[Rune]"
+#define PLUGIN_AUTHOR			"happs"
+#define PLUGIN_VERSION 			"1.0.0"
+#define PLUGIN_URL				"http://www.reddit.com/r/runetf/wiki"
+
+
 
 
 public Extension:__ext_runespawn =

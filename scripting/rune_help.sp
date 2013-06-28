@@ -5,7 +5,21 @@
 
 */
 #define REQUIRE_PLUGIN
+#include <runetf/runetf>
 #include <runetf/spawn_gen>
+
+
+#define PLUGIN_NAME "Rune Player Helper"
+#define PLUGIN_DESCRIPTION "Greets player with runetf message.  Periodically warns players who have never used +use command."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
 
 new String:g_sGreeting[][] = 
 {

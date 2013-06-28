@@ -1,5 +1,5 @@
 #if defined _rune_spawn_included
- #endinput
+#endinput
 #endif
 #define _rune_spawn_included
 
@@ -14,6 +14,19 @@
 
 #define RUNE_MODEL "models/props/rune_01.mdl"
 
+#define PLUGIN_NAME "Rune of Repulsion"
+#define PLUGIN_DESCRIPTION "Reflects reflectable projectiles.  Damage taken increased."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 enum RuneProp
 {
 	active,
@@ -26,8 +39,8 @@ new g_Effect[MAXPLAYERS][RuneProp];
 new g_FilterProjEnt = INVALID_HANDLE;
 new g_FilterProjEntRed = INVALID_HANDLE;
 new g_FilterProjEntBlu = INVALID_HANDLE;
-new g_FilterProjTeamRed = INVALID_HANDLE;
-new g_FilterProjTeamBlu = INVALID_HANDLE;
+//new g_FilterProjTeamRed = INVALID_HANDLE;
+//new g_FilterProjTeamBlu = INVALID_HANDLE;
 
 
 public OnPluginStart()
@@ -67,9 +80,8 @@ public Action:Jedi_OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &d
 		damage = FloatMul(damage,1.150);
 
 	new Float:d = GetVectorLength(damageForce);
-	new Float:d2 = NormalizeVector(damageForce,damageForce);
+//	new Float:d2 = NormalizeVector(damageForce,damageForce);
 
-	//LogMessage("jedi d %f d2 %f",d, d2);
 	d = FloatDiv(d,2.000);
 	ScaleVector(damageForce,d);
 	return Plugin_Changed;
@@ -157,7 +169,7 @@ stock CreateFilterProjectile()
 	DispatchKeyValue(ent,"filtertype","1");
 	DispatchKeyValue(ent,"targetname","filter_proj_multi");
 	
-  DispatchSpawn(ent)
+	DispatchSpawn(ent)
 	//DebugFilter(ent);
 
 	new t_ent = Entity_Create("filter_multi");
@@ -166,26 +178,23 @@ stock CreateFilterProjectile()
 	DispatchKeyValue(t_ent,"filtertype","0");
 	DispatchKeyValue(t_ent,"targetname","filter_proj_multi_red");
 	
-  DispatchSpawn(t_ent)
+	DispatchSpawn(t_ent)
 	g_FilterProjEntRed = t_ent
-	//DebugFilter(t_ent);
 
 	t_ent = Entity_Create("filter_multi");
 	SetEntPropEnt(t_ent,Prop_Data,"m_hFilter",ent,0);
 	SetEntPropEnt(t_ent,Prop_Data,"m_hFilter",fBluOnly,1);
 	DispatchKeyValue(t_ent,"filtertype","0");
 	DispatchKeyValue(t_ent,"targetname","filter_proj_multi_blu");
-  DispatchSpawn(t_ent)
-	//DebugFilter(t_ent);
+	DispatchSpawn(t_ent)
 
-	//DebugFilter(t_ent);
 
 	g_FilterProjEntBlu = t_ent
 
 	g_FilterProjEnt = ent;
 
-	g_FilterProjTeamRed = fRedOnly;
-	g_FilterProjTeamBlu = fBluOnly;
+//	g_FilterProjTeamRed = fRedOnly;
+//	g_FilterProjTeamBlu = fBluOnly;
 
 	return ent;
 }
@@ -209,28 +218,28 @@ stock SpawnTriggerPush(client)
 	else if(iTeam == 3)
 		hFilter = g_FilterProjEntRed;
 
-  new trigger_ent = Entity_Create("trigger_push");
-  DispatchKeyValue(trigger_ent, "pushdir", "-90 0 0");
-  DispatchKeyValue(trigger_ent, "speed", "3000");
-  DispatchKeyValue(trigger_ent, "spawnflags", "64");
+	new trigger_ent = Entity_Create("trigger_push");
+	DispatchKeyValue(trigger_ent, "pushdir", "-90 0 0");
+	DispatchKeyValue(trigger_ent, "speed", "3000");
+	DispatchKeyValue(trigger_ent, "spawnflags", "64");
 	SetEntPropEnt(trigger_ent,Prop_Data,"m_hFilter",hFilter);
 
-  DispatchSpawn(trigger_ent); 
+	DispatchSpawn(trigger_ent); 
 	ActivateEntity(trigger_ent);
- 	TeleportEntity(trigger_ent,ori,NULL_VECTOR,NULL_VECTOR);
+	TeleportEntity(trigger_ent,ori,NULL_VECTOR,NULL_VECTOR);
 	SetEntityModel(trigger_ent,RUNE_MODEL);
 
-  new Float:minbounds[3] = {-100.0, -100.0, 0.0}; 
-  new Float:maxbounds[3] = {100.0, 100.0, 200.0};
+	new Float:minbounds[3] = {-100.0, -100.0, 0.0}; 
+	new Float:maxbounds[3] = {100.0, 100.0, 200.0};
 	SetEntPropVector(trigger_ent, Prop_Send, "m_vecMins", minbounds);
 	SetEntPropVector(trigger_ent, Prop_Send, "m_vecMaxs", maxbounds);
 
 	SetEntProp(trigger_ent, Prop_Send, "m_nSolidType", 2);
 
 
-  new enteffects = GetEntProp(trigger_ent, Prop_Send, "m_fEffects"); 
-  enteffects |= 32; 
-  SetEntProp(trigger_ent, Prop_Send, "m_fEffects", enteffects);
+	new enteffects = GetEntProp(trigger_ent, Prop_Send, "m_fEffects"); 
+	enteffects |= 32; 
+	SetEntProp(trigger_ent, Prop_Send, "m_fEffects", enteffects);
 	SetVariantString("OnUser1 !self:Kill::120:-1");
 	AcceptEntityInput(trigger_ent, "AddOutput");
 	AcceptEntityInput(trigger_ent, "FireUser1");
@@ -238,11 +247,11 @@ stock SpawnTriggerPush(client)
 
 	decl buf[28]="";
 	GetEntPropString(trigger_ent,Prop_Data,"m_iFilterName",buf,sizeof(buf));
-	new ent2 = GetEntPropEnt(trigger_ent,Prop_Data,"m_hFilter");
+//	new ent2 = GetEntPropEnt(trigger_ent,Prop_Data,"m_hFilter");
 
 //	LogMessage("ent1 %s ent2 %d", buf, EntRefToEntIndex(ent2));
 
- 
+
 	//SetVariantString("!activator");
 	//AcceptEntityInput(trigger_ent, "SetParent", rune_ent);I
 
@@ -251,7 +260,7 @@ stock SpawnTriggerPush(client)
 	SetVariantString("OnStartTouch !self:Enable::2.5:-1");
 	AcceptEntityInput(trigger_ent, "AddOutput");
 */
-  return _:trigger_ent;
+	return _:trigger_ent;
 }
 
 RemovePriorFilters()
@@ -316,12 +325,10 @@ stock DebugFilter(filter)
 
 public RunePluginStart()
 {
-  PrintToServer("TrigRunePluginStart\n");
 }
 
 public RunePluginStop()
 {
-  PrintToServer("TrigRunePluginStop\n");
 }
 
 

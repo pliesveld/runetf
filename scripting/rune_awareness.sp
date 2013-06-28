@@ -18,6 +18,20 @@
 #define COLOR_RED     0
 #define COLOR_BLUE  	1 
 
+
+
+#define PLUGIN_NAME "Rune of Awareness"
+#define PLUGIN_DESCRIPTION "Scans health of nearby teammates."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 /*
 
 	medic hud like icon for health bars for enemies damaged.
@@ -30,8 +44,6 @@ new g_Effect[MAXPLAYERS];
 new Handle:g_EffTimer[MAXPLAYERS];
 
 new Float:g_lastPing[MAXPLAYERS];
-
-new Handle:g_AwareRune = INVALID_HANDLE;
 
 new Handle:g_hHudSyncRed = INVALID_HANDLE;
 new Handle:g_hHudSyncBlue = INVALID_HANDLE;
@@ -116,12 +128,12 @@ stock DisplayInfoToClient(client,String:sRedTeam[], String:sBlueTeam[])
 public OnPluginStart()
 {
 	AddCustomSounds();
-  PrecacheSound("buttons/button17.wav");
+	PrecacheSound("buttons/button17.wav");
 	PrecacheSound(SND_PING);
 	PrecacheSound(SND_PONG);
 	g_hHudSyncRed = CreateHudSynchronizer();
 	g_hHudSyncBlue = CreateHudSynchronizer();
-	g_AwareRune = AddRune("Aware", AwarenessRunePickup, AwarenessRuneDrop,1);
+	AddRune("Aware", AwarenessRunePickup, AwarenessRuneDrop,1);
 }
 
 public OnMapStart()
@@ -191,7 +203,7 @@ public Action:TimerAwarenessTick(Handle:timer, any:client)
 	{
 		if(!IsValidEntity(i) || !IsPlayerAlive(i) || i == client)
 			continue;
-		new level = 165; // - 100
+//		new level = 165; // - 100
 		new Float:dist;
 		new Float:vol = 1.0;
 		new Float:i_pos[3];
@@ -264,9 +276,9 @@ public Action:TimerSoundPing(Handle:timer, any:data)
 	//PrintToServer("client %d, vol %f, pitch %d from %d", client, vol, pitch, other);
 	//PrintToConsole(client,"client %d, vol %f, pitch %d from %d", client, vol, pitch, other);
 
-  //EmitSoundToClient(client, "buttons/button17.wav", _, _, level, _, 1.0, pitch,_,pos);
-  EmitSoundToClient(client, "buttons/button17.wav", other, _, 80, _, 1.0, pitch);
- // EmitSoundToClient(client, SND_PONG, other, _, 120, _, 1.0, pitch);
+	//EmitSoundToClient(client, "buttons/button17.wav", _, _, level, _, 1.0, pitch,_,pos);
+	EmitSoundToClient(client, "buttons/button17.wav", other, vol, 80, _, 1.0, pitch);
+	//EmitSoundToClient(client, SND_PONG, other, _, 120, _, 1.0, pitch);
 
 	return Plugin_Continue;
 }
@@ -318,7 +330,7 @@ stock UpdateAllClientInfo()
 
 stock bool:TF2_UpdateClientInfo(client)
 {
-  if (!IsClientInGame(client) || !IsPlayerAlive(client))
+	if (!IsClientInGame(client) || !IsPlayerAlive(client))
 		return false;
 
 	g_aClientInfo[client][iRune] = GetPlayerRuneId(client);
@@ -330,7 +342,7 @@ stock bool:TF2_UpdateClientInfo(client)
 	g_aClientInfo[client][iTeam] = GetClientTeam(client);
 	g_aClientInfo[client][iHealth] = GetClientHealth(client);
 	g_aClientInfo[client][iMaxHealth] = TF2_GetPlayerResourceData(client, TFResource_MaxHealth);
-  return true;
+	return true;
 }
 
 stock bool:TF2_UpdateMedicInfo(client)
@@ -339,7 +351,7 @@ stock bool:TF2_UpdateMedicInfo(client)
     return false;
   if (TF2_GetPlayerClass(client) == TFClass_Medic)
   {
-    new entityIndex = GetPlayerWeaponSlot(client, 1);
+		new entityIndex = GetPlayerWeaponSlot(client, 1);
 		g_aClientInfo[client][iChargeLevel] = FloatMul(GetEntPropFloat(entityIndex, Prop_Send, "m_flChargeLevel"),100.0);
 		new ubered_ent;
 		if( (g_aClientInfo[client][bUbered] = GetEntProp(entityIndex,Prop_Send,"m_bChargeRelease")) == true 

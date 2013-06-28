@@ -13,6 +13,19 @@
 #define SND_FILE_TP 		"buttons/button19.wav"
 
 
+#define PLUGIN_NAME "Rune of Recall and Blink"
+#define PLUGIN_DESCRIPTION "Teleports players on useage."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 enum RuneProp
 {
 	g_active,
@@ -23,11 +36,11 @@ enum RuneProp
 new g_Effect[MAXPLAYERS][RuneProp];
 new Float:g_EffectOri[MAXPLAYERS][3];
 new Float:g_EffectAng[MAXPLAYERS][3];
-new Float:g_EffectVel[MAXPLAYERS][3];
+//new Float:g_EffectVel[MAXPLAYERS][3];
 
 new Float:g_EffectOri2[MAXPLAYERS][3];
 new Float:g_EffectAng2[MAXPLAYERS][3];
-new Float:g_EffectVel2[MAXPLAYERS][3];
+//new Float:g_EffectVel2[MAXPLAYERS][3];
 
 
 new g_RecallRune = -1;
@@ -76,12 +89,14 @@ public RecallRunePickup(client, rune,ref)
 	else 
 	{
 		LogMessage("Unknown rune %d; expected %d or %d", rune, g_RecallRune, g_BlinkRune);
-		return -1;
+		return;
 	}
 
 	g_Effect[client][g_timestamp] = GetGameTime();
 
+#if defined DEBUG_RUNE
 	PrintToServer("Pickup RecallRune player %d pickedup id %d",client,rune);
+#endif
 }
 
 public RecallRuneDrop(client, rune,ref)
@@ -91,7 +106,6 @@ public RecallRuneDrop(client, rune,ref)
 	g_EffectOri[client] = NULL_VECTOR;
 	g_EffectOri2[client] = NULL_VECTOR;
 	g_Effect[client][g_recall_set ] = 0;
-	PrintToServer("Drop RecallRune player %d dropped id %d",client,rune);
 }
 
 

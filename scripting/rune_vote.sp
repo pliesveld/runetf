@@ -21,6 +21,20 @@
 #undef REQUIRE_PLUGIN
 
 
+#define PLUGIN_NAME "Rune Voter"
+#define PLUGIN_DESCRIPTION "Allows for votes to be taken to disable/enable runetf."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
+
 new Handle:rune_clients = INVALID_HANDLE;
 
 new Handle:hCvarVoteToggleThreshold = INVALID_HANDLE;
@@ -133,7 +147,7 @@ Action:Toggle_Rune_Vote(client,bool:bToEnable)
 	if(bToEnable && !bAllowEnable ||
 		!bToEnable && !bAllowDisable)
 	{
-			CPrintToChat(client,"{default}[{olive}runetf{default}]: You may not vote to %s runes at this time.", (bToEnable ? "enable" : "disable"));
+		CPrintToChat(client,"{default}[{olive}runetf{default}]: You may not vote to %s runes at this time.", (bToEnable ? "enable" : "disable"));
 		return Plugin_Handled;
 	}
 

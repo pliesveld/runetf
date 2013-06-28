@@ -92,7 +92,6 @@ public SMCResult:SMCNewSection(Handle:smc, const String:name[], bool:opt_quotes)
 {
 
 	//LogMessage("NewSection %s ======== ", name);
-	new String:iChar = name[0];
 
 	switch(name[0])
 	{
@@ -136,8 +135,6 @@ public SMCResult:SMCReadKeyValues_Generator(Handle:smc, const String:key[], cons
 	new aInt;
 	new bool:aBool;
 	new String:buffer[32];
-	new IdxArr = 0;
-	new bool:StoreVec = false;
 
 	switch(key[0])
 	{
@@ -149,7 +146,6 @@ public SMCResult:SMCReadKeyValues_Generator(Handle:smc, const String:key[], cons
 			aVec[1] = StringToFloat(buffer); // should probably write a helper function so this isn't so ugly.
 			Format(buffer, sizeof(buffer), "%s", value[i]);
 			aVec[2] = StringToFloat(buffer);
-			StoreVec = true;
 		}
 		case 'f':
 		{
@@ -219,8 +215,6 @@ public SMCResult:SMCEndSection_Generator(Handle:smc)
 		
 	return SMCParse_Continue;
 
-	LogMessage("SMC::EndSection");
-	return SMCParse_Continue;
 }
 
 

@@ -10,6 +10,20 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+
+#define PLUGIN_NAME "Rune of Sacrifice and DiamondSkin"
+#define PLUGIN_DESCRIPTION "Damage reduction and damage sharing."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 enum EffType
 {
 	Active,
@@ -33,16 +47,13 @@ enum EffType
 
 new g_Effect[MAXPLAYERS][EffType];
 
-new Handle:g_ShareRune = INVALID_HANDLE;
-new Handle:g_ArmorRune = INVALID_HANDLE;
-
 #define RUNE_SHARE_ID 1
 #define RUNE_ARMOR_ID 2
 
 public OnPluginStart()
 {
-	g_ShareRune = AddRune("Sacrifice", SacraficeRunePick,SacraficeRuneDrop,RUNE_SHARE_ID);
-	g_ArmorRune = AddRune("Diamondskin", DiamondskinRunePick,DiamondskinRuneDrop,RUNE_ARMOR_ID);
+	AddRune("Sacrifice", SacraficeRunePick,SacraficeRuneDrop,RUNE_SHARE_ID);
+	AddRune("Diamondskin", DiamondskinRunePick,DiamondskinRuneDrop,RUNE_ARMOR_ID);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -63,7 +74,6 @@ public SacraficeRunePick(client, rune, ref)
 		return 0;
 	}
 
-	PrintToServer("Pickup sacrafice %d pickedup id %d",client,rune);
 	return 1;
 }
 
@@ -71,7 +81,6 @@ public SacraficeRuneDrop(client, rune, ref)
 {
 	g_Effect[client][Active] = 0;
 	SDKUnhook(client, SDKHook_OnTakeDamage,OnShareDmg);
-	PrintToServer("Drop sacrafice %d dropped id %d",client,rune);
 	return 1;
 }
 
@@ -85,7 +94,6 @@ public DiamondskinRunePick(client, rune, ref)
 		return 0;
 	}
 
-	PrintToServer("Pickup diamondskin %d pickedup id %d",client,rune);
 	return 1;
 }
 
@@ -93,15 +101,12 @@ public DiamondskinRuneDrop(client, rune, ref)
 {
 	g_Effect[client][Active] = 0;
 	SDKUnhook(client, SDKHook_OnTakeDamage,OnNegateDmgType);
-	PrintToServer("Drop diamondskin %d dropped id %d",client,rune);
 	return 1;
 }
 
 
 public Action:OnShareDmg(victim, &attacker, &inflictor, &Float:damage, &damagetype, &weapon, Float:damageForce[3], Float:damagePosition[3])
 {
-	new client= GetClientOfUserId(victim); 
-
 	new ClientsNearby[MAXPLAYERS]; //= {{0}};
 	new cnt = 0;
 
@@ -110,7 +115,8 @@ public Action:OnShareDmg(victim, &attacker, &inflictor, &Float:damage, &damagety
 	if(victim == attacker) // don't share self-damage
 		return Plugin_Continue;
 
-	if( g_Effect[victim][Active] == RUNE_SHARE_ID) //Do I really need to check this? -- not unless I use custom forwards and register during RUNE_SHARE pickup
+	if( g_Effect[victim][Active] == RUNE_SHARE_ID) 
+	//Do I really need to check this? -- not unless I use custom forwards and register during RUNE_SHARE pickup
 		// or rewrite event handling.
 	{
 		for(new i = 1; i <= GetMaxClients();++i)
@@ -118,17 +124,17 @@ public Action:OnShareDmg(victim, &attacker, &inflictor, &Float:damage, &damagety
 			if(!IsValidEntity(i) || !IsValidEntity(victim) || !IsPlayerAlive(i) || !IsPlayerAlive(victim))
 				continue;
 	
-				if(vTeam != GetClientTeam(i))
-					continue;
+			if(vTeam != GetClientTeam(i))
+				continue;
 
-				if( i == attacker || i == victim)
-					continue;
+			if( i == attacker || i == victim)
+				continue;
 
-				if(Entity_InRange(victim, i, 475.00))
-				{
-					ClientsNearby[cnt] = i; 
-					cnt++;
-				}
+			if(Entity_InRange(victim, i, 475.00))
+			{
+				ClientsNearby[cnt] = i; 
+				cnt++;
+			}
 		}
 		decl Float:ori_vic[3]
 		GetClientAbsOrigin(victim, ori_vic);

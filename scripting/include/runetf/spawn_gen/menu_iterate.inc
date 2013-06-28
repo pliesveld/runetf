@@ -1,5 +1,7 @@
 Handle:CreateIterateMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:menu = CreateMenu(Handler_IterateMenu,RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DrawItem|MenuAction_DisplayItem);
 	AddMenuItem(menu,GEN_ITER_NEXT,	"next");
 	AddMenuItem(menu,GEN_ITER_PREV,	"prev");
@@ -48,7 +50,7 @@ Handle:ClientSelectedGeneratorMenu(client,const String:item[])
 	} else if(!strcmp(item, GEN_MERGE)) {
 		new bool:bWasWorkingSet = (g_iState[it_array] == g_Player[WorkingSet]);
 		if(g_Player[WorkingSet] != INVALID_HANDLE && GetArraySize(g_Player[WorkingSet]) > 0)
-  	if(((g_bChanged = (MergeWorkingSetCmd(client) > 0))) && bWasWorkingSet)
+ 	if(((g_bChanged = (MergeWorkingSetCmd(client) > 0))) && bWasWorkingSet)
 		{
 			g_iState[it_array] = INVALID_HANDLE;
 			g_iState[it_idx] = -1;
@@ -71,9 +73,9 @@ Handle:ClientSelectedGeneratorMenu(client,const String:item[])
 
 public Handler_IterateMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
 		case MenuAction_DisplayItem:
 		{
 			new String:action[MAX_MENU_LEN];
@@ -114,9 +116,9 @@ public Handler_IterateMenu(Handle:menu, MenuAction:m_action, param1, param2)
 				// ==> disable
 			return default_style;
 		}
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -125,10 +127,10 @@ public Handler_IterateMenu(Handle:menu, MenuAction:m_action, param1, param2)
 			GetMenuItem(menu,param2,action,sizeof(action));
 			new Handle:menu_next = ClientSelectedGeneratorMenu(client,action);
 
-      if(menu_next == INVALID_HANDLE || !DisplayMenu(menu_next, client, MENU_TIME_FOREVER))
-      {
-        LogError("warning; failed to recreate menu from generator.");
-      }
+			if(menu_next == INVALID_HANDLE || !DisplayMenu(menu_next, client, MENU_TIME_FOREVER))
+			{
+			  LogError("warning; failed to recreate menu from generator.");
+			}
 		}
 		case MenuAction_End:
 		{
@@ -143,9 +145,7 @@ public Handler_IterateMenu(Handle:menu, MenuAction:m_action, param1, param2)
 			}
 		}
 	}
-
 	//if(MenuAction_Cancel == m_action && param2 == MenuCancel_ExitBack)
-		
-
+	return 0
 }
 

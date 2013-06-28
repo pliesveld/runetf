@@ -10,6 +10,20 @@
 #define REQUIRE_PLUGIN
 #include <runetf/runes_stock>
 
+
+#define PLUGIN_NAME "Rune of Haste"
+#define PLUGIN_DESCRIPTION "Passively increases movement speed based on player's class."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+
 static String:FlMaxSpeed[] = "m_flMaxspeed"
 
 
@@ -114,7 +128,7 @@ public SpeedRuneDrop(client,ref)
 	g_Effect[client][active] = false;
 	SDKUnhook(client,SDKHook_PreThinkPost,OnPreThinkPost);
 	//LogMessage("reset speed %f", g_Effect[client][fSpeed]);
-  if (client > 0  && IsValidEntity(client) && IsPlayerAlive(client) && !IsClientObserver(client) )
+	if (client > 0  && IsValidEntity(client) && IsPlayerAlive(client) && !IsClientObserver(client) )
 	{
 		SetEntPropFloat(client,Prop_Data,FlMaxSpeed, g_Effect[client][fSpeed]);
 	}
@@ -122,10 +136,9 @@ public SpeedRuneDrop(client,ref)
 
 public event_PlayerClassChange_Pre(Handle:event, const String:name[], bool:dontBroadcast)
 {
-
-  new client = GetClientOfUserId(GetEventInt(event, "userid"));
-  if (client > 0  && IsPlayerAlive(client) && !IsClientObserver(client) )
-  {
+	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+	if (client > 0  && IsPlayerAlive(client) && !IsClientObserver(client) )
+	{
 		if(g_Effect[client][active])
 		{
 			SDKUnhook(client,SDKHook_PreThinkPost,OnPreThinkPost);
@@ -265,9 +278,9 @@ public TF2_OnConditionRemoved(client,TFCond:cond)
 public OnPluginStart()
 {
 	AddRune("Haste",SpeedRunePickup,SpeedRuneDrop,1);
-  HookEvent("player_spawn",event_PlayerSpawn);
-  HookEvent("player_changeclass", event_PlayerClassChange_Pre,EventHookMode_Pre);
-  HookEvent("player_changeclass", event_PlayerClassChange);
+	HookEvent("player_spawn",event_PlayerSpawn);
+	HookEvent("player_changeclass", event_PlayerClassChange_Pre,EventHookMode_Pre);
+	HookEvent("player_changeclass", event_PlayerClassChange);
 
 }
 // FindSendPropOffs("CBasePlayer","m_flLaggedMov ementValue")

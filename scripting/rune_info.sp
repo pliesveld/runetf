@@ -18,6 +18,19 @@
 #include <colors>
 #include <runetf/runetf>
 
+
+#define PLUGIN_NAME "Rune Info"
+#define PLUGIN_DESCRIPTION "Adds commands to inspect a rune on the ground or held by player."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 new Handle:g_RuneTrie = INVALID_HANDLE;
 #define TRIE_DESC_LEN 256
 
@@ -76,7 +89,7 @@ public Action:OnPlayerInspect(client,args)
 		{
 			StrCat(sInspect,sizeof(sInspect), sName[6]);
 		} else {
-			StrCopy(sInspect,sizeof(sInspect),"Random Rune");
+			strcopy(sInspect,sizeof(sInspect),"Random Rune");
 		}
 		DisplayRuneMsg(client, sInspect);
 	}

@@ -47,9 +47,9 @@ stock FindEventCluster(const String:name[], &Handle:eventsHandle)
 stock FindEventClusterInArray(const String:name[], &Handle:eventsHandle, Handle:g_event_array)
 {
 	new idx;
-	for(idx; idx < GetArraySize(g_event_array);++idx)
+	for(; idx < GetArraySize(g_event_array);++idx)
 	{
-		decl String:s_cluster[MAX_CLUSTER_LEN];
+//		decl String:s_cluster[MAX_CLUSTER_LEN]="";
 		new a_Cluster[RuneCluster];
 		GetArrayArray(g_event_array,idx,a_Cluster, CLUSTER_BLOCK_SIZE);
 		if(!strcmp(name, a_Cluster[ClusterName]))
@@ -84,11 +84,11 @@ ClientLoadGen(client, &Handle:global, ID, bool:remove = false)
 	LogMessage("%d Loading ID %d remove %s", client, ID, (remove == true ? "true" : "false" ));
 	new Handle:a_gen = INVALID_HANDLE;
 
-  if(global != INVALID_HANDLE && GetArraySize(global) > 0 && FindIndexInArrayById(global, ID) != -1)
-  {
-    PrintToConsole(client,"warning; gen %d is already in the workingset.", ID);
-    return -1;
-  }
+	if(global != INVALID_HANDLE && GetArraySize(global) > 0 && FindIndexInArrayById(global, ID) != -1)
+	{
+		PrintToConsole(client,"warning; gen %d is already in the workingset.", ID);
+		return -1;
+	}
 
 
 	new g_index = FindIndexInGlobalArrayById(a_gen, ID);
@@ -181,7 +181,7 @@ stock DisplayDefaultClusterToClient(client, Handle:hDefaultClusters)
 
 	decl String:sMessage[256]="";
 
-	new len = StrCopy(sMessage,sizeof(sMessage),"Default clusters: ");
+	new len = strcopy(sMessage,sizeof(sMessage),"Default clusters: ");
 	new size;
 	
 	if((size = GetArraySize(hDefaultClusters)) == 0)
@@ -198,13 +198,13 @@ stock DisplayDefaultClusterToClient(client, Handle:hDefaultClusters)
 
 	for(new i = 1; i < size; ++i)
 	{
-		decl String:s_cluster[MAX_CLUSTER_LEN]="";
+//		decl String:s_cluster[MAX_CLUSTER_LEN]="";
 		new slen = GetArrayString(hDefaultClusters,i,s_cluster,sizeof(s_cluster));
 		if(slen + len > sizeof(sMessage) - 2)
 		{
 			len = 0;
 			CPrintToChat(client,sMessage);
-			len = StrCopy(sMessage,sizeof(sMessage),s_cluster);
+			len = strcopy(sMessage,sizeof(sMessage),s_cluster);
 		} else {
 			len += StrCat(sMessage,sizeof(sMessage),", ");
 			len += StrCat(sMessage,sizeof(sMessage), s_cluster);
@@ -220,7 +220,7 @@ stock DisplayGenToClient(client, &Handle:working_set, index)
 	new Float:_ori[3];
 	new Float:_ang[3];
 	new Float:_force;
-	new bool:_disabled;
+	//new bool:_disabled;
 
 	new pack[RuneGen];
 	
@@ -231,7 +231,6 @@ stock DisplayGenToClient(client, &Handle:working_set, index)
 	GetTempGenVec(pack,g_ori,_ori);
 	GetTempGenVec(pack,g_ang,_ang);
 	_force = pack[g_force];
-	_disabled = pack[g_StartDisabled];
 
 	decl String:s_disabled[24];
 	s_disabled[0] = '\0';
@@ -240,7 +239,7 @@ stock DisplayGenToClient(client, &Handle:working_set, index)
 	decl String:s_clusters[MAX_CLUSTER_LEN*8];
 	s_clusters[0] = '\0';
 	new idx;
-	new c_cnt = GetClustersContainingId(_id,s_clusters,sizeof(s_clusters),idx);
+	GetClustersContainingId(_id,s_clusters,sizeof(s_clusters),idx);
 
 	decl String:buffer[256];
 	Format(buffer,sizeof(buffer),"\n\nid: %d %sOri: %.2f %.2f %.2f\nAng: %.0f %.0f Force %.0f\n%s", 
@@ -267,8 +266,13 @@ stock DisplayGenToClient(client, &Handle:working_set, index)
 
 }
 
+//client isn't used now, but it exists as an argument
+// so that in the future concurrent edits of the rune
+// gen file can be handled.
 Handle:GetWorkingSet(client)
 {
+	if(client < 0)
+		return INVALID_HANDLE;
 	return g_Player[WorkingSet];
 }
 
@@ -457,7 +461,7 @@ stock MergeWorkingSetCmd(client)
 		return -1;
 	}
 	
-	new n_default, n_added, n_updated;
+	new n_added, n_updated;
 
 	new Handle:t_arr = g_Player[WorkingSet];
 	for(new i; i < GetArraySize(t_arr);++i)
@@ -540,7 +544,7 @@ stock DisplayWorkingSetCmd(client,args)
 	new arrSize;
 	if( t_arr == INVALID_HANDLE || (arrSize = GetArraySize(t_arr)) == 0)
 	{
-		new len_buf = strcopy(buf,sizeof(buf), "none.");
+		strcopy(buf,sizeof(buf), "none.");
 		StrCat(displayStr, sizeof(displayStr) - len, buf);
 	} else {
 		for(new i;i < arrSize;++i)
@@ -564,7 +568,7 @@ stock DisplayGlobalSet(client)
 	new String:s_desc[2][] = { "Global set: ", "Disabled set: " };
 	new Handle:t_arr[2];
 	t_arr[0] = g_vGen;
-  t_arr[1] = g_vGenDisabled;
+	t_arr[1] = g_vGenDisabled;
 
 
 	for(new i; i < 2;++i)
@@ -573,7 +577,7 @@ stock DisplayGlobalSet(client)
 		new arrSize;
 		if( t_arr[i] == INVALID_HANDLE || (arrSize = GetArraySize(t_arr[i])) == 0)
 		{
-			new len_buf = strcopy(buf,sizeof(buf), "none.");
+			strcopy(buf,sizeof(buf), "none.");
 			StrCat(displayStr, sizeof(displayStr) - len, buf);
 		} else {
 			for(new j;j < arrSize;++j)
@@ -674,15 +678,15 @@ public Action:ClusterWorkingSetCmd(client,args)
 				}
 				for(new i = id_lower;i <= id_upper;++i)
 				{
-					new idx;
+					new idx_id;
 					if(add && IsValidGenId(i))
 					{
 						++ret;
 						AddToCluster(s_cluster,i);
 					} else if(!add) {
-						if( (idx = FindValueInArray(c_array, i)) != -1)
+						if( (idx_id = FindValueInArray(c_array, i)) != -1)
 						{
-							RemoveFromArray(c_array,idx);
+							RemoveFromArray(c_array,idx_id);
 							++ret;
 						}
 					}
@@ -780,7 +784,6 @@ public Action:ClusterWorkingSetCmd(client,args)
 		decl String:s_cluster[MAX_CLUSTER_LEN];
 		GetCmdArg(3, s_cluster,sizeof(s_cluster));
 		new Handle:array_ids;
-		new Handle:a_gen;
 		
 		if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
 		{
@@ -835,7 +838,6 @@ public Action:ClusterWorkingSetCmd(client,args)
 		decl String:s_cluster[MAX_CLUSTER_LEN];
 		GetCmdArg(3, s_cluster,sizeof(s_cluster));
 		new Handle:array_ids;
-		new Handle:a_gen;
 		
 		if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
 		{
@@ -924,7 +926,7 @@ public Action:EventClusterSetCmd(client,args)
 		}
 
 		decl String:s_type[16];
-		StrCopy(s_type,sizeof(s_type),"GenEvent_");
+		strcopy(s_type,sizeof(s_type),"GenEvent_");
 		GetCmdArg(4, s_type[9],sizeof(s_type)-9);
 
 		if( (a_Event[ClusterType] = CheckClusterType(s_type)) == -1)
@@ -939,7 +941,7 @@ public Action:EventClusterSetCmd(client,args)
 			return Plugin_Handled;
 		}
 		decl String:h_type[20];
-		StrCopy(h_type,sizeof(h_type),"GenEvent_");
+		strcopy(h_type,sizeof(h_type),"GenEvent_");
 		GetCmdArg(5,h_type[9],sizeof(h_type)-9);
 
 		if( (a_Event[EventType] = CheckEntityType(h_type)) == -1)
@@ -1070,7 +1072,6 @@ public Action:EventClusterSetCmd(client,args)
 
 public Action:OnGenCmd(client, args)
 {
-	decl String:cmdstr[128];
 
 	if( args < 1 )
 	{
@@ -1078,6 +1079,7 @@ public Action:OnGenCmd(client, args)
 		DisplayWorkingSetCmd(client,args);
 		return Plugin_Continue;
 	}
+	//decl String:cmdstr[128];
 	//GetCmdArgString(cmdstr, sizeof(cmdstr));
 
 	decl String:param[14];

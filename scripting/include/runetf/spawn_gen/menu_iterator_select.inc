@@ -1,19 +1,20 @@
 
 #include "generator_stock.inc"
 
+#if 0 
 static String:iter_action[][MAX_MENU_LEN] =
 {
 	ITER_TYPE_GLOBAL,
 	ITER_TYPE_DISABLED,
 	ITER_TYPE_WORKING
 }
-
 static String:iter_text[][32] =
 {
 	"active",
 	"disabled",
 	"workingset"
 };
+#endif
 
 stock CreateIteratorMenu(client)
 {

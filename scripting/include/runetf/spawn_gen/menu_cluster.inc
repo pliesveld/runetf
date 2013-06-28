@@ -10,6 +10,8 @@
 
 Handle:CreateClusterMainMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:hMenu = CreateMenu(Handler_ClusterMainMenu, RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DisplayItem|MenuAction_DrawItem|MenuAction_Cancel);
 
 	AddMenuItem(hMenu,CLUSTER_GEN_MENU,"default cluster");
@@ -26,12 +28,12 @@ Handle:CreateClusterMainMenu(client)
 public Handler_ClusterMainMenu(Handle:menu, MenuAction:m_action,param1,param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -68,6 +70,7 @@ public Handler_ClusterMainMenu(Handle:menu, MenuAction:m_action,param1,param2)
 		}
 	}
 
+	return 0;
 }
 
 Handle:ClientSelectClusterMenu(client, const String:item_str[])
@@ -100,18 +103,18 @@ Handle:ClientSelectClusterGenerator(client, const String:item_str[])
     }
   }
   DisplayGenToClient(client,g_iState[it_array], g_iState[it_idx]);
-	return CreateIterateMenu(client);
+  return CreateIterateMenu(client);
 }
 
 public Handler_ClusterGeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_DrawItem:
 		{
@@ -158,12 +161,12 @@ Handle:ClientSelectSpawnClusterGenerator(client, const String:item_str[])
 public Handler_ClusterSpawnGeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -234,12 +237,12 @@ Handle:ClientSelectDropClusterGenerator(client, const String:item_str[])
 public Handler_ClusterLoadGeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -294,18 +297,19 @@ public Handler_ClusterLoadGeneratorMenu(Handle:menu, MenuAction:m_action, param1
 			CloseHandle(menu);
 		}
 	}
+	return 0;
 }
 
 
 public Handler_ClusterDropGeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -321,8 +325,8 @@ public Handler_ClusterDropGeneratorMenu(Handle:menu, MenuAction:m_action, param1
 			new default_style;
 			GetMenuItem(menu,param2,action,sizeof(action),default_style);
 			new Handle:array_ids = INVALID_HANDLE;
-			new w_size;
-			if(g_Player[WorkingSet] == INVALID_HANDLE || ((w_size = GetArraySize(g_Player[WorkingSet])) == 0))
+			//new w_size;
+			if(g_Player[WorkingSet] == INVALID_HANDLE || GetArraySize(g_Player[WorkingSet]) == 0)
 				return ITEMDRAW_DISABLED;
 	
 			if(!GetTrieValue(g_vGenCluster,action,array_ids))
@@ -354,17 +358,18 @@ public Handler_ClusterDropGeneratorMenu(Handle:menu, MenuAction:m_action, param1
 			CloseHandle(menu);
 		}
 	}
+	return 0;
 }
 
 public Handler_ClusterDefaultMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -392,7 +397,6 @@ public Handler_ClusterDefaultMenu(Handle:menu, MenuAction:m_action, param1, para
 
 Handle:ClientSelectDefaultCluster(client, const String:item_str[])
 {
-	decl String:command[256];
 
 	if(!strcmp(item_str,"%%CLEAR%%"))
 	{

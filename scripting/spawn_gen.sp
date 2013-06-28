@@ -36,10 +36,20 @@ new Handle:g_SpawnTimer = INVALID_HANDLE;
 #undef REQUIRE_EXTENSIONS
 #include <steamtools>
 
+#define PLUGIN_NAME "Rune Spawner"
+#define PLUGIN_DESCRIPTION "Core spawning logic for runetf."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
 
 static bool:g_bDelayLoadConfig = true;
 static bool:g_bConfigLoaded = false;
-
 
 public OnPluginStart()
 {
@@ -63,7 +73,7 @@ public OnPluginStart()
 	if(!DirExists(mapListPath))
 	{
 		if(!CreateDirectory(mapListPath,493))
-			return ThrowError("Could not create configs/runetf");
+			return ThrowError("Could not create SM_Path/data/runetf");
 	}
 
 	if(!g_bDelayLoadConfig)
@@ -176,7 +186,10 @@ public OnConfigsExecuted()
 
 	if(!bEnabled && g_SpawnTimer != INVALID_HANDLE)
 		LogMessage("warning; rune_enable 0 but g_SpawnTimer is valid");
+
 #endif 
+	if(!g_bConfigLoaded)
+		LogMessage("warning; Config not loaded.")
 }
 
 public OnPluginEnd()
@@ -264,7 +277,7 @@ public Action:SpawnRuneTimer(Handle:timer)
 
 	new idx = (GetURandomInt()%a_size)
 
-	new _id;
+//	new _id;
 	new Float:_ori[3];
 	new Float:_ang[3];
 	new Float:_force;
@@ -273,7 +286,7 @@ public Action:SpawnRuneTimer(Handle:timer)
 	new t_gen[RuneGen];
 	GetArrayArray(g_vGen, idx, t_gen, RUNE_BLOCK_SIZE);
 
-	_id = t_gen[Id];
+//	_id = t_gen[Id];
 	GetTempGenVec(t_gen, _:g_ori, _ori);
 	GetTempGenVec(t_gen, _:g_ang, _ang);
 	_force = t_gen[g_force];
@@ -293,7 +306,6 @@ public Action:SpawnRuneTimer(Handle:timer)
 
 public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 {
-	new a_size;
 	//new t_rune[RuneGen]; should GetArrayArray
 
 
@@ -311,7 +323,7 @@ public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 	if( (idx = FindIndexInGlobalArrayById(a_gen, r_id)) != -1)
 	{
 	
-		new _id;
+//		new _id;
 		new Float:_ori[3];
 		new Float:_ang[3];
 		new Float:_force;
@@ -319,7 +331,7 @@ public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 		new t_gen[RuneGen];
 		GetArrayArray(a_gen, idx, t_gen, RUNE_BLOCK_SIZE);
 
-		_id = t_gen[Id];
+//		_id = t_gen[Id];
 		GetTempGenVec(t_gen, _:g_ori, _ori);
 		GetTempGenVec(t_gen, _:g_ang, _ang);
 		_force = t_gen[g_force];
@@ -343,7 +355,6 @@ public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 
 public Action:SpawnTestRuneTimerBlock(Handle:timer, any:data)
 {
-	new a_size;
 	//new t_rune[RuneGen]; should GetArrayArray
 
 
@@ -361,7 +372,7 @@ public Action:SpawnTestRuneTimerBlock(Handle:timer, any:data)
 		SpawnTestRune(a_gen,idx);
 	
 		return Plugin_Continue;
-	} else if( g_Player[WorkingSet] != INVALID_HANDLE &&  (a_size = GetArraySize(g_Player[WorkingSet])) > 0)
+	} else if( g_Player[WorkingSet] != INVALID_HANDLE &&  GetArraySize(g_Player[WorkingSet]) > 0)
 	{
 		if ((idx = FindIndexInArrayById(g_Player[WorkingSet],r_id)) != -1)
 		{

@@ -7,6 +7,8 @@
  
 Handle:CreateGeneratorMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:hMenu = CreateMenu(Handler_GeneratorMenu,RUNE_MENU_ACTIONS_DEFAULT);
 	AddMenuItem(hMenu,GEN_SET_ORIGIN,			"origin");
 	AddMenuItem(hMenu,GEN_SET_ANGLE,			"angle");
@@ -23,6 +25,8 @@ Handle:CreateGeneratorMenu(client)
 
 Handle:CreateForceMenu(client)
 {
+	if(!client)
+		return INVALID_HANDLE;
 	new Handle:hMenu = CreateMenu(Handler_ModifyForceMenu,RUNE_MENU_ACTIONS_DEFAULT);
 	AddMenuItem(hMenu,"FINC_5", "inc 5");
 	AddMenuItem(hMenu,"FINC_30", "inc 30");
@@ -38,7 +42,6 @@ Handle:CreateForceMenu(client)
 
 Handle:ClientSelectedForceMenu(client,const String:item_str[])
 {
-	new idx;
 	if(strlen(item_str) < 6)
 		return INVALID_HANDLE;
 	if(!IsValidIter(g_iState[it_array], g_iState[it_idx]))
@@ -67,8 +70,8 @@ Handle:ClientSelectedForceMenu(client,const String:item_str[])
 	set_force_info(g_iState[it_array], g_iState[it_idx], nForce);
 	if(g_iState[it_array] != g_Player[WorkingSet])
 		g_bChanged = true;
-  DisplayGenToClient(client,g_iState[it_array], g_iState[it_idx]);
-  SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
+	DisplayGenToClient(client,g_iState[it_array], g_iState[it_idx]);
+	SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
 
 	return CreateForceMenu(client);	
 }
@@ -85,13 +88,13 @@ Handle:ClientSelectGeneratorMenu(client,const String:item_str[])
 		new Float:origin[3];
 		GetClientEyePosition(client,origin);
 		set_origin_info(g_iState[it_array],g_iState[it_idx],origin);
-  	SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
+		SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
 		bDisplay = true;
 	} else if(!strcmp(item_str,GEN_SET_ANGLE)) {
 		new Float:angle[3];
 		GetClientEyeAngles(client,angle);
 		set_angle_info(g_iState[it_array],g_iState[it_idx],angle);
-  	SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
+		SpawnTestRune( g_iState[it_array], g_iState[it_idx]);
 		bDisplay = true;
 	} else if(!strcmp(item_str,GEN_FORCE_MENU)) {
 		bDisplay = true;
@@ -111,8 +114,8 @@ Handle:ClientSelectGeneratorMenu(client,const String:item_str[])
 		hMenu = CreateGeneratorMenu(client);
 
 	if(bDisplay)
-  	DisplayGenToClient(client,g_iState[it_array], g_iState[it_idx]);
-  return hMenu;
+		DisplayGenToClient(client,g_iState[it_array], g_iState[it_idx]);
+	return hMenu;
 }
 
 
@@ -120,12 +123,12 @@ Handle:ClientSelectGeneratorMenu(client,const String:item_str[])
 public Handler_GeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -154,12 +157,12 @@ public Handler_GeneratorMenu(Handle:menu, MenuAction:m_action, param1, param2)
 public Handler_ModifyForceMenu(Handle:menu, MenuAction:m_action, param1, param2)
 {
 	new client = param1;
-  LOG_MENU_HANDLER
-  switch(m_action)
-  {
-    case MenuAction_Start:
-    {
-      LOG_MENU_START
+	LOG_MENU_HANDLER
+	switch(m_action)
+	{
+		case MenuAction_Start:
+		{
+			LOG_MENU_START
 		}
 		case MenuAction_Select:
 		{
@@ -172,7 +175,7 @@ public Handler_ModifyForceMenu(Handle:menu, MenuAction:m_action, param1, param2)
 		}
 		case MenuAction_Cancel:
 		{
-			if(MenuCancel_ExitBack)
+			if(param2 == MenuCancel_ExitBack)
 			{
 				new Handle:hMenu = CreateGeneratorMenu(client);
 				if(hMenu)

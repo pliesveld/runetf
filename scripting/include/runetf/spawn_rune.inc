@@ -28,8 +28,8 @@ stock CreatePropRune()
 {
 	new ent = CreateEntityByName("prop_physics_multiplayer");
 
-  SetEntityModel(ent, RUNE_MODEL)
-  SetEntityMoveType(ent, MOVETYPE_VPHYSICS);
+	SetEntityModel(ent, RUNE_MODEL)
+	SetEntityMoveType(ent, MOVETYPE_VPHYSICS);
 
 	SetEntProp(ent, Prop_Send, "m_CollisionGroup", COLLISION_GROUP_NONE);
 	SetEntProp(ent, Prop_Send, "m_usSolidFlags", 6);
@@ -60,48 +60,48 @@ stock GetEntityAbsOrigin(entity,Float:origin[3])
 stock SpawnTrigger(rune_ent)
 {
 	new Float:ori[3];
-  if(!IsValidEntity(rune_ent))
-  {
-  	return -1;
-  }
-  
+	if(!IsValidEntity(rune_ent))
+	{
+		return -1;
+	}
+
 	GetEntityAbsOrigin(rune_ent, ori);
 	decl String:rune_name[64];
-  new trigger_ent = Entity_Create("trigger_multiple");
-  DispatchKeyValue(trigger_ent, "spawnflags", "1");
- // DispatchKeyValue(trigger_ent, "wait", "2");
+	new trigger_ent = Entity_Create("trigger_multiple");
+	DispatchKeyValue(trigger_ent, "spawnflags", "1");
+	// DispatchKeyValue(trigger_ent, "wait", "2");
 	DispatchKeyValue(trigger_ent, "StartDisabled","1");
-  SetEntityModel(trigger_ent, RUNE_MODEL)
+	SetEntityModel(trigger_ent, RUNE_MODEL)
 
-  new Float:minbounds[3] = {-25.0, -25.0, 0.0}; 
-  new Float:maxbounds[3] = {25.0, 25.0, 70.0};
+	new Float:minbounds[3] = {-25.0, -25.0, 0.0}; 
+	new Float:maxbounds[3] = {25.0, 25.0, 70.0};
 
-/*
-  new Float:minbounds[3] = {-17.5, -17.5, -35.0}; 
-  new Float:maxbounds[3] = {17.5, 17.5, 35.0};
-*/
-  Entity_GetTargetName(rune_ent,rune_name,sizeof(rune_name));
+	/*
+	new Float:minbounds[3] = {-17.5, -17.5, -35.0}; 
+	new Float:maxbounds[3] = {17.5, 17.5, 35.0};
+	*/
+	Entity_GetTargetName(rune_ent,rune_name,sizeof(rune_name));
 	Entity_SetTargetName(trigger_ent,"trig_%s", rune_name);
-  Entity_GetName(rune_ent,rune_name,sizeof(rune_name));
+	Entity_GetName(rune_ent,rune_name,sizeof(rune_name));
 	Entity_SetName(trigger_ent,"trig_%s", rune_name);
 
-  DispatchSpawn(trigger_ent); 
-//  ActivateEntity(trigger_ent);
+	DispatchSpawn(trigger_ent); 
+	//  ActivateEntity(trigger_ent);
 
-  Entity_SetMinSize(trigger_ent,minbounds);
-  Entity_SetMaxSize(trigger_ent,maxbounds);
-  //Entity_SetSolidType(trigger_ent,SOLID_BBOX);
-  SetEntProp(trigger_ent, Prop_Send, "m_nSolidType", 2);
+	Entity_SetMinSize(trigger_ent,minbounds);
+	Entity_SetMaxSize(trigger_ent,maxbounds);
+	//Entity_SetSolidType(trigger_ent,SOLID_BBOX);
+	SetEntProp(trigger_ent, Prop_Send, "m_nSolidType", 2);
 
-  Entity_SetCollisionGroup(trigger_ent, COLLISION_GROUP_NONE);
+	Entity_SetCollisionGroup(trigger_ent, COLLISION_GROUP_NONE);
 
-  TeleportEntity(trigger_ent,ori,NULL_VECTOR,NULL_VECTOR);
+	TeleportEntity(trigger_ent,ori,NULL_VECTOR,NULL_VECTOR);
 
-// 	SetEntPropVector(trigger_ent, Prop_Send, "m_vecOrigin", ori); 
-  new enteffects = GetEntProp(trigger_ent, Prop_Send, "m_fEffects"); 
-  enteffects |= 32; 
-  SetEntProp(trigger_ent, Prop_Send, "m_fEffects", enteffects);
-  
+	// 	SetEntPropVector(trigger_ent, Prop_Send, "m_vecOrigin", ori); 
+	new enteffects = GetEntProp(trigger_ent, Prop_Send, "m_fEffects"); 
+	enteffects |= 32; 
+	SetEntProp(trigger_ent, Prop_Send, "m_fEffects", enteffects);
+
 	SetVariantString("!activator");
 	AcceptEntityInput(trigger_ent, "SetParent", rune_ent);
 
@@ -110,7 +110,7 @@ stock SpawnTrigger(rune_ent)
 	SetVariantString("OnStartTouch !self:Enable::2.5:-1");
 	AcceptEntityInput(trigger_ent, "AddOutput");
 
-  return _:trigger_ent;
+	return _:trigger_ent;
 }
 
 
@@ -122,16 +122,16 @@ stock SpawnPropRune(Float:ori[3], Float:ang[3] = NULL_VECTOR, Float:vel[3] = NUL
 		Entity_SetName(ent,"t_rune%d", ++rune_counter);
 	else
 		Entity_SetName(ent,"t_rune%s",name);
-  DispatchSpawn(ent)
+	DispatchSpawn(ent)
 	ActivateEntity(ent);
 
-  TeleportEntity(ent, ori, ang, vel)
-  return _:ent;
+	TeleportEntity(ent, ori, ang, vel)
+	return _:ent;
 }
 
 stock SpawnRune(&rune_ent,&trigger_ent, EntityOutput:onPickup, Float:loc[3], Float:ang[3] = NULL_VECTOR, Float:vel[3] = NULL_VECTOR, Float:delay = 50.0, bool:enable = true, const String:name[] = "")
 {
-  rune_ent = SpawnPropRune(loc,ang,vel, name);
+	rune_ent = SpawnPropRune(loc,ang,vel, name);
 	trigger_ent = SpawnTrigger(rune_ent);
 
 	decl String:variantString[60];
@@ -183,7 +183,6 @@ public RandomRuneEntityTouchTest(const String:output[], caller, activator, Float
 {
 
 	decl String:playerName[16]="";
-	decl String:runeName[16]="";
 
 	new rune_ent = Entity_GetParent(caller);
 	GetClientName(activator,playerName,sizeof(playerName));

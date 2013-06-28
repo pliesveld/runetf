@@ -19,15 +19,15 @@
 /*****************************************************************
 P L U G I N   I N F O
 *****************************************************************/
-#define PLUGIN_NAME				"Rune of Infinite Jumping"
-#define PLUGIN_TAG				"sm"
-#define PLUGIN_PRINT_PREFIX		"[SM]"
+#define PLUGIN_NAME				"Rune of Pounce"
+#define PLUGIN_DESCRIPTION		"Based on Chanz's rune of infinite-jumping."
+
+
+#undef PLUGIN_AUTHOR
+#undef PLUGIN_URL
 #define PLUGIN_AUTHOR			"Chanz"
-#define PLUGIN_DESCRIPTION		"Lets user auto jump when holding down space. This plugin includes the DoubleJump plugin too."
-#define PLUGIN_VERSION 			"2.14.40"
 #define PLUGIN_URL				"http://forums.alliedmods.net/showthread.php?p=1239361 OR http://www.mannisfunhouse.eu/"
 
-/*
 public Plugin:myinfo = {
 	name = PLUGIN_NAME,
 	author = PLUGIN_AUTHOR,
@@ -35,7 +35,7 @@ public Plugin:myinfo = {
 	version = PLUGIN_VERSION,
 	url = PLUGIN_URL
 }
-*/
+
 #include <sourcemod>
 #include <sdktools>
 #include <smlib>
@@ -68,16 +68,7 @@ new g_Move[MAXPLAYERS][PlayerMoveInfo];
 new Float:fOldVels[MAXPLAYERS][3];
 
 
-new g_PounceRune = INVALID_HANDLE;
-new g_VaultRune = INVALID_HANDLE;
-
-//Allow list for Clients:
 new bool:g_bAllow_ForwardBoost[MAXPLAYERS+1];
-
-//Counter
-
-//Offsets
-
 
 new offset_scoutdash;
 
@@ -103,26 +94,19 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max){
 
 public OnPluginStart() 
 {
-	//Init for smlib
-	//SMLib_OnPluginStart(PLUGIN_NAME,PLUGIN_TAG,PLUGIN_VERSION,PLUGIN_AUTHOR,PLUGIN_DESCRIPTION,PLUGIN_URL);
-	
-	//ConVars
 	offset_scoutdash = FindSendPropInfo("CTFPlayer", "m_iAirDash");
 	
-	//Event Hooks
-	g_PounceRune = AddRune("Pounce", PounceRunePickup, JumpRuneDrop,RUNE_POUNCE);
-	g_VaultRune = AddRune("Vault", VaultRunePickup, JumpRuneDrop,RUNE_VAULT);
+	AddRune("Pounce", PounceRunePickup, JumpRuneDrop,RUNE_POUNCE);
+	AddRune("Vault", VaultRunePickup, JumpRuneDrop,RUNE_VAULT);
 	AddRune("AirBud", AirRunePickup, AirRuneDrop,RUNE_AIR);
 }
 
 public RunePluginStart()
 {
-	PrintToServer("JumpRunePluginStart\n");
 }
 
 public RunePluginStop()
 {
-	PrintToServer("JumpRunePluginStop\n");
 }
 
 public AirRunePickup(client,rune,ref)
@@ -189,7 +173,7 @@ public Action:OnFallDamage(victim, &attacker, &inflictor, &Float:damage, &damage
 
 
 
-public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon, &subtype, &cmdnum, &tickcount, &seed, mouse[2])
+public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {
 	if(!IsClientInGame(client) || !IsPlayerAlive(client))
 	{
@@ -355,25 +339,24 @@ public OnPostThinkAir(client)
 	} 
 	new iGroundEntity = GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
 
-  if (iGroundEntity == -1)
-  {
+	if (iGroundEntity == -1)
+	{
     // Air  
-    GetEntPropVector(client, Prop_Data, "m_vecVelocity", fOldVels[client]);
-    g_Move[client][bIsInAir] = true;
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", fOldVels[client]);
+		g_Move[client][bIsInAir] = true;
 		//if( (GetTickedTime() - g_Move[client][fMomentTouchedGround]) <= 1.2)
-			Client_ForceJump(client,5.5);
+		Client_ForceJump(client,5.5);
 
-  }
-  else
-  {
+	}
+	else
+	{
     // Ground or entity
-    if (g_Move[client][bIsInAir])
-    {
-      g_Move[client][fMomentTouchedGround] = GetTickedTime();
-      g_Move[client][bIsInAir] = false;
-    }
-  }
-
+		if (g_Move[client][bIsInAir])
+		{
+			g_Move[client][fMomentTouchedGround] = GetTickedTime();
+			g_Move[client][bIsInAir] = false;
+		}
+	}
 }
 
 
@@ -387,25 +370,24 @@ public OnPostThink(client)
 
 	new iGroundEntity = GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
 
-  if (iGroundEntity == -1)
-  {
-    // Air  
-    GetEntPropVector(client, Prop_Data, "m_vecVelocity", fOldVels[client]);
-    g_Move[client][bIsInAir] = true;
-  }
-  else
-  {
+	if (iGroundEntity == -1)
+	{
+	// Air  
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", fOldVels[client]);
+		g_Move[client][bIsInAir] = true;
+	} else {
     // Ground or entity
-    if (g_Move[client][bIsInAir])
-    {
-      g_Move[client][fMomentTouchedGround] = GetTickedTime();
-      g_Move[client][bIsInAir] = false;
-    }
-  }
+		if (g_Move[client][bIsInAir])
+		{
+			g_Move[client][fMomentTouchedGround] = GetTickedTime();
+			g_Move[client][bIsInAir] = false;
+		}
+	}
 }
 
 
 
+#if 0
 Float:GetVectorAngle(Float:x, Float:y)
 {
   // set this to an arbitrary value, which we can use for error-checking
@@ -436,5 +418,6 @@ Float:GetVectorAngle(Float:x, Float:y)
   // let's return the value
   return theta;
 }
+#endif
 
 

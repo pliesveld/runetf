@@ -18,6 +18,25 @@
 #define SND_BOOM_NORMAL "ambient/explosions/explode_8.wav"
 #define SND_BOOM_LARGE	"misc/doomsday_missile_explosion.wav"
 
+#undef PLUGIN_AUTHOR
+#undef PLUGIN_URL
+
+#define PLUGIN_AUTHOR "MasterOfTheXP + happs"
+#define PLUGIN_URL "http://forums.alliedmods.net/showthread.php?p=1678732"
+
+
+#define PLUGIN_NAME "Rune of IronDome and DeadMansTrigger"
+#define PLUGIN_DESCRIPTION "Based on sm_rocket, spawns rockets that track and knockback enemies.  Creates massive explosion on death."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 // particles
 // iron dome
 //asplode_hoodoo_shockwave
@@ -67,9 +86,6 @@ enum RuneProp
 new g_Effect[MAXPLAYERS][RuneProp];
 new g_iTarget[2048];
 
-new g_IronDomeRune = INVALID_HANDLE;
-new g_DeadManTriggerRune = INVALID_HANDLE;
-
 #define RUNE_DOME_ID 1
 #define RUNE_DEAD_ID 2
 
@@ -77,8 +93,8 @@ new Handle:g_hHudSyncMsg = INVALID_HANDLE;
 
 public OnPluginStart()
 {
-	g_IronDomeRune = AddRune("IronDome", RocketRunePickup, RocketRuneDrop,RUNE_DOME_ID);
-	g_DeadManTriggerRune = AddRune("DeadMansTrigger", DeadManRunePickup, RocketRuneDrop,RUNE_DEAD_ID);
+	AddRune("IronDome", RocketRunePickup, RocketRuneDrop,RUNE_DOME_ID);
+	AddRune("DeadMansTrigger", DeadManRunePickup, RocketRuneDrop,RUNE_DEAD_ID);
 
 	g_hHudSyncMsg = CreateHudSynchronizer();
 
@@ -93,7 +109,6 @@ public OnMapStart()
 	PrecacheSound(SND_BOOM_NORMAL);
 	if(!PrecacheSound(SND_BOOM_LARGE))
 		LogError("failed to cache sound");
-		return Plugin_Continue;
 }
 
 public Action:LaunchOnDeath(Handle:event, const String:name[], bool:dontBroadcast)
@@ -158,7 +173,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnPluginEnd()
 {
 	CloseHandle(g_hHudSyncMsg);
-  UnhookEvent("player_death",LaunchOnDeath,EventHookMode_Pre);
+	UnhookEvent("player_death",LaunchOnDeath,EventHookMode_Pre);
 	//CloseHandle(g_IronDomeRune);
 }
 
@@ -201,43 +216,43 @@ public RocketRuneDrop(client, rune)
 
 public SpawnRocket(client,target)
 {
-  new ent_rocket
-  new Float:ori[3]
-  new Float:ang[3]
-  new Float:vec[3]
+	new ent_rocket
+	new Float:ori[3]
+	new Float:ang[3]
+	new Float:vec[3]
 
-  GetClientEyeAngles(client, ang) 
-  //GetClientEyePosition(client, ori)
+	GetClientEyeAngles(client, ang) 
+	//GetClientEyePosition(client, ori)
 	OriginNearPlayer(client,ori,100);
 
-  ent_rocket = CreateEntityByName("tf_projectile_rocket")
+	ent_rocket = CreateEntityByName("tf_projectile_rocket")
 
-  SetEntDataEnt2(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_hOwnerEntity"), client, true)
-  //SetEntData(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_bCritical"), 0, 1, true)
-  SetEntData(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_iTeamNum"), GetClientTeam(client), true)
-  SetEntDataVector(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_angRotation"), ang, true) 
+	SetEntDataEnt2(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_hOwnerEntity"), client, true)
+	//SetEntData(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_bCritical"), 0, 1, true)
+	SetEntData(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_iTeamNum"), GetClientTeam(client), true)
+	SetEntDataVector(ent_rocket, FindSendPropInfo("CTFProjectile_Rocket", "m_angRotation"), ang, true) 
 	SetEntProp(ent_rocket,Prop_Send,"m_CollisionGroup", COLLISION_GROUP_NONE);
 	SetEntProp(ent_rocket,Prop_Send,"m_usSolidFlags",28);
 	SetEntProp(ent_rocket,Prop_Send,"m_nSolidType",SOLID_VPHYSICS);
-  DispatchSpawn(ent_rocket)
+	DispatchSpawn(ent_rocket)
 
-  GetAngleVectors(ang, vec, NULL_VECTOR, NULL_VECTOR)
-  ScaleVector(vec, 733.3)
-  TeleportEntity(ent_rocket, ori, NULL_VECTOR, vec)
+	GetAngleVectors(ang, vec, NULL_VECTOR, NULL_VECTOR)
+	ScaleVector(vec, 733.3)
+	TeleportEntity(ent_rocket, ori, NULL_VECTOR, vec)
 
 	CreateParticle(ent_rocket, "sparks_metal", true);
 	CreateParticle(ent_rocket, "sparks_metal_2", true);
 	if(ent_rocket > 2048)
 		return;
 	g_iTarget[ent_rocket] = EntIndexToEntRef(target);
-  SDKHook(ent_rocket, SDKHook_StartTouch, Event_StartTouch);
+	SDKHook(ent_rocket, SDKHook_StartTouch, Event_StartTouch);
 	SDKHook(ent_rocket, SDKHook_Think, RocketThinkHook);
 }
 
 public Event_StartTouch(entity, other)
 {
-  decl String:netclass[32];
-  decl String:netclass2[32];
+	decl String:netclass[32];
+	decl String:netclass2[32];
 
 	GetEntityNetClass(entity, netclass2, sizeof(netclass2));
 	GetEntityNetClass(other, netclass, sizeof(netclass));
@@ -250,24 +265,23 @@ public Event_StartTouch(entity, other)
 	} else {
   	SDKUnhook(entity, SDKHook_StartTouch, Event_StartTouch)
 	}
+	new client = GetEntDataEnt2(entity, FindSendPropInfo("CPhysicsProp", "m_hOwnerEntity"));
   */
-  new Float:pos[3]
-  new client;
-  GetEntDataVector(entity, FindSendPropInfo("CPhysicsProp", "m_vecOrigin"), pos);
-  client = GetEntDataEnt2(entity, FindSendPropInfo("CPhysicsProp", "m_hOwnerEntity"));
+	new Float:pos[3]
+	GetEntDataVector(entity, FindSendPropInfo("CPhysicsProp", "m_vecOrigin"), pos);
 
 
 	if(other > 0 && other <= GetMaxClients())
 	{ 
 		new Float:r_angle[3];
-  	decl  Float:forwardVector[3];
+		decl Float:forwardVector[3];
 		//GetEntDataVector(other, FindSendPropInfo("CPhysicsProp", "m_vecOrigin"), player_pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", r_angle);
 		//GetEntDataVector(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_angRotation"), r_angle);
 
-  	GetAngleVectors(r_angle, forwardVector, NULL_VECTOR, NULL_VECTOR);
-  	NormalizeVector(forwardVector, forwardVector);
-  	ScaleVector(forwardVector, 375.0);
+		GetAngleVectors(r_angle, forwardVector, NULL_VECTOR, NULL_VECTOR);
+		NormalizeVector(forwardVector, forwardVector);
+		ScaleVector(forwardVector, 375.0);
 		new owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		CreateParticleAtEntity(other,"asplode_hoodoo_shockwave",0.5,false,0.01);
 		SDKHooks_TakeDamage(other,0,owner,0.01);
@@ -285,46 +299,44 @@ public Event_StartTouch(entity, other)
 		if (!strcmp(netclass, "CObjectSentrygun"))
 		{
 	//		SetEntProp(other, Prop_Send, "m_bHasSapper", 1, 2);
-				SetEntData( other, FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 1 , 2 , true );
-				CreateTimer(7.0, TimerEnableSentry, other,TIMER_FLAG_NO_MAPCHANGE);
+			SetEntData( other, FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 1 , 2 , true );
+			CreateTimer(7.0, TimerEnableSentry, other,TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
 
   //CreateExplosion(client, pos)
-  AcceptEntityInput(entity, "Explode", -1, -1, 0);
+	AcceptEntityInput(entity, "Explode", -1, -1, 0);
 }
 
 
 public RocketThinkHook(entity)
 {
-    new target = EntRefToEntIndex(g_iTarget[entity]);
+	new target = EntRefToEntIndex(g_iTarget[entity]);
+	decl Float:rocketposition[3], Float:targetpos[3], Float:vecangle[3], Float:angle[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", rocketposition);
+	GetClientEyePosition(target, targetpos);
 
-    decl Float:rocketposition[3], Float:targetpos[3], Float:vecangle[3], Float:angle[3];
-    GetEntPropVector(entity, Prop_Send, "m_vecOrigin", rocketposition);
-    GetClientEyePosition(target, targetpos);
-
-    MakeVectorFromPoints(rocketposition, targetpos, vecangle);
-    NormalizeVector(vecangle, vecangle);
-    GetVectorAngles(vecangle, angle);
-    decl Float:speed[3];
-    GetEntPropVector(entity, Prop_Data, "m_vecVelocity", speed);
-    ScaleVector(vecangle, GetVectorLength(speed));
-    TeleportEntity(entity, NULL_VECTOR, angle, vecangle);
-
+	MakeVectorFromPoints(rocketposition, targetpos, vecangle);
+	NormalizeVector(vecangle, vecangle);
+	GetVectorAngles(vecangle, angle);
+	decl Float:speed[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", speed);
+	ScaleVector(vecangle, GetVectorLength(speed));
+	TeleportEntity(entity, NULL_VECTOR, angle, vecangle);
 }
 
 
 public Action:TimerEnableSentry(Handle:timer, any:data)
 {
-  decl String:netclass[32];
+	decl String:netclass[32];
 	if(!IsValidEntity(data)) // probably want to use EntRefToEntIndex just in case sentry was destroyed and entity index was recycled.
 		return Plugin_Continue;
 
-  GetEntityNetClass(data, netclass, sizeof(netclass));
-  if (!strcmp(netclass, "CObjectSentrygun"))
+	GetEntityNetClass(data, netclass, sizeof(netclass));
+	if (!strcmp(netclass, "CObjectSentrygun"))
 	{
-			SetEntData( data , FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 0 , 2 , true );
+		SetEntData( data , FindSendPropOffs("CObjectSentrygun","m_bDisabled") , 0 , 2 , true );
 	}
 
 	return Plugin_Continue;
@@ -339,7 +351,7 @@ explosions/explode_9.wav // intercepted
 
 public CreateExplosion(client, Float:pos[3])
 {
-  new ent = CreateEntityByName("env_explosion");
+	new ent = CreateEntityByName("env_explosion");
   
 	new Float:exp_radi = 375.0;
 	new Float:exp_dmg = 35.0;
@@ -361,12 +373,12 @@ public CreateExplosion(client, Float:pos[3])
 	DispatchKeyValueFloat(ent,"Radius Override", exp_radi);
 	DispatchKeyValue(ent,"spawnflags","64");
 
-  SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client) //Set the owner of the explosion
+	SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client) //Set the owner of the explosion
 
-  DispatchSpawn(ent)
+	DispatchSpawn(ent)
   
-  TeleportEntity(ent, pos, NULL_VECTOR, NULL_VECTOR)
-  AcceptEntityInput(ent, "Explode", -1, -1, 0)
+	TeleportEntity(ent, pos, NULL_VECTOR, NULL_VECTOR)
+	AcceptEntityInput(ent, "Explode", -1, -1, 0)
 }
 
 public Action:Timer_Explosion(Handle:timer, any:client)
@@ -384,7 +396,7 @@ public Action:Timer_Explosion(Handle:timer, any:client)
 		if(!g_Effect[client][g_intercepted])
 		{
 			new victims[MAXPLAYERS];
-			new cnt = EnemiesNearPlayer(client,victims,875.0);
+			cnt = EnemiesNearPlayer(client,victims,875.0);
 			for(new i;i < cnt;++i)
 			{
 				TF2_MakeBleed(victims[i],client,6.0);
@@ -415,12 +427,12 @@ public Action:Timer_Explosion(Handle:timer, any:client)
 
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {
-  if( !g_Effect[ client ] [ g_active ])
-    return Plugin_Continue;
-  if(! (buttons & IN_USE) )
-    return Plugin_Continue;
+	if( !g_Effect[ client ] [ g_active ])
+		return Plugin_Continue;
+	if(! (buttons & IN_USE) )
+		return Plugin_Continue;
 
-  if( g_Effect[ client ] [ g_active ] == RUNE_DOME_ID )
+	if( g_Effect[ client ] [ g_active ] == RUNE_DOME_ID )
 	{
 		if( GetGameTime() < g_Effect[client][g_timestamp] )
 			return Plugin_Continue;
@@ -441,22 +453,19 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 			SpawnRocket(client,victims[i]);
 		}
 
-/*
 		if(cnt)
-			SDKHooks_TakeDamage(client,0,client,50.0);
-	*/	
+			SDKHooks_TakeDamage(client,0,client,30.0);
+
 	} else if( g_Effect[client][g_active] == RUNE_DEAD_ID) {
 		if(g_Effect[client][g_armed])
 			return Plugin_Continue;
 		
-			//EmitSoundToAll(SND_TICK,client);
+		//EmitSoundToAll(SND_TICK,client);
 
-			//g_Effect[client][g_intercepted] = false;
-			g_Effect[client][g_armed] = true;
-			//TF2_MakeBleed(client,client,4.0);
-			g_Effect[client][g_counter] = 5;
-			g_Effect[client][g_timer] = CreateTimer(1.0,Timer_Explosion,client,TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-			TriggerTimer(g_Effect[client][g_timer],true);
+		g_Effect[client][g_armed] = true;
+		g_Effect[client][g_counter] = 5;
+		g_Effect[client][g_timer] = CreateTimer(1.0,Timer_Explosion,client,TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		TriggerTimer(g_Effect[client][g_timer],true);
 	}
 	return Plugin_Continue;
 }

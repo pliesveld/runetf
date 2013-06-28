@@ -98,7 +98,7 @@ public SMCEndParseTest(Handle:smc, bool:halted, bool:failed)
     get_force_info(g_vGen,  i, _:_force);                                                 
 
 
-  PrintToConsole(g_User,"ID %d\nOri %f %f %f\nAng %f %f %f\nForce %f\n", _id,                     
+    PrintToConsole(g_User,"ID %d\nOri %f %f %f\nAng %f %f %f\nForce %f\n", _id,                     
       _ori[0], _ori[1], _ori[2],                                                          
       _ang[0], _ang[1], _ang[2],                                                          
       _force); 
@@ -118,7 +118,7 @@ GetRuneGenMapConfigPath(String:file[], len)
 	Format(file,len,"%s%s.cfg", mapListPath, g_mapName);
 }
 
-GetTestGenConfigPath(client,String:file[], len)
+stock GetTestGenConfigPath(client,String:file[], len)
 {
 	Format(file,len,"%stemp_%d_%s.cfg", client,mapListPath, g_mapName);
 }
@@ -130,16 +130,13 @@ Handle:WriteConfigHeader(const String:runeGenFile[])
 	return File;
 }
 
-Handle:WriteConfig(const String:runeGenFile[], Handle:array, Handle:array2)
+stock Handle:WriteConfig(const String:runeGenFile[], Handle:array, Handle:array2)
 {
-	new count = 0;
-
 	new Handle:File = OpenFile(runeGenFile,"w");
 	if(File == INVALID_HANDLE)
 		return ThrowError("Could not open %s for writing.", runeGenFile);
 
 	return INVALID_HANDLE;
-return count;
 }
 
 WriteRuneGenerators(Handle:File, Handle:array)
@@ -186,7 +183,7 @@ WriteClusterEventsArray(Handle:File, Handle:arr_events)
 
 
 	new i;
-	for(i; i < size;++i)
+	for(; i < size;++i)
 	{
 		new a_Event[GenEvent];
 		GetArrayArray(arr_events, i, a_Event, EVENT_BLOCK_SIZE);

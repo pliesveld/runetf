@@ -10,6 +10,19 @@
 
 #include <runetf/runes_stock/runegen_tempent>
 
+
+#define PLUGIN_NAME "Rune of Sharing"
+#define PLUGIN_DESCRIPTION "Share health/ammo kits with nearby teammates."
+
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
 enum RuneProp
 {
 	g_user,
@@ -20,13 +33,12 @@ new g_Effect[MAXPLAYERS][RuneProp];
 
 
 new Handle:g_PickupMsgTrie = INVALID_HANDLE;
-new g_KitRune = INVALID_HANDLE;
 
 public OnPluginStart()
 {
 	HookEntities();
 	CacheModels();
-	g_KitRune = AddRune("Sharing", KitRunePickup, KitRuneDrop,1);
+	AddRune("Sharing", KitRunePickup, KitRuneDrop,1);
 	g_PickupMsgTrie = CreateTrie();
 }
 
@@ -198,17 +210,6 @@ public OnTempPackPickup(const String:output[], caller, activator, Float:delay)
 	Format(message,sizeof(message),"%s shared their %s with you!",
 		player_name, item_class[5]);
 	Client_PrintKeyHintText(activator,message);
-}
-
-static String:TestString[][] =
-{ 
-		"Ignite",
-		"DispatchEffect",	
-		"DispatchResponse",
-		"ClearContext",
-		"EnableShadow",
-		"DisableShadow"
-		
 }
 
 

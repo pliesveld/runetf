@@ -7,20 +7,27 @@
 #include <runetf/spawn_rune>
 #include <runetf/rune_info>
 
+#define PLUGIN_NAME "Rune Chooser"
+#define PLUGIN_DESCRIPTION "Displays rune descriptions. Dev command to spawn runes."
 
-new Handle:g_RuneMenu = INVALID_HANDLE;
+public Plugin:myinfo = {
+	name = PLUGIN_NAME,
+	author = PLUGIN_AUTHOR,
+	description = PLUGIN_DESCRIPTION,
+	version = PLUGIN_VERSION,
+	url = PLUGIN_URL
+}
+
+
+//new Handle:g_RuneMenu = INVALID_HANDLE;
 
 new bool:bSpawnRuneAll = false
 
 public OnPluginStart()
-// TODO::cvar rune_debug to allow non-admins to spawn runes
 // TODO::cvar rune_allow_spawn_setup to allow rune spawning during setup time.
 {
-  RegAdminCmd("info_rune", Command_DisplayRunes,0, "display rune description");
-
-  RegAdminCmd("spawn_rune", Command_SpawnRune,0, "spawns a rune of a specific type");
- // RegAdminCmd("spawn_rune", Command_SpawnRune,0, "spawns a rune of a specific type");
-
+	RegAdminCmd("info_rune", Command_DisplayRunes,0, "display rune description");
+	RegAdminCmd("spawn_rune", Command_SpawnRune,0, "spawns a rune of a specific type");
 	RegAdminCmd("toggle_spawn_rune", Command_ToggleSpawnRune,ADMFLAG_CHEATS,"toggles !spawn_rune for everyone.")
 }
 
@@ -32,13 +39,11 @@ public Action:Command_ToggleSpawnRune(client,args)
 
 public Action:Command_SpawnRune(client, args)
 {
-  new Float:ori[3]
-  new Float:ang[3]
-  new Float:loc[3] = { -1100.0, -1900.0, 420.0 } ;
+	new Float:loc[3] = { -1100.0, -1900.0, 420.0 } ;
 
-  decl String:runestr[24];
+	decl String:runestr[24];
 	decl String:arg[16];
-  	decl i;
+	decl i;
 
 	if(!bSpawnRuneAll)
 		return Plugin_Handled;
@@ -73,14 +78,14 @@ public Action:Command_SpawnRune(client, args)
 	CreateRuneMenu(hMenu,Handler_SpawnRuneMenu);
 	DisplayMenu(hMenu, client, MENU_TIME_FOREVER);
 
-  return Plugin_Continue;
+	return Plugin_Continue;
 }
 
 stock CreateRuneMenu(&Handle:hMenu,MenuHandler:handler)
 {
 	hMenu = CreateMenu(handler, MenuAction:MenuAction_Start | MENU_ACTIONS_DEFAULT);
-  BuildRuneMenu(hMenu);
-  SetMenuExitButton(hMenu, true);
+	BuildRuneMenu(hMenu);
+	SetMenuExitButton(hMenu, true);
 }
 
 public Action:Command_DisplayRunes(client, args)
@@ -117,7 +122,6 @@ public Handler_DisplRuneMenu(Handle:menu, MenuAction:action, param1, param2)
 		}
 		case MenuAction_End:
 		{
-			g_RuneMenu = INVALID_HANDLE;
 			CloseHandle(menu);
 		}
 	}
@@ -131,7 +135,7 @@ public Handler_SpawnRuneMenu(Handle:menu, MenuAction:action, param1, param2)
 		{
 			decl String:rune[24];
 			new client = param1;
-			new item = param2;
+	//		new item = param2;
 			GetMenuItem(menu, param2, rune,sizeof(rune));
 			new Float:loc[3];
 			OriginNearPlayer(client,loc);

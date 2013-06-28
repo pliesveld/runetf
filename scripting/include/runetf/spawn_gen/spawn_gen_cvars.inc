@@ -1,15 +1,5 @@
 #if !defined __spawn_gen_cvars__
 #define __spawn_gen_cvars__
-new String:sRuneCvar[][] =
-{
-	"rune_spawn_interval",
-	"rune_spawn_lifetime",
-	"rune_spawn_droptime",
-	"rune_round_start_clear",
-	"rune_round_end_clear",
-	"rune_enable"
-};
-
 
 #define INTERVAL "17.0"
 #define LIFETIME "45.0"
@@ -46,7 +36,10 @@ stock InitRuneConvars()
 
 	hCvarRuneEnable= CreateConVar("rune_enable", RUNEENABLE,
 	"Enables runetf.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-		
+
+	decl String:s_ver[64]="";
+
+	CreateConVar("rune_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 }
 
 
