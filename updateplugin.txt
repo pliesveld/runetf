@@ -14,6 +14,7 @@
 	{
 		"Plugin" "Path_SM/extensions/runetf.ext.so"
 
+		"Plugin" "Path_SM/plugins/rune_plugin_updater.smx"
 		"Plugin" "Path_SM/plugins/rune_updater.smx"
 		"Plugin" "Path_SM/plugins/spawn_gen.smx"
 		"Plugin" "Path_SM/plugins/spawn_test.smx"
@@ -67,6 +68,7 @@
 		"Source" "Path_SM/scripting/rune_recall.sp"
 		"Source" "Path_SM/scripting/rune_powerplay.sp"
 		"Source" "Path_SM/scripting/rune_info.sp"
+		"Source" "Path_SM/scripting/rune_plugin_updater.sp"
 		"Source" "Path_SM/scripting/rune_updater.sp"
 		"Source" "Path_SM/scripting/rune_vote.sp"
 		"Source" "Path_SM/scripting/rune_berserker.sp"
