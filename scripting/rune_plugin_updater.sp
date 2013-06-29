@@ -4,8 +4,6 @@
 #undef REQUIRE_PLUGIN
 #include <updater>
 
-#define DEBUG
-
 
 #define PLUGIN_NAME "Rune Auto-Updater"
 #define PLUGIN_DESCRIPTION "Auto-update runetf plugin."
@@ -32,10 +30,7 @@ new bool:g_bUpdateRegistered = false;
 
 public OnPluginStart()
 {
-#if defined DEBUG
-	return
 	RegAdminCmd("rune_update_force", Command_Update, ADMFLAG_RCON, "Forces update check of plugin");
-#endif
 
 	decl String:sDesc[128]="";
 	Format(sDesc,sizeof(sDesc),"Select a branch folder from %s to update from.", UPDATE_URL_BASE);
@@ -48,15 +43,10 @@ public OnPluginStart()
 	if(!VerifyBranch(branch,sizeof(branch)))
 	{
 		SetConVarString(hCvarBranch,UPDATE_URL_BRANCH);
-#if defined DEBUG
 		LogMessage("Resetting branch to %s", UPDATE_URL_BRANCH);
-#endif
 	}
 
 	Format(g_URL,sizeof(g_URL),"%s/%s/%s",UPDATE_URL_BASE,branch,UPDATE_URL_FILE);
-#if defined DEBUG
-	return;
-#endif
 
 	
 	if (LibraryExists("updater"))
@@ -64,9 +54,7 @@ public OnPluginStart()
 		Updater_AddPlugin(g_URL)
 		g_bUpdateRegistered = true;
 	} else {
-#if defined DEBUG
 		LogMessage("Updater not found.");
-#endif
 	}
 }
 
@@ -87,7 +75,6 @@ stock bool:VerifyBranch(String:branch[],len)
 }
 
 
-#if defined DEBUG
 
 public Action:Command_Update(client,args)
 {
@@ -101,7 +88,7 @@ public Action:Command_Update(client,args)
 	}
 	return Plugin_Handled;
 }
-
+#if defined DEBUG
 public Action:Updater_OnPluginChecking()
 {
 	LogMessage("Checking for updates.");
@@ -127,9 +114,6 @@ public Updater_OnPluginUpdated()
 
 public OnLibraryAdded(const String:name[])
 {
-#if defined DEBUG
-	return;
-#endif
 	if (StrEqual(name, "updater"))
 	{
 		Updater_AddPlugin(g_URL)

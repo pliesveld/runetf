@@ -51,13 +51,13 @@ Handle:ClientSelectedGeneratorMenu(client,const String:item[])
 	} else if(!strcmp(item, GEN_MERGE)) {
 		new bool:bWasWorkingSet = (g_iState[it_array] == g_Player[WorkingSet]);
 		if(g_Player[WorkingSet] != INVALID_HANDLE && GetArraySize(g_Player[WorkingSet]) > 0)
- 			if(((g_bChanged = (MergeWorkingSetCmd(client) > 0))) && bWasWorkingSet)
+			if(((g_bChanged = (MergeWorkingSetCmd(client) > 0))) && bWasWorkingSet)
 			{
 				g_iState[it_array] = INVALID_HANDLE;
 				g_iState[it_idx] = -1;
 			}
 
-			hMenu = CreateMainMenu(client);
+		hMenu = CreateMainMenu(client);
 	} else {
 		PrintToConsole(client,"warning; unknown action %s",item);
 	}
