@@ -707,7 +707,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 		}
 		
 		new String:buffer[128];
-		Format(buffer,sizeof(buffer), "%d entities ");
+		Format(buffer,sizeof(buffer), "%d entities ",ret);
 		if(add)
 			StrCat(buffer,sizeof(buffer), "added.");
 		else

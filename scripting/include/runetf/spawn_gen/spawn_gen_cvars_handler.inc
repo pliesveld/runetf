@@ -12,7 +12,7 @@ stock RegisterRuneSpawnCvars()
 
 stock UnregisterCvars()
 {
-	UnregisterConCvarChange(RuneCvarChanged);
+	//UnregisterConCvarChange(RuneCvarChanged); // idk
 }
 
 stock ResetConVars()
