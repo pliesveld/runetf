@@ -16,7 +16,7 @@ static String:iter_text[][32] =
 };
 #endif
 
-stock CreateIteratorMenu(client)
+stock Handle:CreateIteratorMenu(client)
 {
 	new Handle:hMenu;
 	hMenu = CreateMenu(Handler_SelectIterType, RUNE_MENU_ACTIONS_DEFAULT);

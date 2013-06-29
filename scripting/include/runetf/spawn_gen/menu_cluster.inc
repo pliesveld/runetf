@@ -201,7 +201,7 @@ Handle:ClientSelectLoadClusterGenerator(client, const String:item_str[])
 	decl String:command[256];
 	strcopy(command,sizeof(command),"sm_gen cluster load ");
 	StrCat(command,sizeof(command),item_str);
-	if(ClientCommand(client,command) == Plugin_Changed)
+	if(Action:ClientCommand(client,command) == Plugin_Changed)
 	{
 		if(IsValidIter(g_iState[it_array],g_iState[it_idx]))
 			return CreateIterateMenu(client);
@@ -219,7 +219,7 @@ Handle:ClientSelectDropClusterGenerator(client, const String:item_str[])
 	decl String:command[256];
 	strcopy(command,sizeof(command),"sm_gen cluster drop ");
 	StrCat(command,sizeof(command),item_str);
-	if(ClientCommand(client,command) == Plugin_Changed)
+	if(Action:ClientCommand(client,command) == Plugin_Changed)
 	{
 		if(!IsValidIter(g_iState[it_array],g_iState[it_idx]))
 		{

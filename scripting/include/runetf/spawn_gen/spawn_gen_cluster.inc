@@ -56,11 +56,11 @@ stock SetEventCallback(a_Event[GenEvent], EntityOutput:callback)
 
 stock bool:IsEventSame(lhs[GenEvent], rhs[GenEvent])
 {
-	new cType;
+	new ClusterGenType:cType;
 	if ((cType = lhs[ClusterType]) == rhs[ClusterType] && cType != ClusterGenType:GenEvent_None)
 		if(!strcmp(lhs[EventCName],rhs[EventCName]) && lhs[EventCName][0] != '\0')
 			if(!strcmp(lhs[EventOutput],rhs[EventOutput]) && lhs[EventOutput][0] != '\0')
-				if( (lhs[EventType] == rhs[EventType] && lhs[EventType] != EventType:GenEvent_None))
+				if( (lhs[EventType] == rhs[EventType] && lhs[EventType] != EventHookType:GenEvent_None))
 				{
 					if(lhs[EventType] == GenEvent_ByEnt)
 						return (!strcmp(lhs[EventEntity],rhs[EventEntity]) && lhs[EventEntity][0] != '\0');
@@ -113,8 +113,8 @@ stock CopyClusterEvents( Handle:dest_array, &Handle:src_array, bool:erase = true
 	for(new i; i < GetArraySize(src_array);++i)
 	{
 		new a_Event[GenEvent];
-		GetArrayArray(src_array,i,a_Event);
-		PushArrayArray(dest_array,a_Event);
+		GetArrayArray(src_array,i,a_Event[0],EVENT_BLOCK_SIZE);
+		PushArrayArray(dest_array,a_Event[0],EVENT_BLOCK_SIZE);
 		++ret;
 	}
 	if(erase)
@@ -285,7 +285,7 @@ add_event_info(&Handle:cluster, a_Event[GenEvent])
 	if(cluster == INVALID_HANDLE)
 		cluster = CreateArray(EVENT_BLOCK_SIZE);
 
-	return PushArrayArray(cluster, a_Event, EVENT_BLOCK_SIZE);
+	return PushArrayArray(cluster, a_Event[0], EVENT_BLOCK_SIZE);
 }
 
 add_cluster_info(&Handle:cluster, a_Cluster[RuneCluster])
@@ -308,7 +308,7 @@ add_cluster_info(&Handle:cluster, a_Cluster[RuneCluster])
 	}
 	
 
-	return PushArrayArray(cluster, a_Cluster, CLUSTER_BLOCK_SIZE);
+	return PushArrayArray(cluster, a_Cluster[0], CLUSTER_BLOCK_SIZE);
 
 }
 stock FreeCluster(const String:name[])
@@ -408,7 +408,7 @@ public Action:OnClusterCmd(client, args)
 	for(new i; i < GetArraySize(g_vGenEvent) && !found;i++)
 	{
 		new a_Cluster[RuneCluster];
-		GetArrayArray(g_vGenEvent,i,a_Cluster, CLUSTER_BLOCK_SIZE);
+		GetArrayArray(g_vGenEvent,i,a_Cluster[0], CLUSTER_BLOCK_SIZE);
 		Format(buffer,sizeof(buffer), "Events for %s",a_Cluster[ClusterName]);
 		if(s_cluster[0] != '\0')
 		{
@@ -441,7 +441,7 @@ stock PrintEvents(client, Handle:event_arr)
 	for(new i; i < size;++i)
 	{
 		new a_Event[GenEvent];
-		GetArrayArray(event_arr, i, a_Event, EVENT_BLOCK_SIZE);
+		GetArrayArray(event_arr, i, a_Event[0], EVENT_BLOCK_SIZE);
 		decl String:buffer[1024];
 		Format(buffer,sizeof(buffer),
 		"%16s %16s: %s %s %s",
@@ -560,7 +560,7 @@ public SMCResult:SMCReadKeyValues_Event(Handle:smc, const String:key[], const St
 				new idx;
 				if( (idx = CheckClusterType(value)) != -1)
 				{
-					t_Event[ClusterType] = idx;
+					t_Event[ClusterType] = ClusterGenType:idx;
 					return SMCParse_Continue;
 				}
 			}
@@ -575,7 +575,7 @@ public SMCResult:SMCReadKeyValues_Event(Handle:smc, const String:key[], const St
 				new idx;
 				if( (idx = CheckEntityType(value)) != -1 )
 				{
-					t_Event[EventType] = idx;
+					t_Event[EventType] = EventHookType:idx;
 					return SMCParse_Continue;
 				}
 			}

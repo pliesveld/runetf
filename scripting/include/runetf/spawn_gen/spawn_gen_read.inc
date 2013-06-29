@@ -182,18 +182,18 @@ public SMCResult:SMCReadKeyValues_Generator(Handle:smc, const String:key[], cons
 
 	if(!strncmp(key[1],"Origin",6))
 	{
-		SetTempGenVec(t_Array,_:g_ori, aVec);
+		SetTempGenVec(t_Array, g_ori, aVec);
 	} else if(!strncmp(key[1],"Angle",5)) {
-		SetTempGenVec(t_Array,_:g_ang, aVec);
+		SetTempGenVec(t_Array, g_ang, aVec);
 	} else if(!strncmp(key[1],"Force",5)) {
-		SetTempGenInt(t_Array,_:g_force, aFloat);
+		SetTempGenFloat(t_Array,g_force, aFloat);
 	} else if(!strncmp(key[1],"Id",2)) {
-		SetTempGenInt(t_Array,_:Id, aInt);
+		SetTempGenInt(t_Array,Id, aInt);
 		if(aInt >= g_NextGenId)
 			g_NextGenId = aInt + 1;
 	} else if(!strncmp(key[1],"Cluster",7)) {
 		new r_id;
-		GetTempGenInt(t_Array, _:Id, r_id);
+		GetTempGenInt(t_Array, Id, r_id);
 		AddToCluster(value, r_id, true);
 	} else if(!strncmp(key[1],"Disabled",8)) {
 		t_Array[g_StartDisabled] = aBool;

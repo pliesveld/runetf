@@ -1,6 +1,6 @@
 #include <runetf/runes_stock/mergesort>
 
-static Handle:g_HookedEvents[GenEvent_Last] = {INVALID_HANDLE}
+static Handle:g_HookedEvents[ClusterGenType];// = {INVALID_HANDLE,...} // <--- why is this a tag match
 static Handle:g_EventHandleArray = INVALID_HANDLE;
 
 stock MapEntityFound(ent, String:class[], idx, Handle:DEPRECATED_array_ent, &Handle:array_names)
@@ -48,7 +48,7 @@ stock ProcessMapEntities()
 		while((ent = FindEntityByClassname(ent,class_type[i])) != -1)
 			++count;
 		SetArrayCell(g_MapEventEntities,i, count);
-		new Handle:action_ref_array = CreateArray(2,GenEvent_Last);
+		new Handle:action_ref_array = CreateArray(2,ClusterGenType);
 		for(new j;j < GetArraySize(action_ref_array);++j)
 		{
 			SetArrayCell(action_ref_array,j,CreateTrie(),0); //cname.output
@@ -96,7 +96,7 @@ stock ProcessMapEntities()
 
 stock FreeMapEventEntities(&Handle:array)
 {
-	new Handle:array1 = INVALID_HANDLE, array2 = INVALID_HANDLE;
+	new Handle:array1 = INVALID_HANDLE, Handle:array2 = INVALID_HANDLE;
 	if(array == INVALID_HANDLE)
 	{
 		LogError("Warning; FreeMapEventEntities invalid array");
@@ -137,7 +137,7 @@ stock FreeHookedEvents()
 	else
 		g_EventHandleArray = CreateArray();
 
-	for(new i = 1;i < GenEvent_Last;++i)
+	for(new i = 1;i < ClusterGenType;++i)
 	{
 		if( g_HookedEvents[i] != INVALID_HANDLE)
 		{
@@ -168,7 +168,7 @@ stock RemoveEventHook(const String:event[], action = -1)
 		return UnhookEntityOutput(cname, output, actionHandler[action]);
 
 	new cnt;
-	for(new i = 1; i < GenEvent_Last;++i)
+	for(new i = 1; i < ClusterGenType;++i)
 		if(UnhookEntityOutput(cname, output, actionHandler[i]))
 			++cnt;
 	return cnt;
@@ -545,7 +545,7 @@ stock InitGenEvents()
 	for(new i; i < GetArraySize(g_vGenEvent);++i)
 	{
 		new a_Cluster[RuneCluster];
-		GetArrayArray(g_vGenEvent,i,a_Cluster,CLUSTER_BLOCK_SIZE);
+		GetArrayArray(g_vGenEvent,i,a_Cluster[0],CLUSTER_BLOCK_SIZE);
 		HookClusterEvents(a_Cluster);
 	}
 }
@@ -558,7 +558,7 @@ stock ShutdownGenEvents()
 	for(new i; i < GetArraySize(g_vGenEvent);++i)
 	{
 		new a_Cluster[RuneCluster];
-		GetArrayArray(g_vGenEvent,i,a_Cluster,CLUSTER_BLOCK_SIZE);
+		GetArrayArray(g_vGenEvent,i,a_Cluster[0],CLUSTER_BLOCK_SIZE);
 		HookClusterEvents(a_Cluster,true);
 	}
 
@@ -571,7 +571,7 @@ stock ShutdownGenEvents()
 			continue;
 		
 		new Handle:hActionArray = GetArrayCell(g_MapEventEntities,class_idx,1);
-		for(new ClusterGenType:action = 1; action < GenEvent_Last;++action)
+		for(new action = 1; action < ClusterGenType;++action)
 		{
 			new Handle:hClassActionTrie = GetArrayCell(hActionArray,action,0);
 			if(hClassActionTrie == INVALID_HANDLE)
@@ -597,7 +597,7 @@ stock HookClusterEvents(a_Cluster[RuneCluster], bool:remove = false)
 		for(new j;j < size;++j)
 		{
 			new a_Event[GenEvent];
-			GetArrayArray(a_Cluster[EventArray],j,a_Event,EVENT_BLOCK_SIZE);
+			GetArrayArray(a_Cluster[EventArray],j,a_Event[0],EVENT_BLOCK_SIZE);
 			HookGenEvent( a_Cluster[ClusterName], a_Event, remove);
 		}
 	}
@@ -619,7 +619,7 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 	strcopy(output, sizeof(output), a_Event[EventOutput]);
 
 	new EntityOutput:handler = a_Event[EventTriggered];	
-	new ClusterGenType:action = a_Event[ClusterType];
+	new action = _:a_Event[ClusterType];
 
 	handler = actionHandler[ a_Event[ClusterType] ];
 	new String:event[MAX_EVENT_ENTITY_OUTPUT];
@@ -641,7 +641,7 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 	if(a_Event[EventType] != GenEvent_ByEnt)
 	{
 		Format(event,sizeof(event),"%s.%s",cname,output);
-		if((hCount = RegisterEvent(event, cluster_name,action,remove))==-1)
+		if((hCount = RegisterEvent(event, cluster_name,ClusterGenType:action,remove))==-1)
 			return;
 		if(remove && hCount == 0)
 			RemoveFromTrie(hClassActionTrie,event);
@@ -661,7 +661,7 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 				if(!strcmp(t_ent_name,entity))
 				{
 					Format(event,sizeof(event),"%s.%s",entity,output);
-					if((hCount = RegisterEvent(event, cluster_name,action,remove))==-1)
+					if((hCount = RegisterEvent(event, cluster_name,ClusterGenType:action,remove))==-1)
 						return;
 					if(remove && hCount == 0)
 						RemoveFromTrie(hNamedActionTrie,event);
@@ -894,7 +894,7 @@ public EventHandler_EnableGen(const String:output[], caller, activator, Float:de
 	new String:event[MAX_EVENT_ENTITY_OUTPUT];
 	decl String:sEventDebug[1024]="";
 	sEventDebug[0] = '\0';
-	new Handle:array_ids = GetEntityEvent(GenEvent_Add,caller,output,event,sizeof(event));
+	new Handle:array_ids = GetEntityEvent(ClusterGenType:GenEvent_Add,caller,output,event,sizeof(event));
 #if defined DEBUG_GEN_EVENT
 	LogMessage("enable %s", event);
 #endif
@@ -917,11 +917,11 @@ public EventHandler_EnableGen(const String:output[], caller, activator, Float:de
 			LogMessage("warning; enable handler generator %d already in global array", id);
 #endif
 		} else {
-			decl sId[8]="";
+			decl String:sId[8]="";
 			new a_Gen[RuneGen];
-			GetArrayArray(g_array, g_index, a_Gen, RUNE_BLOCK_SIZE);
+			GetArrayArray(g_array, g_index, a_Gen[0], RUNE_BLOCK_SIZE);
 			RemoveFromArray(g_array, g_index);
-			PushArrayArray(g_vGen, a_Gen, RUNE_BLOCK_SIZE);
+			PushArrayArray(g_vGen, a_Gen[0], RUNE_BLOCK_SIZE);
 			Format(sId,sizeof(sId),"%d ",a_Gen[Id]);
 			StrCat(sEventDebug,sizeof(sEventDebug),sId);
 		}
@@ -945,7 +945,7 @@ public EventHandler_DisableGen(const String:output[], caller, activator, Float:d
 	sEventDebug[0] = '\0';
 	
 	new String:event[MAX_EVENT_ENTITY_OUTPUT];
-	new Handle:array_ids = GetEntityEvent(GenEvent_Remove,caller,output,event,sizeof(event));
+	new Handle:array_ids = GetEntityEvent(ClusterGenType:GenEvent_Remove,caller,output,event,sizeof(event));
 #if defined DEBUG_GEN_EVENT
 	LogMessage("disable %s", event);
 #endif
@@ -968,11 +968,11 @@ public EventHandler_DisableGen(const String:output[], caller, activator, Float:d
 			LogMessage("warning; disable handler generator %d already in global array", id);
 #endif
 		} else {
-			decl sId[8]="";
+			decl String:sId[8]="";
 			new a_Gen[RuneGen];
-			GetArrayArray(g_array, g_index, a_Gen, RUNE_BLOCK_SIZE);
+			GetArrayArray(g_array, g_index, a_Gen[0], RUNE_BLOCK_SIZE);
 			RemoveFromArray(g_array, g_index);
-			PushArrayArray(g_vGenDisabled, a_Gen, RUNE_BLOCK_SIZE);
+			PushArrayArray(g_vGenDisabled, a_Gen[0], RUNE_BLOCK_SIZE);
 			Format(sId,sizeof(sId),"%d ",a_Gen[Id]);
 			StrCat(sEventDebug,sizeof(sEventDebug),sId);
 		}
@@ -990,7 +990,7 @@ public EventHandler_DisableGen(const String:output[], caller, activator, Float:d
 public EventHandler_ToggleGen(const String:output[], caller, activator, Float:delay)
 {
 	new String:event[MAX_EVENT_ENTITY_OUTPUT];
-	new Handle:array_ids = GetEntityEvent(GenEvent_Toggle,caller,output,event,sizeof(event));
+	new Handle:array_ids = GetEntityEvent(ClusterGenType:GenEvent_Toggle,caller,output,event,sizeof(event));
 
 	decl String:sEventDebug[1024]="";
 	sEventDebug[0] = '\0';
@@ -1014,12 +1014,12 @@ public EventHandler_ToggleGen(const String:output[], caller, activator, Float:de
 		{
 			LogMessage("warning; toggle handler could not find generator %d", id);
 		} else {
-			decl sId[8]="";
+			decl String:sId[8]="";
 			new a_Gen[RuneGen];
-			GetArrayArray(g_array, g_index, a_Gen, RUNE_BLOCK_SIZE);
+			GetArrayArray(g_array, g_index, a_Gen[0], RUNE_BLOCK_SIZE);
 			RemoveFromArray(g_array, g_index);
 			g_array_dest = (g_array == g_vGen) ? g_vGenDisabled : g_vGen;
-			PushArrayArray(g_array_dest, a_Gen, RUNE_BLOCK_SIZE);
+			PushArrayArray(g_array_dest, a_Gen[0], RUNE_BLOCK_SIZE);
 			Format(sId,sizeof(sId),"%d ",a_Gen[Id]);
 			StrCat(sEventDebug,sizeof(sEventDebug),sId);
 		}
@@ -1040,7 +1040,7 @@ public EventHandler_SpawnGen(const String:output[], caller, activator, Float:del
 	new String:event[MAX_EVENT_ENTITY_OUTPUT];
 	decl String:sEventDebug[1024]="";
 	sEventDebug[0] = '\0';
-	new Handle:array_ids = GetEntityEvent(GenEvent_Spawn,caller,output,event,sizeof(event));
+	new Handle:array_ids = GetEntityEvent(ClusterGenType:GenEvent_Spawn,caller,output,event,sizeof(event));
 #if defined DEBUG_GEN_EVENT
 	LogMessage("spawn %s", event);
 #endif
@@ -1055,7 +1055,7 @@ public EventHandler_SpawnGen(const String:output[], caller, activator, Float:del
 
 	for(new k; k <GetArraySize(array_ids);++k)
 	{
-		decl sId[8]="";
+		decl String:sId[8]="";
 		new _id = GetArrayCell(array_ids,k);
 		WritePackCell(datapack, _id);
 		Format(sId,sizeof(sId),"%d ",_id);

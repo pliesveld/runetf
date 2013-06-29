@@ -96,7 +96,7 @@ Handle:CreateEventMenu(client)
 		{
 			new a_Cluster[RuneCluster];
 			new String:s_cluster[MAX_CLUSTER_LEN];
-			GetArrayArray(g_vGenEvent,i,a_Cluster,CLUSTER_BLOCK_SIZE);
+			GetArrayArray(g_vGenEvent,i,a_Cluster[0],CLUSTER_BLOCK_SIZE);
 			new Handle:hEvent= a_Cluster[EventArray];
 			strcopy(s_cluster,sizeof(s_cluster), a_Cluster[ClusterName]);
 			new bool:found = false;
@@ -104,7 +104,7 @@ Handle:CreateEventMenu(client)
 				for(new j; j < GetArraySize(hEvent);++j)
 				{
 					new j_Event[GenEvent];
-					GetArrayArray(hEvent,j, j_Event, RUNE_BLOCK_SIZE);
+					GetArrayArray(hEvent,j, j_Event[0], RUNE_BLOCK_SIZE);
 					if(IsEventSame(m_Event,j_Event))
 					{
 						found = true;
@@ -178,7 +178,7 @@ Handle:ClientSelectEventMenu(client,const String:item_str[])
 	if(m_Event[ClusterType] == ClusterGenType:GenEvent_None)
 	{
 		new ClusterGenType:cType;
-		if( (cType = CheckClusterType(item_str)) == -1)
+		if( (cType = ClusterGenType:CheckClusterType(item_str)) == ClusterGenType:GenEvent_None)
 			return INVALID_HANDLE;
 		m_Event[ClusterType] = cType;
 		return CreateEventMenu(client);
@@ -196,9 +196,9 @@ Handle:ClientSelectEventMenu(client,const String:item_str[])
 		}
 		strcopy(m_Event[EventOutput], sizeof(m_Event[EventOutput]), item_str);
 		return CreateEventMenu(client);
-	} else if(m_Event[EventType] == EventType:GenEvent_None) {
-		new eType;
-		if( (eType = CheckEntityType(item_str)) == -1)
+	} else if(m_Event[EventType] == EventHookType:GenEvent_None) {
+		new EventHookType:eType;
+		if( (eType = EventHookType:CheckEntityType(item_str)) == EventHookType:GenEvent_None)
 		{
 			PrintToConsole(client,"Invalid EntityHookType %s", item_str);
 			return INVALID_HANDLE;

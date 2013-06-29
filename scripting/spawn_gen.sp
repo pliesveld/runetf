@@ -283,11 +283,11 @@ public Action:SpawnRuneTimer(Handle:timer)
 
 
 	new t_gen[RuneGen];
-	GetArrayArray(g_vGen, idx, t_gen, RUNE_BLOCK_SIZE);
+	GetArrayArray(g_vGen, idx, t_gen[0], RUNE_BLOCK_SIZE);
 
 //	_id = t_gen[Id];
-	GetTempGenVec(t_gen, _:g_ori, _ori);
-	GetTempGenVec(t_gen, _:g_ang, _ang);
+	GetTempGenVec(t_gen, g_ori, _ori);
+	GetTempGenVec(t_gen, g_ang, _ang);
 	_force = t_gen[g_force];
 
 	if(_force < 250.0)
@@ -328,11 +328,11 @@ public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 		new Float:_force;
 
 		new t_gen[RuneGen];
-		GetArrayArray(a_gen, idx, t_gen, RUNE_BLOCK_SIZE);
+		GetArrayArray(a_gen, idx, t_gen[0], RUNE_BLOCK_SIZE);
 
 //		_id = t_gen[Id];
-		GetTempGenVec(t_gen, _:g_ori, _ori);
-		GetTempGenVec(t_gen, _:g_ang, _ang);
+		GetTempGenVec(t_gen, g_ori, _ori);
+		GetTempGenVec(t_gen, g_ang, _ang);
 		_force = t_gen[g_force];
 
 		if(_force < 250.0)

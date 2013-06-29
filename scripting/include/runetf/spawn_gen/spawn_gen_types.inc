@@ -1,4 +1,4 @@
-enum _:RuneGen
+enum RuneGen
 {
 	Id,
 	Float:g_ori[3],
@@ -17,14 +17,14 @@ enum _:RuneGen
 /*
 	When an output triggered, the action to peform on the rune cluster
 */
-enum ClusterGenType
+enum _:ClusterGenType
 {
 	GenEvent_None = 0,
 	GenEvent_Add = 1, 	//add cluster into global spawn timer
 	GenEvent_Remove, // remove cluster from global spawn timer
 	GenEvent_Spawn,   // instantly spawn the cluster 
-	GenEvent_Toggle,   // add to active spawner if disabled, disable if actively spawning
-	GenEvent_Last				//place holder, not used
+	GenEvent_Toggle   // add to active spawner if disabled, disable if actively spawning
+//	GenEvent_Last				//place holder, not used -- use ClusterGenType, it is the last enum + 1
 };
 
 #define MAX_CLUSTER_LEN 16
@@ -32,7 +32,7 @@ enum ClusterGenType
 enum EventHookType
 {
 	GenEvent_None = 0,
-	GenEvent_ByClass = 1, //Event is registered with HookEntityOutput
+	GenEvent_ByClass, //Event is registered with HookEntityOutput
   GenEvent_ByEnt,				//Event is registered with HookSingleEntityOutput
 	GenEvent_BySubClass,   //Event is registered on all entities sharing a common root class
 	GenEvent_BySubEnt      //Event is registered on all entities sharing a common root entity name
@@ -42,7 +42,7 @@ enum RuneCluster
 {
 	String:ClusterName[MAX_CLUSTER_LEN],
 	Handle:EventArray,		//Array of GenEvent
-	EntityOutput:EventTriggered,
+	EntityOutput:EventTriggered
 };
 
 
@@ -53,7 +53,7 @@ enum GenEvent
 	String:EventCName[MAX_EVENTGEN_CNAME],
 	String:EventEntity[MAX_EVENTGEN_CNAME],
 	String:EventOutput[MAX_EVENT_OUTPUTNAME],
-	EntityOutput:EventTriggered,
+	EntityOutput:EventTriggered
 };
 
 
@@ -65,7 +65,7 @@ enum GenRuneInfo
 	Float:fRuneNamedLifeTime,
 	bool:bRoundStartClear,
 	bool:bRoundEndClear,
-	bool:bRuneEnable,
+	bool:bRuneEnable
 };
 
 
