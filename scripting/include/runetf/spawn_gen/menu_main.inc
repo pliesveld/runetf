@@ -29,17 +29,16 @@ static String:menu_text[][32] =
 stock DisplayMainMenu(client)
 {
 	new Handle:hMenu = CreateMainMenu(client)
-	DisplayMenu(hMenu, client, MENU_TIME_FOREVER);
+	DisplayMenu(Handle:hMenu, client, MENU_TIME_FOREVER);
 }
 
-stock CreateMainMenu(client)
+stock Handle:CreateMainMenu(client)
 {
 	new Handle:hMenu;
 	hMenu = CreateMenu(Handler_MainMenu, RUNE_MENU_ACTIONS_DEFAULT|MenuAction_DrawItem);
 	SetMenuExitButton(hMenu, true);
 	for(new i; i < sizeof(menu_action);++i)
 		AddMenuItem(hMenu, menu_action[i], menu_text[i]);
-	//DisplayMenu(hMenu, client, MENU_TIME_FOREVER);
 	return hMenu;
 }
 

@@ -37,8 +37,6 @@ stock InitRuneConvars()
 	hCvarRuneEnable= CreateConVar("rune_enable", RUNEENABLE,
 	"Enables runetf.", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 
-	decl String:s_ver[64]="";
-
 	CreateConVar("rune_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 }
 
@@ -71,9 +69,9 @@ stock LoadConVarValues()
 	g_RuneSpawn[fSpawnInterval] = GetConVarFloat(hCvarInterval);
 	g_RuneSpawn[fRuneLifeTime] = GetConVarFloat(hCvarLifeTime);
 	g_RuneSpawn[fRuneNamedLifeTime] = GetConVarFloat(hCvarDropTime);
-	g_RuneSpawn[bRoundStartClear] = GetConVarInt(hCvarClearStart);
-	g_RuneSpawn[bRoundEndClear] = GetConVarInt(hCvarClearEnd);
-	g_RuneSpawn[bRuneEnable] = GetConVarInt(hCvarRuneEnable);
+	g_RuneSpawn[bRoundStartClear] = GetConVarBool(hCvarClearStart);
+	g_RuneSpawn[bRoundEndClear] = GetConVarBool(hCvarClearEnd);
+	g_RuneSpawn[bRuneEnable] = GetConVarBool(hCvarRuneEnable);
 }
 
 #endif

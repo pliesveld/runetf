@@ -12,7 +12,7 @@ stock RegisterRuneSpawnCvars()
 
 stock UnregisterCvars()
 {
-	UnregisterConCvarChange(RuneCvarChanged);
+	//UnregisterConCvarChange(RuneCvarChanged); // idk
 }
 
 stock ResetConVars()
@@ -37,7 +37,7 @@ public RuneCvarChanged(Handle:cvar, const String:oldValue[], const String:newVal
 		if(g_RuneSpawn[bRuneEnable] && g_SpawnTimer != INVALID_HANDLE)
 			RestartSpawnTimer(g_RuneSpawn[fSpawnInterval]);
 	} else if(StrEqual(s_cvar,"rune_enable")) {
-		if((g_RuneSpawn[bRuneEnable] = StringToInt(newValue)) == true)
+		if((g_RuneSpawn[bRuneEnable] = bool:StringToInt(newValue)) == true)
 		{
 			RestartSpawnTimer(g_RuneSpawn[fSpawnInterval])
 		} else {
@@ -50,14 +50,13 @@ public RuneCvarChanged(Handle:cvar, const String:oldValue[], const String:newVal
 	} else if (StrEqual(s_cvar,"rune_spawn_droptime")) {
 		g_RuneSpawn[fRuneNamedLifeTime] = StringToFloat(newValue);
 	} else if (StrEqual(s_cvar,"rune_round_start_clear")) {
-		g_RuneSpawn[bRoundStartClear] = StringToInt(newValue);
+		g_RuneSpawn[bRoundStartClear] = bool:StringToInt(newValue);
 	} else if (StrEqual(s_cvar,"rune_round_end_clear")) {
-		g_RuneSpawn[bRoundEndClear] = StringToInt(newValue);
+		g_RuneSpawn[bRoundEndClear] = bool:StringToInt(newValue);
 	} else {
 		LogMessage("warning; Unhandled cvar change: %s", s_cvar);
 	}
 
-	return Plugin_Continue;
 }
 	
 

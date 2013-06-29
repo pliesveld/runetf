@@ -200,12 +200,12 @@ public Think_FastWeaponFire(client)
 		g_Effect[client][InRage] = 0;
 		SDKUnhook(client,SDKHook_PostThink,Think_FastWeaponFire);
 		//PrintToServer("Invalid Weapon");
-		return Plugin_Continue;
+		return;
 	}
 
 	
 	if(g_Effect[client][InRage] == 0)
-		return Plugin_Continue;
+		return;
 		
 	SDKUnhook(client,SDKHook_PostThink,Think_FastWeaponFire);
 	new Float:enginetime = GetGameTime();
@@ -218,7 +218,6 @@ public Think_FastWeaponFire(client)
 	SetEntDataFloat(ent, offsNextSecondaryAttack,(flSecTime/1.667) + enginetime,true);
 
 	g_Effect[client][InRage] = 0;
-	return Plugin_Continue;
 }
 
 

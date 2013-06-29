@@ -25,16 +25,15 @@ public Plugin:myinfo = {
 #define UPDATE_URL_CFG    "updatemapcfg.txt"
 
 new Handle:hCvarBranch = INVALID_HANDLE;
-new Handle:hCvarCfg = INVALID_HANDLE;
 
-new String:g_URLMap[256] = "";
+new String:g_URL[256] = "";
 
 new bool:g_bUpdateRegistered = false;
-new bool:g_bUpdateMapCfg = true;
 
 public OnPluginStart()
 {
 #if defined DEBUG
+	return
 	RegAdminCmd("rune_update_force", Command_Update, ADMFLAG_RCON, "Forces update check of plugin");
 #endif
 
@@ -42,8 +41,6 @@ public OnPluginStart()
 	Format(sDesc,sizeof(sDesc),"Select a branch folder from %s to update from.", UPDATE_URL_BASE);
 	hCvarBranch = CreateConVar("rune_update_branch", UPDATE_URL_BRANCH,
 	sDesc, FCVAR_NOTIFY);
-	hCvarCfg = CreateConVar("rune_update_mapcfg", "1", "Auto-update rune spawn generator map configuration files.", FCVAR_NOTIFY,true, 0.0, true, 1.0);
-	g_bUpdateMapCfg = GetConVarBool(hCvarCfg);
 
 	decl String:branch[32]="";
 	GetConVarString(hCvarBranch,branch,sizeof(branch));
@@ -56,13 +53,15 @@ public OnPluginStart()
 #endif
 	}
 
-	Format(g_URLMap,sizeof(g_URLMap),"%s/%s/%s",UPDATE_URL_BASE,branch,UPDATE_URL_CFG);
+	Format(g_URL,sizeof(g_URL),"%s/%s/%s",UPDATE_URL_BASE,branch,UPDATE_URL_FILE);
+#if defined DEBUG
+	return;
+#endif
+
 	
 	if (LibraryExists("updater"))
 	{
-		if(g_bUpdateMapCfg)
-			Updater_AddPlugin(g_URLMap);
-
+		Updater_AddPlugin(g_URL)
 		g_bUpdateRegistered = true;
 	} else {
 #if defined DEBUG
@@ -128,9 +127,11 @@ public Updater_OnPluginUpdated()
 
 public OnLibraryAdded(const String:name[])
 {
+#if defined DEBUG
+	return;
+#endif
 	if (StrEqual(name, "updater"))
 	{
-		if(g_bUpdateMapCfg)
-			Updater_AddPlugin(g_URLMap)
+		Updater_AddPlugin(g_URL)
 	}
 }

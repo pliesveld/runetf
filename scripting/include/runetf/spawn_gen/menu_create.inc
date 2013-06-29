@@ -18,7 +18,6 @@ Handle:CreateClusterGeneratorMenu(client)
 	if(IsValidIter(g_iState[it_array],g_iState[it_idx]))
 		cur_id = get_id_info(g_iState[it_array], g_iState[it_idx]);
 
-	
 	for(new i; i < size;++i)
 	{
 		decl String:s_cluster[MAX_CLUSTER_LEN];

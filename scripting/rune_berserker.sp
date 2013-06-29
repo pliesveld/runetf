@@ -41,9 +41,6 @@ new g_Effect[MAXPLAYERS][RuneProp]
 
 public MeleeRunePickup(client,rune)
 {
-	if(g_Effect[client][active])
-		return LogError("client %d already active",client);
-
 	new weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	if(Client_GetActiveWeapon(client) != weapon)
 		Client_SetActiveWeapon(client, weapon);
@@ -51,18 +48,13 @@ public MeleeRunePickup(client,rune)
 	SDKHook(client,SDKHook_WeaponCanSwitchTo,BlockWeaponSwitch);
 	g_Effect[client][active] = true;
   
-	return Plugin_Continue;
 }
 
 
 public MeleeRuneDrop(client,rune)
 {
-	if(!g_Effect[client][active])
-		return LogError("client %d not active",client);
-
 	SDKUnhook(client,SDKHook_WeaponCanSwitchTo, BlockWeaponSwitch);
 	g_Effect[client][active] = false;
-	return Plugin_Continue;
 }
 
 public Action:BlockWeaponSwitch(client,weapon)

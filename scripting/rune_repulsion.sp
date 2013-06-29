@@ -36,9 +36,9 @@ enum RuneProp
 new g_Effect[MAXPLAYERS][RuneProp];
 
 
-new g_FilterProjEnt = INVALID_HANDLE;
-new g_FilterProjEntRed = INVALID_HANDLE;
-new g_FilterProjEntBlu = INVALID_HANDLE;
+new g_FilterProjEnt = _:INVALID_HANDLE;
+new g_FilterProjEntRed = _:INVALID_HANDLE;
+new g_FilterProjEntBlu = _:INVALID_HANDLE;
 //new g_FilterProjTeamRed = INVALID_HANDLE;
 //new g_FilterProjTeamBlu = INVALID_HANDLE;
 
@@ -245,7 +245,7 @@ stock SpawnTriggerPush(client)
 	AcceptEntityInput(trigger_ent, "FireUser1");
 
 
-	decl buf[28]="";
+	decl String:buf[28]="";
 	GetEntPropString(trigger_ent,Prop_Data,"m_iFilterName",buf,sizeof(buf));
 //	new ent2 = GetEntPropEnt(trigger_ent,Prop_Data,"m_hFilter");
 

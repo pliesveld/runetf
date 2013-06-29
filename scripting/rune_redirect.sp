@@ -146,7 +146,7 @@ public Action:OnShareDmg(victim, &attacker, &inflictor, &Float:damage, &damagety
 			new new_vic;
 			new new_attacker = attacker;
 			new new_inflictor = inflictor;
-			new new_damage = damage;
+			new Float:new_damage = damage;
 			new new_damagetype = damagetype
 			new new_weapon = weapon;
 			new Float:new_damageForce[3];

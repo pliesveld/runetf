@@ -51,7 +51,6 @@ public OnMapStart()
 {
 	CacheModels();
 	HookEvent("teamplay_round_active",Event_Round);
-	return Plugin_Continue;
 }
 
 public OnMapEnd()

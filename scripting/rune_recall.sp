@@ -63,7 +63,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnMapStart()
 {
 	CacheSounds();
-	return Plugin_Continue;
 }
 
 public OnPluginEnd()

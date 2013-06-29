@@ -95,7 +95,7 @@ public SMCEndParseTest(Handle:smc, bool:halted, bool:failed)
     get_id_info(g_vGen,     i, _id);                                                      
     get_origin_info(g_vGen, i, _ori);
     get_angle_info(g_vGen,  _:i, _ang)                                                    
-    get_force_info(g_vGen,  i, _:_force);                                                 
+    get_force_info(g_vGen,  i, _force);                                                 
 
 
     PrintToConsole(g_User,"ID %d\nOri %f %f %f\nAng %f %f %f\nForce %f\n", _id,                     
@@ -126,7 +126,8 @@ Handle:WriteConfigHeader(const String:runeGenFile[])
 {
 	new Handle:File = OpenFile(runeGenFile,"w");
 	if(File == INVALID_HANDLE)
-		return ThrowError("Could not open %s for writing.", runeGenFile);
+		ThrowError("Could not open %s for writing.", runeGenFile);
+	
 	return File;
 }
 
@@ -152,11 +153,11 @@ WriteRuneGenerators(Handle:File, Handle:array)
 
 		new a_Gen[RuneGen];
 
-		GetArrayArray(array, i, a_Gen, RUNE_BLOCK_SIZE);
+		GetArrayArray(array, i, a_Gen[0], RUNE_BLOCK_SIZE);
 		
 		_id = a_Gen[Id];
-		GetTempGenVec(a_Gen, _:g_ori, _ori);
-		GetTempGenVec(a_Gen, _:g_ang, _ang);
+		GetTempGenVec(a_Gen, g_ori, _ori);
+		GetTempGenVec(a_Gen, g_ang, _ang);
 		_force = a_Gen[g_force];
 		disabled = a_Gen[g_StartDisabled];
 		
@@ -186,7 +187,7 @@ WriteClusterEventsArray(Handle:File, Handle:arr_events)
 	for(; i < size;++i)
 	{
 		new a_Event[GenEvent];
-		GetArrayArray(arr_events, i, a_Event, EVENT_BLOCK_SIZE);
+		GetArrayArray(arr_events, i, a_Event[0], EVENT_BLOCK_SIZE);
 		WriteFileLine(File,"\tevent\n\t{");
 		WriteFileLine(File, "\t\t\"action\" \"%s\"", actionString[ a_Event[ClusterType] ]);
 		WriteFileLine(File, "\t\t\"type\" \"%s\"", entityString[ a_Event[EventType] ]);
@@ -207,7 +208,7 @@ WriteRuneClusters(Handle:File, Handle:arr_clusters, &event_counter)
 	for(i = 0; i < GetArraySize(arr_clusters);++i)
 	{
 		new a_Cluster[GenEvent];
-		GetArrayArray(arr_clusters, i,a_Cluster, CLUSTER_BLOCK_SIZE);
+		GetArrayArray(arr_clusters, i,a_Cluster[0], CLUSTER_BLOCK_SIZE);
 		WriteFileLine(File, "cluster\n{\n\tcluster_name \"%s\"", a_Cluster[ClusterName]);
 		event_counter += WriteClusterEventsArray(File, a_Cluster[EventArray]);
 		WriteFileLine(File,"}\n");

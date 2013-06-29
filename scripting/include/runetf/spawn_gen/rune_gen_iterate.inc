@@ -51,7 +51,7 @@ stock FindEventClusterInArray(const String:name[], &Handle:eventsHandle, Handle:
 	{
 //		decl String:s_cluster[MAX_CLUSTER_LEN]="";
 		new a_Cluster[RuneCluster];
-		GetArrayArray(g_event_array,idx,a_Cluster, CLUSTER_BLOCK_SIZE);
+		GetArrayArray(g_event_array,idx,a_Cluster[0], CLUSTER_BLOCK_SIZE);
 		if(!strcmp(name, a_Cluster[ClusterName]))
 		{
 			eventsHandle = a_Cluster[EventArray];
@@ -97,12 +97,12 @@ ClientLoadGen(client, &Handle:global, ID, bool:remove = false)
 		return -1;
 
 	new pack[RuneGen];
-	GetArrayArray(a_gen, g_index, pack, RUNE_BLOCK_SIZE);
+	GetArrayArray(a_gen, g_index, pack[0], RUNE_BLOCK_SIZE);
 
 	if(global == INVALID_HANDLE)
 		global = CreateArray(RUNE_BLOCK_SIZE);
 
-	g_Player[CurrentGeneratorIndex] = PushArrayArray(global, pack, RUNE_BLOCK_SIZE);
+	g_Player[CurrentGeneratorIndex] = PushArrayArray(global, pack[0], RUNE_BLOCK_SIZE);
 
 	if(remove)
 		RemoveFromArray(a_gen, g_index);
@@ -149,8 +149,8 @@ CreateGenClientCmd(client)
 	GetClientEyeAngles(client, _ang);
 	
 	pack[ Id] = newID;
-	SetTempGenVec( pack, _:g_ori, _ori);
-	SetTempGenVec( pack, _:g_ang, _ang);
+	SetTempGenVec( pack, g_ori, _ori);
+	SetTempGenVec( pack, g_ang, _ang);
 	pack[ g_force ] = _force;
 	pack[ g_StartDisabled ] = false;
 
@@ -163,7 +163,7 @@ CreateGenClientCmd(client)
 	
 		for(new i;i < size;++i)
 		{
-			decl t_sCluster[MAX_CLUSTER_LEN]="";	
+			decl String:t_sCluster[MAX_CLUSTER_LEN]="";	
 			GetArrayString(g_Player[DefaultCluster], i, t_sCluster, sizeof(t_sCluster));
 			AddToCluster(t_sCluster, newID);
 
@@ -225,7 +225,7 @@ stock DisplayGenToClient(client, &Handle:working_set, index)
 	new pack[RuneGen];
 	
 
-	GetArrayArray(working_set,index,pack,RUNE_BLOCK_SIZE);
+	GetArrayArray(working_set,index,pack[0],RUNE_BLOCK_SIZE);
 
 	_id = pack[Id];
 	GetTempGenVec(pack,g_ori,_ori);
@@ -289,7 +289,7 @@ stock GetCurrentGen(client, r_gen[RuneGen])
 }
 
 
-stock SetCurrentCmd(client, args)
+stock Action:SetCurrentCmd(client, args)
 {
 
 	new Handle:hWorking = GetWorkingSet(client);
@@ -474,7 +474,7 @@ stock MergeWorkingSetCmd(client)
 		g_index = FindIndexInGlobalArrayById(a_gen, checkID);
 
 		new GenPack[RuneGen];
-		GetArrayArray(t_arr, i, GenPack, RUNE_BLOCK_SIZE);
+		GetArrayArray(t_arr, i, GenPack[0], RUNE_BLOCK_SIZE);
 
 		if(g_index == -1)
 		{
@@ -484,7 +484,7 @@ stock MergeWorkingSetCmd(client)
 				add_rune_info(g_vGen, GenPack);
 			++n_added;
 		} else {
-			SetArrayArray(a_gen, g_index, GenPack, RUNE_BLOCK_SIZE);
+			SetArrayArray(a_gen, g_index, GenPack[0], RUNE_BLOCK_SIZE);
 			++n_updated;
 		}
 		
@@ -504,7 +504,7 @@ stock MergeWorkingSetCmd(client)
 	//ClearArray(fail_merge_arr);
 }
 
-stock DropWorkingSetCmd(client)
+stock Action:DropWorkingSetCmd(client)
 {
 	new arrSize;
 	new Handle:t_arr = g_Player[WorkingSet];
@@ -532,7 +532,7 @@ stock DropWorkingSetCmd(client)
 	return Plugin_Handled;
 }
 
-stock DisplayWorkingSetCmd(client,args)
+stock Action:DisplayWorkingSetCmd(client,args)
 {
 	new String:displayStr[512];
 	new String:buf[32];
@@ -560,7 +560,7 @@ stock DisplayWorkingSetCmd(client,args)
 	return Plugin_Continue;
 }
 
-stock DisplayGlobalSet(client)
+stock Action:DisplayGlobalSet(client)
 {
 	new String:displayStr[1024];
 	new String:buf[32];
@@ -707,7 +707,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 		}
 		
 		new String:buffer[128];
-		Format(buffer,sizeof(buffer), "%d entities ");
+		Format(buffer,sizeof(buffer), "%d entities ",ret);
 		if(add)
 			StrCat(buffer,sizeof(buffer), "added.");
 		else
@@ -751,7 +751,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 			new id = GetArrayCell(array_ids,i);
 			if( (  (a_gen = g_Player[WorkingSet]) != INVALID_HANDLE && (idx = FindIndexInArrayById(a_gen,id)) != -1) || (idx = FindIndexInGlobalArrayById(a_gen, id)) != -1 )
 			{
-				GetArrayArray(a_gen,idx, t_Gen,RUNE_BLOCK_SIZE);
+				GetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
 				if(enable)
 				{
 					if(t_Gen[g_StartDisabled] == false)
@@ -760,7 +760,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 					{
 						++n_changed;
 						t_Gen[g_StartDisabled] = false;
-						SetArrayArray(a_gen,idx, t_Gen,RUNE_BLOCK_SIZE);
+						SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
 					}
 				} else {
 					if(t_Gen[g_StartDisabled] == true)
@@ -769,7 +769,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 					{
 						++n_changed;
 						t_Gen[g_StartDisabled] = true;
-						SetArrayArray(a_gen,idx, t_Gen,RUNE_BLOCK_SIZE);
+						SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
 					}
 				}
 			}
@@ -929,7 +929,7 @@ public Action:EventClusterSetCmd(client,args)
 		strcopy(s_type,sizeof(s_type),"GenEvent_");
 		GetCmdArg(4, s_type[9],sizeof(s_type)-9);
 
-		if( (a_Event[ClusterType] = CheckClusterType(s_type)) == -1)
+		if( (a_Event[ClusterType] = ClusterGenType:CheckClusterType(s_type)) == ClusterGenType:GenEvent_None)
 		{
 			PrintToConsole(client,"Invalid ClusterGenType %s", s_type);
 			return Plugin_Handled;
@@ -944,7 +944,7 @@ public Action:EventClusterSetCmd(client,args)
 		strcopy(h_type,sizeof(h_type),"GenEvent_");
 		GetCmdArg(5,h_type[9],sizeof(h_type)-9);
 
-		if( (a_Event[EventType] = CheckEntityType(h_type)) == -1)
+		if( (a_Event[EventType] = EventHookType:CheckEntityType(h_type)) == EventHookType:GenEvent_None)
 		{
 			PrintToConsole(client,"Invalid HookType %s", s_type);
 			return Plugin_Handled;
@@ -1054,7 +1054,7 @@ public Action:EventClusterSetCmd(client,args)
 			return Plugin_Handled;
 		}
 		new a_Event[GenEvent];
-		GetArrayArray(event_arr,idx, a_Event, EVENT_BLOCK_SIZE);
+		GetArrayArray(event_arr,idx, a_Event[0], EVENT_BLOCK_SIZE);
 		HookGenEvent(s_cluster, a_Event,true);
 		RemoveFromArray(event_arr, idx);
 		PrintToConsole(client,"Event removed.");
@@ -1142,7 +1142,8 @@ stock SpawnTestRune(const Handle:array, index)
 
 public Action:Timer_Test_RuneGen(Handle:timer, any:data)
 {
-	AcceptEntityInput(data, "Kill");
+	if(IsValidEntity(data))
+		AcceptEntityInput(data, "Kill");
 }
 
 stock IterateRuneGen(client, const Handle:vGen)
@@ -1199,10 +1200,10 @@ stock ResetRuneArrays()
 	for(new i;i < GetArraySize(g_vGen);)
 	{
 		new a_Gen[RuneGen];
-		GetArrayArray(g_vGen,i,a_Gen,RUNE_BLOCK_SIZE);
+		GetArrayArray(g_vGen,i,a_Gen[0],RUNE_BLOCK_SIZE);
 		if(a_Gen[g_StartDisabled] == true)
 		{
-			PushStackArray(to_disabled,a_Gen,RUNE_BLOCK_SIZE);
+			PushStackArray(to_disabled,a_Gen[0],RUNE_BLOCK_SIZE);
 			RemoveFromArray(g_vGen,i);
 			continue;
 		}
@@ -1212,10 +1213,10 @@ stock ResetRuneArrays()
 	for(new i;i< GetArraySize(g_vGenDisabled);)
 	{
 		new a_Gen[RuneGen];
-		GetArrayArray(g_vGenDisabled,i,a_Gen,RUNE_BLOCK_SIZE);
+		GetArrayArray(g_vGenDisabled,i,a_Gen[0],RUNE_BLOCK_SIZE);
 		if(a_Gen[g_StartDisabled] == false)
 		{
-			PushStackArray(to_global,a_Gen,RUNE_BLOCK_SIZE);
+			PushStackArray(to_global,a_Gen[0],RUNE_BLOCK_SIZE);
 			RemoveFromArray(g_vGenDisabled,i);
 			continue;
 		}
@@ -1228,16 +1229,16 @@ stock ResetRuneArrays()
 	{
 		++cnt;
 		new a_Gen[GenEvent];
-		PopStackArray(to_global,a_Gen,RUNE_BLOCK_SIZE);
-		PushArrayArray(g_vGen,a_Gen,RUNE_BLOCK_SIZE);
+		PopStackArray(to_global,a_Gen[0],RUNE_BLOCK_SIZE);
+		PushArrayArray(g_vGen,a_Gen[0],RUNE_BLOCK_SIZE);
 	}
 
 	while(!IsStackEmpty(to_disabled))
 	{
 		++cnt;
 		new a_Gen[GenEvent];
-		PopStackArray(to_disabled,a_Gen,RUNE_BLOCK_SIZE);
-		PushArrayArray(g_vGenDisabled,a_Gen,RUNE_BLOCK_SIZE);
+		PopStackArray(to_disabled,a_Gen[0],RUNE_BLOCK_SIZE);
+		PushArrayArray(g_vGenDisabled,a_Gen[0],RUNE_BLOCK_SIZE);
 	}
 
 
