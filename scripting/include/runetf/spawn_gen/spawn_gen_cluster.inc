@@ -361,11 +361,6 @@ stock CloseClusters()
 }
 
 
-stock RegCreateCmds()
-{
-	RegAdminCmd("sm_cluster", OnClusterCmd, ADMFLAG_CONFIG, "Cluster manipulation");
-}
-
 public Action:OnClusterCmd(client, args)
 {
 	new String:buffer[1024];

@@ -396,7 +396,7 @@ public Handler_ClusterDefaultMenu(Handle:menu, MenuAction:m_action, param1, para
 }
 
 Handle:ClientSelectDefaultCluster(client, const String:item_str[])
-{
+{// Should really move this logic to rune_gen_iterate
 
 	if(!strcmp(item_str,"%%CLEAR%%"))
 	{

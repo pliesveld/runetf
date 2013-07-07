@@ -184,7 +184,7 @@ stock DisplayDefaultClusterToClient(client, Handle:hDefaultClusters)
 	new len = strcopy(sMessage,sizeof(sMessage),"Default clusters: ");
 	new size;
 	
-	if((size = GetArraySize(hDefaultClusters)) == 0)
+	if(hDefaultClusters == INVALID_HANDLE || (size = GetArraySize(hDefaultClusters)) == 0)
 	{
 		StrCat(sMessage,sizeof(sMessage),"none.");
 		CPrintToChat(client,sMessage);
@@ -311,7 +311,7 @@ stock Action:SetCurrentCmd(client, args)
 		PrintToConsole(client, "usage: sm_gen set <test|origin|angle>");
 		PrintToConsole(client, "usage: sm_gen set <idx|id|force> <integer>");
 		PrintToConsole(client, "usage: sm_gen set <origin|angle> <vector>");
-		PrintToConsole(client, "usage: sm_gen set <default> <cluster>");
+		PrintToConsole(client, "usage: sm_gen set <add|del|list> <cluster>");
 		return Plugin_Handled;
 	}
 
@@ -438,6 +438,71 @@ stock Action:SetCurrentCmd(client, args)
 		}
 		set_angle_info(hWorking, currentIdx, _ang);
 		bSpawn = true;
+	} else if(!strcmp(param,"list", false)) {
+		DisplayDefaultClusterToClient(client,g_Player[DefaultCluster]);
+	} else if(!strcmp(param,"add", false)) {
+		if(GetCmdArgs() < 3)
+		{
+			PrintToConsole(client,"Expected cluster argument");
+			return Plugin_Handled;
+		}
+		if(g_vGenCluster == INVALID_HANDLE)
+			return Plugin_Stop;
+
+		decl String:s_cluster[MAX_CLUSTER_LEN];
+		GetCmdArg(3, s_cluster,sizeof(s_cluster));
+		new Handle:c_array;
+		if(!GetTrieValue(g_vGenCluster, s_cluster, c_array))
+		{
+			PrintToConsole(client,"invalid cluster %s", s_cluster);
+			return Plugin_Handled;
+		}
+
+		if(g_Player[DefaultCluster] == INVALID_HANDLE)
+		{
+			g_Player[DefaultCluster] = CreateArray(MAX_CLUSTER_LEN);
+			PushArrayString(g_Player[DefaultCluster],s_cluster);
+		} else if(FindStringInArray(g_Player[DefaultCluster],item_str) != -1) {
+			PrintToConsole(client,"cluster %s is already in default set.",s_cluster);
+			return Plugin_Handled;
+		} else {
+			PushArrayString(g_Player[DefaultCluster],item_str);
+		}
+
+		DisplayDefaultClusterToClient(client,g_Player[DefaultCluster]);
+	} else if(!strcmp(param,"del", false)) {
+		if(GetCmdArgs() < 3)
+		{
+			PrintToConsole(client,"Expected cluster argument");
+			return Plugin_Handled;
+		}
+		if(g_vGenCluster == INVALID_HANDLE)
+			return Plugin_Stop;
+
+		decl String:s_cluster[MAX_CLUSTER_LEN];
+		GetCmdArg(3, s_cluster,sizeof(s_cluster));
+		new Handle:c_array;
+		if(!GetTrieValue(g_vGenCluster, s_cluster, c_array))
+		{
+			PrintToConsole(client,"invalid cluster %s", s_cluster);
+			return Plugin_Handled;
+		}
+
+		if(g_Player[DefaultCluster] == INVALID_HANDLE || GetArraySize(g_Player[DefaultCluster]) == 0)
+		{
+			PrintToConsole(client,"Default Cluster set is empty.");
+			return Plugin_Handled;
+		}
+		new idx
+
+		if((idx = FindStringInArray(g_Player[DefaultCluster],s_cluster)) == -1)
+		{
+			PrintToConsole(client,"Default Cluster set does not contain %s.",s_cluster);
+			return Plugin_Handled;
+		} else {
+			RemoveFromArray(g_Player[DefaultCluster], idx);
+		}
+		DisplayDefaultClusterToClient(client,g_Player[DefaultCluster]);
 	} else {
 		PrintToConsole(client,"unknown sm_gen set command %s", param);
 	}

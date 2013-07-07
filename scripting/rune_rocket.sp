@@ -21,8 +21,8 @@
 #undef PLUGIN_AUTHOR
 #undef PLUGIN_URL
 
-#define THIS_PLUGIN_AUTHOR "MasterOfTheXP + happs"
-#define THIS_PLUGIN_URL "http://forums.alliedmods.net/showthread.php?p=1678732"
+#define THIS_PLUGIN_AUTHOR "javalia + happs"
+#define THIS_PLUGIN_URL "http://forums.alliedmods.net/showthread.php?t=162888"
 
 
 #define PLUGIN_NAME "Rune of IronDome and DeadMansTrigger"

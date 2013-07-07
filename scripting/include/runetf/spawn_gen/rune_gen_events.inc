@@ -700,7 +700,7 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 		if(!GetTrieValue(hClassActionTrie,baseEvent,value))
 		{
 			LogError("warning; during event remove, invalid reference count %d. cname.event %s",value, baseEvent);
-			LogMessage("inproper unhook. action %s event %s", actionString[action], baseEvent);
+			LogMessage("improper unhook. action %s event %s", actionString[action], baseEvent);
 		} else {
 			if(value == 1)
 			{ 

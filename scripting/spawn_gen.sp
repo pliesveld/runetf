@@ -66,6 +66,7 @@ public OnPluginStart()
 	RegAdminCmd("sm_it", OnIterateCmd, ADMFLAG_CONFIG, "iterate rune spawn points");
 	RegAdminCmd("sm_gen", OnGenCmd, ADMFLAG_CONFIG, "rune generator commands");
 	RegAdminCmd("sm_gen_reset", OnGenResetCmd, ADMFLAG_CONFIG, "rune generator commands");
+	RegAdminCmd("sm_cluster", OnClusterCmd, ADMFLAG_CONFIG, "Cluster manipulation");
 
 	RegisterMenus();
 	InitRuneConvars();
