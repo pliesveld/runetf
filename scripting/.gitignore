@@ -1,6 +1,7 @@
 compiled/
 umc/
 disabled_runes/
+updater/
 bot_test.sp
 compile.sh
 spcomp

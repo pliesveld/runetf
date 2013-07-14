@@ -63,7 +63,7 @@ public DeflectRuneDrop(client,ref)
 	g_Effect[client][active] = 0;
 
 	new t_ent = EntRefToEntIndex(g_Effect[client][ent_trig]);
-	if(t_ent != INVALID_ENT_REFERENCE)
+	if(t_ent != INVALID_ENT_REFERENCE && t_ent != 0)
 		RemoveEdict(t_ent);
 
 	SDKUnhook(client,SDKHook_OnTakeDamage,Jedi_OnTakeDamage);
