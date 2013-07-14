@@ -321,8 +321,47 @@ stock Action:SetCurrentCmd(client, args)
 
 	if(!strcmp(param,"test"))
 	{
-		PrintToConsole(client,"spawning rune idx@%d", currentIdx);
-		bSpawn = true;
+		if( GetCmdArgs() < 3)
+		{
+			PrintToConsole(client,"spawning rune idx@%d", currentIdx);
+			bSpawn = true;
+		} else {
+			decl String:s_cluster[MAX_CLUSTER_LEN]="";
+			new Handle:array_ids;
+			GetCmdArg(3,s_cluster,sizeof(s_cluster));
+
+			if(StrEqual("workingset",s_cluster,false) || StrEqual("working",s_cluster,false))
+			{
+				array_ids = g_Player[WorkingSet];
+			} else if (StrEqual("global",s_cluster,false) || StrEqual("active",s_cluster,false)) {
+				array_ids = g_vGen;
+			} else if (StrEqual("disable",s_cluster,false) || StrEqual("disabled", s_cluster, false)) {
+				array_ids = g_vGenDisabled;
+			} else {
+				PrintToConsole(client,"Argument expected global|disabled|working");
+				return Plugin_Handled;
+			}
+			
+			new a_size;
+			if(array_ids == INVALID_HANDLE || (a_size = GetArraySize(array_ids)) == 0)
+			{
+				PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
+				return Plugin_Stop;
+			}
+			new Handle:pack;
+
+			CreateDataTimer(0.075,SpawnTestRuneTimerBlock,pack,TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+
+			for(new i; i < a_size;++i)
+			{
+				WritePackCell(pack,GetArrayCell(array_ids,i));
+			}
+			ResetPack(pack);
+			PrintToConsole(client,"spawning cluster %s",s_cluster);
+		}
+
+
+
 	} else if(!strcmp(param,"idx")) {
 		if(GetCmdArgs() < 3)
 		{
@@ -392,12 +431,14 @@ stock Action:SetCurrentCmd(client, args)
 
 				GetCmdArg(3+i,param,sizeof(param));
 				new Float:value = 0.0;
-				if(!StrEqual(param,"same",false))
+				if(StrEqual(param,"same",false))
 					continue;
 
-				if(StringToFloatEx(param,value) < 1)
+				if(StrEqual(param,"invert",false))
 				{
-					PrintToConsole(client,"Expected float value or string same; invalid value %s", param);
+					value = -_ori[i];
+				} else if(StringToFloatEx(param,value) < 1) {
+					PrintToConsole(client,"Expected float value or string same|invert; invalid value %s", param);
 					return Plugin_Handled;
 				}
 				_ori[i] = value;
@@ -421,11 +462,21 @@ stock Action:SetCurrentCmd(client, args)
 
 				GetCmdArg(3+i,param,sizeof(param));
 				new Float:value = 0.0;
-				if(!StrEqual(param,"same",false))
+				if(StrEqual(param,"same",false))
 					continue;
 
-				if(StringToFloatEx(param,value) < 1)
+				if(StrEqual(param,"invert",false)) 
 				{
+					value = -_ang[i];
+				} else if(StrEqual(param,"rotate")) { 
+					new Float:delta[3] = {90.0, 180.0,45.0};
+
+					if(_ang[i] > delta[i])
+						value = _ang[i] - delta[i];
+					else
+						value = _ang[i] + delta[i];
+
+				} else if(StringToFloatEx(param,value) < 1) {
 					PrintToConsole(client,"Expected float value or string same; invalid value %s", param);
 					return Plugin_Handled;
 				}
@@ -462,11 +513,11 @@ stock Action:SetCurrentCmd(client, args)
 		{
 			g_Player[DefaultCluster] = CreateArray(MAX_CLUSTER_LEN);
 			PushArrayString(g_Player[DefaultCluster],s_cluster);
-		} else if(FindStringInArray(g_Player[DefaultCluster],item_str) != -1) {
+		} else if(FindStringInArray(g_Player[DefaultCluster],s_cluster) != -1) {
 			PrintToConsole(client,"cluster %s is already in default set.",s_cluster);
 			return Plugin_Handled;
 		} else {
-			PushArrayString(g_Player[DefaultCluster],item_str);
+			PushArrayString(g_Player[DefaultCluster],s_cluster);
 		}
 
 		DisplayDefaultClusterToClient(client,g_Player[DefaultCluster]);
@@ -900,36 +951,46 @@ public Action:ClusterWorkingSetCmd(client,args)
 			PrintToConsole(client,"expected cluster name");
 			return Plugin_Stop;
 		}
-		decl String:s_cluster[MAX_CLUSTER_LEN];
-		GetCmdArg(3, s_cluster,sizeof(s_cluster));
-		new Handle:array_ids;
+
+		new param_i = 3;
+		new Handle:pack = INVALID_HANDLE;
+
+		for(;param_i <= GetCmdArgs();++param_i)
+		{
+
+			decl String:s_cluster[MAX_CLUSTER_LEN];
+			GetCmdArg(param_i, s_cluster,sizeof(s_cluster));
+			new Handle:array_ids;
 		
-		if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
-		{
-			PrintToConsole(client,"invalid cluster name %s", s_cluster);
+			if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
+			{
+				PrintToConsole(client,"invalid cluster name %s", s_cluster);
+				continue;
+			}
+
+			new a_size;
+			if(array_ids == INVALID_HANDLE || (a_size = GetArraySize(array_ids)) == 0)
+			{
+				PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
+				continue;
+			}
+
+			if(pack == INVALID_HANDLE)
+				CreateDataTimer(0.075,SpawnTestRuneTimerBlock,pack,TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+
+			for(new i; i < a_size;++i)
+			{
+				WritePackCell(pack,GetArrayCell(array_ids,i));
+			}
+
+			PrintToConsole(client,"spawning cluster %s",s_cluster);
+		}
+
+		if(pack == INVALID_HANDLE)
 			return Plugin_Stop;
-		}
-
-		new a_size;
-		if(array_ids == INVALID_HANDLE || (a_size = GetArraySize(array_ids)) == 0)
-		{
-			PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
-			return Plugin_Stop;
-		}
-		new Handle:pack;
-
-		CreateDataTimer(0.075,SpawnTestRuneTimerBlock,pack,TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-
-		for(new i; i < a_size;++i)
-		{
-			WritePackCell(pack,GetArrayCell(array_ids,i));
-		}
-
 		ResetPack(pack);
-		
-		PrintToConsole(client,"spawning cluster %s",s_cluster);
 
-		} else {
+	} else {
 		PrintToConsole(client, "Unknown cluster command %s", cmd);
 		return Plugin_Stop;
 	}
