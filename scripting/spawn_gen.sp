@@ -58,7 +58,6 @@ public OnPluginStart()
 
 	HookMapEvents();
 
-	RegCreateCmds();
 	RegAdminCmd("sm_runetf_reload", OnReloadCmd, ADMFLAG_CONFIG, "Reload map rune gen config file");
 	RegAdminCmd("sm_runetf_save", OnSaveCmd, ADMFLAG_CONFIG, "save map rune gen config file");
 	RegAdminCmd("sm_gen_reload", OnReloadCmd, ADMFLAG_CONFIG, "Reload map rune gen config file");
