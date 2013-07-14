@@ -27,6 +27,7 @@
 		"Plugin" "Path_SM/data/runetf/cp_dustbowl.cfg"
 		"Plugin" "Path_SM/data/runetf/cp_egypt_final.cfg"
 		"Plugin" "Path_SM/data/runetf/cp_fastlane.cfg"
+		"Plugin" "Path_SM/data/runetf/cp_standin_final.cfg"
 		"Plugin" "Path_SM/data/runetf/cp_foundry.cfg"
 		"Plugin" "Path_SM/data/runetf/cp_freight_final1.cfg"
 		"Plugin" "Path_SM/data/runetf/cp_gorge.cfg"
