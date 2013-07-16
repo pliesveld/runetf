@@ -1035,7 +1035,7 @@ public Action:EventClusterSetCmd(client,args)
 			PrintToConsole(client,"source cluster has invalid event array");
 			return Plugin_Handled;
 		}
-		new ret = CopyClusterEvents(event_arr, event_arr_src, false);	
+		new ret = CopyClusterEvents(event_arr, event_arr_src, false);
 		PrintToConsole(client,"Copied %d events from %s to %s", ret,s_cluster_src, s_cluster);
 		return Plugin_Continue;
 		
@@ -1078,7 +1078,7 @@ public Action:EventClusterSetCmd(client,args)
 
 		if(GetCmdArgs() < 6)
 		{
-			PrintToConsole(client,"sm_gen event <cluster> create ClusterGenType HookType <class name or entity name>");
+			PrintToConsole(client,"sm_gen event <cluster> create %s %s <class name or entity name>", actionString[a_Event[ClusterType]], entityString[a_Event[EventType]]);
 			return Plugin_Handled;
 		}
 
@@ -1168,22 +1168,89 @@ public Action:EventClusterSetCmd(client,args)
 			PrintToConsole(client,"sm_gen event %s remove <#event idx>",s_cluster);
 			return Plugin_Handled;
 		}
-		new String:e_idx[8];
-		TrimString(e_idx);
-		GetCmdArg(4,e_idx,sizeof(e_idx));
-		new idx = StringToInt(e_idx);
-		
-		if( (idx == 0 && e_idx[0] != '0') || idx < 0 || idx >= GetArraySize(event_arr))
+
+		decl String:sArg[8]="";
+		GetCmdArg(4,sArg,sizeof(sArg));
+
+
+		new idx = -1;
+		if (StringToIntEx(sArg,idx) < 0)
 		{
-			PrintToConsole(client,"Invalid index %s in event stack. 0 to %d",
-				e_idx, GetArraySize(event_arr));
+			PrintToConsole(client,"invalid event index; expected an integer");
 			return Plugin_Handled;
 		}
+
+		new e_size;
+		if( (e_size = GetArraySize(event_arr))  == 0)
+		{
+			PrintToConsole(client,"Cluster %s has no events to remove.",s_cluster);
+			return Plugin_Handled;
+		}
+
+		
+		if( idx >= e_size || idx < 0)
+		{
+			PrintToConsole(client,"Invalid index %d in event stack. Expected from 0 to %d",
+				idx, e_size - 1);
+			return Plugin_Handled;
+		}
+
 		new a_Event[GenEvent];
 		GetArrayArray(event_arr,idx, a_Event[0], EVENT_BLOCK_SIZE);
 		HookGenEvent(s_cluster, a_Event,true);
 		RemoveFromArray(event_arr, idx);
 		PrintToConsole(client,"Event removed.");
+	} else if(!strcmp(cmd,"swap")) {
+		if(event_arr == INVALID_HANDLE)
+		{
+			PrintToConsole(client,"invalid event array for cluster %s",s_cluster);
+			return Plugin_Handled;
+		}
+
+		if(GetCmdArgs() < 5)
+		{
+			PrintToConsole(client,"sm_gen event %s swap <#event idx> <#event idx>",s_cluster);
+			return Plugin_Handled;
+		}
+
+		decl String:sArg[8]="";
+		decl String:sArg2[8]="";
+		GetCmdArg(4,sArg,sizeof(sArg));
+		GetCmdArg(5,sArg2,sizeof(sArg2));
+
+		new s_idx = -1, idx = -1;
+
+		if (StringToIntEx(sArg,s_idx) < 0 || StringToIntEx(sArg2,idx) < 0)
+		{
+			PrintToConsole(client,"invalid event index; expected an integer");
+			return Plugin_Handled;
+		}
+
+		new e_size;
+		if( (e_size = GetArraySize(event_arr))  == 0)
+		{
+			PrintToConsole(client,"Cluster %s has no events to remove.",s_cluster);
+			return Plugin_Handled;
+		}
+
+		
+		if( s_idx >= e_size || s_idx < 0 || idx >= e_size || idx < 0 || idx == s_idx)
+		{
+			PrintToConsole(client,"Invalid index. Expected %d %d to be in the range 0 to %d",
+				s_idx, idx, e_size - 1);
+			return Plugin_Handled;
+		}
+
+		new a_EventSrc[GenEvent];
+		GetArrayArray(event_arr,s_idx, a_EventSrc[0], EVENT_BLOCK_SIZE);
+
+		new a_Event[GenEvent];
+		GetArrayArray(event_arr,idx, a_Event[0], EVENT_BLOCK_SIZE);
+		
+		SetArrayArray(event_arr,idx,a_EventSrc[0],EVENT_BLOCK_SIZE);
+		SetArrayArray(event_arr,s_idx,a_Event[0],EVENT_BLOCK_SIZE);
+
+		PrintToConsole(client,"Event index #%d and #%d have been swapped in cluster %s",s_idx,idx,s_cluster);
 		
 	} else
 		PrintToConsole(client,"unknown subcommand %s", cmd);

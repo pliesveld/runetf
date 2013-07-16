@@ -18,17 +18,39 @@ new String:class_type[][32] = {
 	"tf_logic_arena" , "tf_gamerules", "game_round_win", "team_round_timer"
 }
 
-new Handle:g_CNameTrie 				= INVALID_HANDLE; // keyed by class_type[], value is index in class_type for that key
-new Handle:g_MapEventEntities = INVALID_HANDLE;//array of map entities found. size == sizeof(class_type)
-//block 0 = count
-//block 1 = handle to array of ent references
-//block 2 = handle to string array of ent names
+/*
+  Classname entity reverse lookup.  Keyed by classname, the value
+  is the index in class_type of the entity class.
+*/
+new Handle:g_CNameTrie 				= INVALID_HANDLE; 
 
-new Handle:g_vGenCluster 	= INVALID_HANDLE; //trie keyed by cluster, value is array of Ids
+
+/*
+	Multi-block array of map entities found.  For each entity class:
+
+	block 0 = count; number of entities found of the entity class
+	block 1 = array handle contains entity references of the entity class
+	block 2 = array handle contains entity names (if available) of the entity references of class type entity class
+
+*/
+new Handle:g_MapEventEntities = INVALID_HANDLE;
+
+
+/*
+	Cluster to Id Trie;  Indexed by cluster name, the value is a handle of array Ids.
+*/
+new Handle:g_vGenCluster 	= INVALID_HANDLE; 
+
+//Array of cluster names
 new Handle:g_ClusterNames = INVALID_HANDLE; //array of cluster names
+
+
+/*
+	Array of cluster-events.  Each entry is of type RuneClusters; each cluster
+	has an event array.
+*/
 new Handle:g_vGenEvent 		= INVALID_HANDLE; // array of RuneClusters
 
-//new bool:g_bMerge = false;
 new bool:g_bChanged = false;
 new bool:g_bEventsHooked = false;
 

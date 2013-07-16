@@ -256,9 +256,14 @@ public Action:Event_Round(Handle:event, const String:strName[], bool:bDontBroadc
 		startover = GetEventInt(event,"fullreset");
 		if(startover) 
 		{ 
-			//LogMessage("round start: fullreset");
+
+#if defined DEBUG_GEN_EVENT
+			LogMessage("round start: fullreset");
+#endif
 		} else {
-		//	LogMessage("round start: not full reset");
+#if defined DEBUG_GEN_EVENT
+			LogMessage("round start: not full reset");
+#endif
 		}
 
 	} else if(StrEqual(strName,"teamlpay_round_win",false)) {
@@ -439,7 +444,7 @@ DisplayMapEntityByType(class_idx, client = 0)
 		return;
 	decl String:buffer[1024];
 	new cnt = GetArrayCell(g_MapEventEntities,class_idx,0); 
-	Format(buffer,sizeof(buffer),"Class %s foundin %d entities: ", class_type[class_idx],cnt);
+	Format(buffer,sizeof(buffer),"Class %s found %d entities: ", class_type[class_idx],cnt);
 
 	new Handle:ent_names_arr = GetArrayCell(g_MapEventEntities,class_idx,2);
 	for(new j; j < cnt;++j)  
@@ -542,6 +547,10 @@ stock InitGenEvents()
 	if(g_vGenEvent == INVALID_HANDLE)
 		return;
 
+#if defined DEBUG_GEN_EVENT
+	LogMessage("spawn_gen::InitGenEvents()");
+#endif
+
 	for(new i; i < GetArraySize(g_vGenEvent);++i)
 	{
 		new a_Cluster[RuneCluster];
@@ -554,6 +563,10 @@ stock ShutdownGenEvents()
 {
 	if(g_vGenEvent == INVALID_HANDLE)
 		return;
+
+#if defined DEBUG_GEN_EVENT
+	LogMessage("spawn_gen::ShutdownGenEvents()");
+#endif
 
 	for(new i; i < GetArraySize(g_vGenEvent);++i)
 	{
@@ -594,6 +607,9 @@ stock HookClusterEvents(a_Cluster[RuneCluster], bool:remove = false)
 	new size;
 	if( a_Cluster[EventArray] != INVALID_HANDLE && (size = GetArraySize(a_Cluster[EventArray])) > 0 )
 	{
+#if defined DEBUG_GEN_EVENT
+		LogMessage("%sooking #%d events.", remove ? "Unh" : "H", size);
+#endif
 		for(new j;j < size;++j)
 		{
 			new a_Event[GenEvent];
@@ -644,9 +660,18 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 		if((hCount = RegisterEvent(event, cluster_name,ClusterGenType:action,remove))==-1)
 			return;
 		if(remove && hCount == 0)
+		{
 			RemoveFromTrie(hClassActionTrie,event);
-		else
+#if defined DEBUG_GEN_EVENT
+			LogMessage("HookGenEvent %s removed.",event);
+#endif
+		} else {
 			SetTrieValue(hClassActionTrie,event,hCount);
+#if defined DEBUG_GEN_EVENT
+			LogMessage("HookGenEvent %s ref %d",event,hCount);
+#endif
+
+		}
 	} else {
 		if(entity[0] == '\0')
 		{
@@ -664,9 +689,17 @@ stock HookGenEvent(const String:cluster_name[], a_Event[GenEvent], bool:remove =
 					if((hCount = RegisterEvent(event, cluster_name,ClusterGenType:action,remove))==-1)
 						return;
 					if(remove && hCount == 0)
+					{
 						RemoveFromTrie(hNamedActionTrie,event);
-					else
+#if defined DEBUG_GEN_EVENT
+						LogMessage("HookGenEvent %s removed.",event);
+#endif
+					} else {
 						SetTrieValue(hNamedActionTrie,event,hCount);
+#if defined DEBUG_GEN_EVENT
+						LogMessage("HookGenEvent %s ref %d",event,hCount);
+#endif
+					}
 					//bHookedByNamedEnt = true;
 				}
 			}

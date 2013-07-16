@@ -14,6 +14,7 @@
 
 #define REQUIRE_EXTENSIONS
 #define AUTOLOAD_EXTENSIONS
+//#define DEBUG
 #include <runetf/defines_debug>
 
 #include <runetf/runetf>
@@ -276,7 +277,6 @@ public Action:SpawnRuneTimer(Handle:timer)
 
 	new idx = (GetURandomInt()%a_size)
 
-//	new _id;
 	new Float:_ori[3];
 	new Float:_ang[3];
 	new Float:_force;
@@ -285,19 +285,21 @@ public Action:SpawnRuneTimer(Handle:timer)
 	new t_gen[RuneGen];
 	GetArrayArray(g_vGen, idx, t_gen[0], RUNE_BLOCK_SIZE);
 
-//	_id = t_gen[Id];
 	GetTempGenVec(t_gen, g_ori, _ori);
 	GetTempGenVec(t_gen, g_ang, _ang);
 	_force = t_gen[g_force];
 
-	if(_force < 250.0)
-		_force = 250.0
+//	if(_force < 250.0)
+//		_force = 250.0
 
 	new Float:_vel[3];
 	GetAngleVectors(_ang,_vel, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(_vel, _force);
 #if defined DEBUG_GEN_SPAWN
-	PrintToServer("Spawned index %d: angle %f %f %f", idx, _ang[0], _ang[1], _ang[2]);
+	new r_id;
+	r_id = t_gen[Id];
+
+	PrintToServer("Spawned gen %d: angle %f %f %f", r_id, _ang[0], _ang[1], _ang[2]);
 #endif
 	SpawnRandomRune(_ori,_ang,_vel, g_RuneSpawn[fRuneLifeTime]);
 	return Plugin_Continue;
@@ -391,7 +393,9 @@ public Action:OnGenResetCmd(client, args)
 
 public TF2_OnWaitingForPlayersStart()
 {
+#if defined DEBUG_GEN_EVENT
 	LogMessage("Start waiting for players");
+#endif
 
 // Delete runes that may have spawned.
 // Stop Spawn timer
@@ -408,7 +412,9 @@ public TF2_OnWaitingForPlayersStart()
 
 public TF2_OnWaitingForPlayersEnd()
 {
+#if defined DEBUG_GEN_EVENT
 	LogMessage("End waiting for players.");
+#endif
 
 	KillAllRunes();
 	KillAllPlayerRunes();
