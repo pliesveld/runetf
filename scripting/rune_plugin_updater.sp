@@ -1,8 +1,18 @@
 #include <sourcemod>
 
 #include <runetf/runetf>
-#undef REQUIRE_PLUGIN
+
+#if !defined REQUIRE_PLUGIN
+#define REQUIRE_PLUGIN
+#endif
+
+#if !defined AUTOLOAD_EXTENSIONS
+#define AUTOLOAD_EXTENSIONS
+#endif
+
+
 #include <updater>
+#define DEBUG
 
 
 #define PLUGIN_NAME "Rune Auto-Updater"
@@ -16,8 +26,8 @@ public Plugin:myinfo = {
 	url = PLUGIN_URL
 }
 
-//#define UPDATE_URL_BASE   "https://raw.github.com/pliesveld/runetf"
-#define UPDATE_URL_BASE   "http://localhost/runetf"
+#define UPDATE_URL_BASE   "https://raw.github.com/pliesveld/runetf"
+//#define UPDATE_URL_BASE   "http://localhost/runetf"
 #define UPDATE_URL_BRANCH "master"
 #define UPDATE_URL_FILE   "updateplugin.txt"
 #define UPDATE_URL_CFG    "updatemapcfg.txt"
