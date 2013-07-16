@@ -26,7 +26,7 @@ public Plugin:myinfo = {
 	url = PLUGIN_URL
 }
 
-#define UPDATE_URL_BASE   "https://raw.github.com/pliesveld/runetf"
+#define UPDATE_URL_BASE   "http://raw.github.com/pliesveld/runetf"
 //#define UPDATE_URL_BASE   "http://localhost/runetf"
 #define UPDATE_URL_BRANCH "master"
 #define UPDATE_URL_FILE   "updateplugin.txt"
