@@ -14,7 +14,7 @@
 
 #define REQUIRE_EXTENSIONS
 #define AUTOLOAD_EXTENSIONS
-//#define DEBUG
+#define DEBUG
 #include <runetf/defines_debug>
 
 #include <runetf/runetf>
@@ -211,6 +211,10 @@ public DescCvarChanged(Handle:cvar, const String:oldVal[], const String:newVal[]
 }
 
 
+public OnMapStart()
+{
+	PrecacheRuneModel();
+}
 
 
 

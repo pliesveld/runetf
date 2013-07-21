@@ -7,6 +7,9 @@
 #include <sdktools>
 
 #define RUNE_MODEL "models/props/rune_01.mdl"
+//#define DUMMY_MODEL "models/egypt/palm_tree/palm_tree.mdl"
+
+new g_RuneMdlIdx = 0;
 
 stock AddRunesToDownloadTable()
 {
@@ -21,6 +24,13 @@ stock AddRunesToDownloadTable()
   AddFileToDownloadsTable("models/props/rune_01.vvd");
 }
 
+stock PrecacheRuneModel()
+{
+	if( (g_RuneMdlIdx = PrecacheModel(RUNE_MODEL,false)) <= 0)
+	{
+		LogError("MODEL ERROR: Failed to cache model %s", RUNE_MODEL);
+	}
+}
 
 
 
@@ -71,7 +81,9 @@ stock SpawnTrigger(rune_ent)
 	DispatchKeyValue(trigger_ent, "spawnflags", "1");
 	// DispatchKeyValue(trigger_ent, "wait", "2");
 	DispatchKeyValue(trigger_ent, "StartDisabled","1");
-	SetEntityModel(trigger_ent, RUNE_MODEL)
+	//SetEntityModel(trigger_ent, RUNE_MODEL)
+
+	Entity_SetModelIndex(trigger_ent,g_RuneMdlIdx);
 
 	new Float:minbounds[3] = {-25.0, -25.0, 0.0}; 
 	new Float:maxbounds[3] = {25.0, 25.0, 70.0};

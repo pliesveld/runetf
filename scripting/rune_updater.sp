@@ -69,9 +69,10 @@ public OnPluginStart()
 	if (LibraryExists("updater"))
 	{
 		if(g_bUpdateMapCfg)
+		{
 			Updater_AddPlugin(g_URLMap);
-
-		g_bUpdateRegistered = true;
+			g_bUpdateRegistered = true;
+		}
 	} else {
 #if defined DEBUG
 		LogMessage("Updater not found.");
@@ -113,14 +114,26 @@ public Action:Command_Update(client,args)
 
 public Action:Updater_OnPluginChecking()
 {
-	LogMessage("Checking for updates.");
-	return Plugin_Continue;
+	if(GetConVarBool(hCvarCfg))
+	{
+		LogMessage("Checking for updates.");
+		return Plugin_Continue;
+	} else {
+		LogMessage("rune_update_mapcfg set to not update stock maps.");
+		return Plugin_Handled;
+	}
 }
 
 public Action:Updater_OnPluginDownloading()
 {
-	LogMessage("Downloading update.");
-	return Plugin_Continue;
+	if(GetConVarBool(hCvarCfg))
+	{
+		LogMessage("Checking for updates.");
+		return Plugin_Continue;
+	} else {
+		LogMessage("rune_update_mapcfg set to not download maps configs.");
+		return Plugin_Handled;
+	}
 }
 
 public Updater_OnPluginUpdating()
@@ -139,6 +152,9 @@ public OnLibraryAdded(const String:name[])
 	if (StrEqual(name, "updater"))
 	{
 		if(g_bUpdateMapCfg)
+		{
 			Updater_AddPlugin(g_URLMap)
+			g_bUpdateRegistered = true;
+		}
 	}
 }
