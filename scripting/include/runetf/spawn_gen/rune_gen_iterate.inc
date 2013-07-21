@@ -346,7 +346,7 @@ stock Action:SetCurrentCmd(client, args)
 			if(array_ids == INVALID_HANDLE || (a_size = GetArraySize(array_ids)) == 0)
 			{
 				PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
-				return Plugin_Stop;
+				return Plugin_Handled;
 			}
 			new Handle:pack;
 
@@ -498,7 +498,7 @@ stock Action:SetCurrentCmd(client, args)
 			return Plugin_Handled;
 		}
 		if(g_vGenCluster == INVALID_HANDLE)
-			return Plugin_Stop;
+			return Plugin_Handled;
 
 		decl String:s_cluster[MAX_CLUSTER_LEN];
 		GetCmdArg(3, s_cluster,sizeof(s_cluster));
@@ -528,7 +528,7 @@ stock Action:SetCurrentCmd(client, args)
 			return Plugin_Handled;
 		}
 		if(g_vGenCluster == INVALID_HANDLE)
-			return Plugin_Stop;
+			return Plugin_Handled;
 
 		decl String:s_cluster[MAX_CLUSTER_LEN];
 		GetCmdArg(3, s_cluster,sizeof(s_cluster));
@@ -563,7 +563,7 @@ stock Action:SetCurrentCmd(client, args)
 		SpawnTestRune( hWorking , currentIdx );
 
 
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 // set <id|ori|ang>
 // merge //copy workingset to global array
@@ -643,7 +643,7 @@ stock Action:DropWorkingSetCmd(client)
 		g_Player[WorkingSet] = INVALID_HANDLE;
 		g_Player[CurrentGeneratorIndex] = -1;
 		PrintToConsole(client,"Workingset dropped.  %d elements removed from clusters.", ret);
-		return Plugin_Continue;
+		return Plugin_Handled;
 	}
 	return Plugin_Handled;
 }
@@ -717,7 +717,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 		PrintToConsole(client,"sm_gen cluster <enable|disable> <cluster name>");
 		PrintToConsole(client,"sm_gen cluster <load|drop> <cluster name>");
 		PrintToConsole(client,"sm_gen cluster <spawn> <cluster name>");
-		return Plugin_Stop;
+		return Plugin_Handled;
 	}
 	decl String:cmd[80];
 
@@ -731,7 +731,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 		if(strlen(s_cluster) >= MAX_CLUSTER_LEN)
 		{
 			PrintToConsole(client,"Cluster name too long.");
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 		CreateCluster(s_cluster,id_array);
 		PrintToConsole(client, "created cluster %s", s_cluster);
@@ -748,7 +748,7 @@ public Action:ClusterWorkingSetCmd(client,args)
 		}
 
 		if( g_Player[WorkingSet] == INVALID_HANDLE)
-			return Plugin_Stop;
+			return Plugin_Handled;
 
 		for(new i;i < GetArraySize( g_Player[WorkingSet] );++i)
 		{
@@ -768,12 +768,12 @@ public Action:ClusterWorkingSetCmd(client,args)
 		if(!GetTrieValue(g_vGenCluster, s_cluster, c_array))
 		{
 			PrintToConsole(client,"invalid cluster %s", s_cluster);
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 		if(GetCmdArgs() < 4)
 		{
 			PrintToConsole(client,"Expected list of generator identifiers or a range N-M");
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 		new ret;
 		for(new iarg = 4; iarg <= GetCmdArgs();++iarg)
@@ -832,70 +832,82 @@ public Action:ClusterWorkingSetCmd(client,args)
 	
 	} else if(!strcmp(cmd,"enable") || !strcmp(cmd,"disable")) {
 		new bool:enable = false;
+		new nCmds;
 
 		if(!strcmp(cmd,"enable"))
 			enable = true;
 
-		if(GetCmdArgs() < 3)
+		if((nCmds = GetCmdArgs()) < 3)
 		{
 			PrintToConsole(client,"expected cluster name");
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
-		decl String:s_cluster[MAX_CLUSTER_LEN];
-		GetCmdArg(3, s_cluster,sizeof(s_cluster));
-		new Handle:array_ids;
-		new Handle:a_gen;
+
+		new iArg = 3;
+		for(; iArg <= nCmds;++iArg)
+		{
+			decl String:s_cluster[MAX_CLUSTER_LEN];
+			GetCmdArg(iArg, s_cluster,sizeof(s_cluster));
+			new Handle:array_ids;
+			new Handle:a_gen;
 		
-		if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
-		{
-			PrintToConsole(client,"invalid cluster name %s", s_cluster);
-			return Plugin_Stop;
-		}
-
-		if(array_ids == INVALID_HANDLE || GetArraySize(array_ids) == 0)
-		{
-			PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
-			return Plugin_Stop;
-		}
-
-		new n_changed;
-		new n_same;
-		for(new i; i < GetArraySize(array_ids);++i)
-		{
-			new t_Gen[RuneGen];
-			new idx;
-			new id = GetArrayCell(array_ids,i);
-			if( (  (a_gen = g_Player[WorkingSet]) != INVALID_HANDLE && (idx = FindIndexInArrayById(a_gen,id)) != -1) || (idx = FindIndexInGlobalArrayById(a_gen, id)) != -1 )
+			if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
 			{
-				GetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
-				if(enable)
+				PrintToConsole(client,"invalid cluster name %s", s_cluster);
+				return Plugin_Handled;
+			}
+
+			if(array_ids == INVALID_HANDLE)
+			{
+				PrintToConsole(client,"warning; cluster %s has invalid id array", s_cluster);
+				return Plugin_Handled;
+			}
+
+			if(GetArraySize(array_ids) == 0)
+			{
+				PrintToConsole(client,"cluster %s has contains no spawn points.", s_cluster);
+				continue;
+			}
+
+			new n_changed;
+			new n_same;
+			for(new i; i < GetArraySize(array_ids);++i)
+			{
+				new t_Gen[RuneGen];
+				new idx;
+				new id = GetArrayCell(array_ids,i);
+				if( (  (a_gen = g_Player[WorkingSet]) != INVALID_HANDLE && (idx = FindIndexInArrayById(a_gen,id)) != -1) || (idx = FindIndexInGlobalArrayById(a_gen, id)) != -1 )
 				{
-					if(t_Gen[g_StartDisabled] == false)
-						++n_same;
-					else
+					GetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
+					if(enable)
 					{
-						++n_changed;
-						t_Gen[g_StartDisabled] = false;
-						SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
-					}
-				} else {
-					if(t_Gen[g_StartDisabled] == true)
-						++n_same;
-					else
-					{
-						++n_changed;
-						t_Gen[g_StartDisabled] = true;
-						SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
+						if(t_Gen[g_StartDisabled] == false)
+							++n_same;
+						else
+						{
+							++n_changed;
+							t_Gen[g_StartDisabled] = false;
+							SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
+						}
+					} else {
+						if(t_Gen[g_StartDisabled] == true)
+							++n_same;
+						else
+						{
+							++n_changed;
+							t_Gen[g_StartDisabled] = true;
+							SetArrayArray(a_gen,idx, t_Gen[0],RUNE_BLOCK_SIZE);
+						}
 					}
 				}
 			}
+			PrintToConsole(client,"StartDisabled %s: %d changed, %d not changed",s_cluster, n_changed, n_same);
 		}
-		PrintToConsole(client,"StartDisabled %s: %d changed, %d not changed",s_cluster, n_changed, n_same);
 	} else if(!strcmp(cmd,"load") || !strcmp(cmd,"drop")) {
 		if(GetCmdArgs() < 3)
 		{
 			PrintToConsole(client,"expected cluster name");
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 		decl String:s_cluster[MAX_CLUSTER_LEN];
 		GetCmdArg(3, s_cluster,sizeof(s_cluster));
@@ -904,13 +916,13 @@ public Action:ClusterWorkingSetCmd(client,args)
 		if(!GetTrieValue(g_vGenCluster,s_cluster,array_ids))
 		{
 			PrintToConsole(client,"invalid cluster name %s", s_cluster);
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 
 		if(array_ids == INVALID_HANDLE || GetArraySize(array_ids) == 0)
 		{
 			PrintToConsole(client,"cluster %s has invalid id array", s_cluster);
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 	
 		if(!strcmp(cmd,"load"))
@@ -949,7 +961,7 @@ public Action:ClusterWorkingSetCmd(client,args)
  		if(GetCmdArgs() < 3)
 		{
 			PrintToConsole(client,"expected cluster name");
-			return Plugin_Stop;
+			return Plugin_Handled;
 		}
 
 		new param_i = 3;
@@ -987,12 +999,12 @@ public Action:ClusterWorkingSetCmd(client,args)
 		}
 
 		if(pack == INVALID_HANDLE)
-			return Plugin_Stop;
+			return Plugin_Handled;
 		ResetPack(pack);
 
 	} else {
 		PrintToConsole(client, "Unknown cluster command %s", cmd);
-		return Plugin_Stop;
+		return Plugin_Handled;
 	}
 	
 	return Plugin_Changed;
@@ -1037,7 +1049,7 @@ public Action:EventClusterSetCmd(client,args)
 		}
 		new ret = CopyClusterEvents(event_arr, event_arr_src, false);
 		PrintToConsole(client,"Copied %d events from %s to %s", ret,s_cluster_src, s_cluster);
-		return Plugin_Continue;
+		return Plugin_Handled;
 		
 	}
 
@@ -1298,7 +1310,7 @@ public Action:OnGenCmd(client, args)
 		PrintToConsole(client,"Unknown cmd %s\nUsage: sm_gen <create|display|set|merge|drop|cluster|event>", param);
 	}
 
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
 stock SpawnTestRune(const Handle:array, index)

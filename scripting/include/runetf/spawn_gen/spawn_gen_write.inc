@@ -6,7 +6,7 @@ public Action:OnSaveCmd(client, args)
 	if( (g_vGen == INVALID_HANDLE && g_vGenDisabled) || (GetArraySize(g_vGen) < 1 && GetArraySize(g_vGenDisabled) < 1))
 	{
 		PrintToConsole(client,"invalid rune generator array or empty");
-		return Plugin_Stop;
+		return Plugin_Handled;
 	}
 	new count;
 
