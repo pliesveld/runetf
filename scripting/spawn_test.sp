@@ -129,7 +129,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	new i;
 	AddRunesToDownloadTable();
 	
 /*
@@ -143,8 +142,14 @@ public OnMapStart()
 		LogError("Failed to cache model %d", ++i);
 */
 
-	if(PrecacheModel(RUNE_MODEL,true) == 0)
-		LogError("MODEL ERROR: Failed to cache model %d", ++i);
+	///if(PrecacheModel(RUNE_MODEL,true) == 0)
+	//	LogError("MODEL ERROR: Failed to cache model %d", ++i);
+
+	//if(PrecacheModel(DUMMY_MODEL,true) == 0)
+	//	LogError("MODEL ERROR: Failed to cache dummy model %d", ++i);
+	PrecacheRuneModel();
+
+
 
 #if defined DEBUG
 	PrintToServer("DBG DBG === Runes added to download table and rune model cached.")
