@@ -83,6 +83,7 @@ public OnPluginStart()
 	{
 		g_bConfigLoaded = (ReadConfig() != -1);
 	}
+	ClearSpawnGenCreateInfo()
 	return _:Plugin_Continue;
 }
 
@@ -106,7 +107,9 @@ ReadConfig()
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	RegPluginLibrary("spawn_gen");
+#if defined DEBUG_GEN_LOAD
 	LogMessage("AskLoad late = %d",late);
+#endif
 
 	if(late)
 	{
@@ -159,6 +162,7 @@ public Action:OnIterateCmd(client, args)
 
 public Action:OnReloadCmd(client, args)
 {
+	ClearSpawnGenCreateInfo()
 	ReadRuneFile(client);
 	return Plugin_Handled;
 }
@@ -223,6 +227,7 @@ public OnMapEnd()
 
 	ShutdownGenEvents();
 	ClearGlobalRuneArray();
+	ClearSpawnGenCreateInfo();
 	g_bDelayLoadConfig = true;
 	g_bConfigLoaded = false;
 
@@ -244,6 +249,7 @@ public OnMapEnd()
 	if(g_SpawnTimer != INVALID_HANDLE)
 		KillTimer(g_SpawnTimer);
 	g_SpawnTimer = INVALID_HANDLE;
+
 }
 
 public Action:DelayedLoadConfig(Handle:timer)
@@ -299,7 +305,7 @@ public Action:SpawnRuneTimer(Handle:timer)
 	new Float:_vel[3];
 	GetAngleVectors(_ang,_vel, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(_vel, _force);
-#if defined DEBUG_GEN_SPAWN
+#if defined DEBUG_GEN_SPAWN_RUNE
 	new r_id;
 	r_id = t_gen[Id];
 
@@ -347,7 +353,7 @@ public Action:SpawnRuneTimerBlock(Handle:timer, any:data)
 		new Float:_vel[3];
 		GetAngleVectors(_ang,_vel, NULL_VECTOR, NULL_VECTOR);
 		ScaleVector(_vel, _force);
-#if defined DEBUG_GEN_SPAWN
+#if defined DEBUG_GEN_SPAWN_RUNE
 		PrintToServer("Spawned index%s %d: origin %f %f %f", a_gen == g_vGenDisabled ? " of disabled" : "",idx, _ori[0], _ori[1], _ori[2]);
 #endif
 		SpawnRandomRune(_ori,_ang,_vel,g_RuneSpawn[fRuneLifeTime]);

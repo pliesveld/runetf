@@ -364,10 +364,14 @@ stock CloseClusters()
 public Action:OnClusterCmd(client, args)
 {
 	new String:buffer[1024];
+#if defined DEBUG_GEN_EVENT
 	PrintToConsole(client,"ClusterSize arr %d trie %d events %d",
 		GetArraySize(g_ClusterNames), GetTrieSize(g_vGenCluster), g_vGenEvent == INVALID_HANDLE ? -1 : GetArraySize(g_vGenEvent));
+#endif
+
 	new bool:found = false;
 	decl String:s_cluster[MAX_CLUSTER_LEN]="";
+
 	if(GetCmdArgs() > 0)
 	{
 		GetCmdArg(1,s_cluster,sizeof(s_cluster));

@@ -9,8 +9,29 @@ enum GenPlayerInfo
 	CurrentGeneratorIndex,
 	Handle:WorkingSet,
 	Handle:DefaultCluster,
-	//String:DefaultCluster[MAX_CLUSTER_LEN],
+	Float:DefaultForce,
+	Float:MapCenter[3],
 };
+
+
+new g_Player[GenPlayerInfo];
+
+stock ClearSpawnGenCreateInfo()
+{
+	g_Player[WorkingSet] = INVALID_HANDLE;
+	g_Player[CurrentGeneratorIndex] = -1;
+	if(g_Player[DefaultCluster] != INVALID_HANDLE)
+		ClearArray(g_Player[DefaultCluster]);
+
+
+	g_Player[DefaultForce] = 500.0;
+
+	g_Player[MapCenter][0] = 0.0;
+	g_Player[MapCenter][1] = 0.0;
+	g_Player[MapCenter][2] = 0.0;
+
+
+}
 
 stock FindIndexInArrayById(&Handle:array, ID)
 {
@@ -21,7 +42,6 @@ stock FindIndexInArrayById(&Handle:array, ID)
 
 	return -1;
 }
-
 
 stock FindIndexInGlobalArrayById(&Handle:array, ID)
 {
@@ -38,12 +58,12 @@ stock FindIndexInGlobalArrayById(&Handle:array, ID)
 	return -1;
 }
 
-new g_Player[GenPlayerInfo];
 
 stock FindEventCluster(const String:name[], &Handle:eventsHandle)
 {
 	return FindEventClusterInArray(name,eventsHandle,g_vGenEvent);
 }
+
 stock FindEventClusterInArray(const String:name[], &Handle:eventsHandle, Handle:g_event_array)
 {
 	new idx;
@@ -81,7 +101,9 @@ stock IsValidGenId(ID)
 // load [id, ... ] //copy from global array into working set
 ClientLoadGen(client, &Handle:global, ID, bool:remove = false)
 {
+#if defined DEBUG_SPAWN_GEN
 	LogMessage("%d Loading ID %d remove %s", client, ID, (remove == true ? "true" : "false" ));
+#endif
 	new Handle:a_gen = INVALID_HANDLE;
 
 	if(global != INVALID_HANDLE && GetArraySize(global) > 0 && FindIndexInArrayById(global, ID) != -1)
@@ -113,8 +135,6 @@ ClientLoadGen(client, &Handle:global, ID, bool:remove = false)
 
 stock LoadGenCmd(client, args)
 {
-	//decl String:cmdstr[512];
-	//GetCmdArgString(cmdstr,sizeof(cmdstr));
 
 	for(new i = 2;i <= GetCmdArgs();++i)
 	{
@@ -132,20 +152,21 @@ stock LoadGenCmd(client, args)
 
 
 static g_CreateCnt = 0;
-// create // create new entity in workingset
+
 CreateGenClientCmd(client)
 {
 	++g_CreateCnt;
-	//new newID = (client + 1)*1000 + g_CreateCnt;
+
 	new newID = g_NextGenId++;
 	new Float:_ori[3];
 	new Float:_ang[3];
-	new Float:_force  = 500.0;
+	new Float:_force  = g_Player[DefaultForce];
 
 	new pack[RuneGen];
 	ResetTempGen(pack);
 
-	GetClientEyePosition(client, _ori);
+	//GetClientEyePosition(client, _ori);
+	GetClientAbsOrigin(client,_ori);
 	GetClientEyeAngles(client, _ang);
 	
 	pack[ Id] = newID;
@@ -409,22 +430,55 @@ stock Action:SetCurrentCmd(client, args)
 				_id, a_array == g_vGen ? " global " : " disabled ");
 		}
 	} else if(!strcmp(param,"force",false)) {
-		if(GetCmdArgs() < 3)
+		new iArg;
+		if((iArg = GetCmdArgs()) < 3)
 		{
 			PrintToConsole(client,"Expected force argument");
 			return Plugin_Handled;
 		}
+
 		GetCmdArg(3, param, sizeof(param));
-		new Float:old_force = get_force_info(hWorking,currentIdx);
-		new Float:_force = StringToFloat(param);
-		set_force_info(hWorking, currentIdx, _force);
-		PrintToConsole(client, "changed current generator force %f => %f",old_force, _force);
+
+		new Float:_force;
+		new bool:setDefault = false;
+		if(StrEqual(param,"default"))
+		{
+			if(iArg < 4)
+			{
+				PrintToConsole(client,"Expected force argument.");
+				return Plugin_Handled;
+			}
+			GetCmdArg(4,param,sizeof(param))
+			setDefault = true;
+		}
+
+
+		if(StringToFloatEx(param,_force) < 1)
+		{
+			PrintToConsole(client,"Expected float value, got %s",param);
+			return Plugin_Handled;
+		}
+
+		new Float:old_force;
+		if(!setDefault)
+		{
+			set_force_info(hWorking, currentIdx, _force);
+			old_force = get_force_info(hWorking,currentIdx);
+		} else {
+			g_Player[DefaultForce] = _force;
+			old_force = g_Player[DefaultForce];
+		}
+		PrintToConsole(client, "changed %s force %f => %f", setDefault ? "default" : "current",
+      old_force, _force);
+
+
 	} else if(!strcmp(param,"origin", false)) {
 		new Float:_ori[3] = {0.0, 0.0, 0.0}
 		if(GetCmdArgs() > 2)
 		{
 			get_origin_info(hWorking,currentIdx,_ori);
-			for(new i; i < 3;++i)
+			new i;
+			for(; i < 3;++i)
 			{
 				if(GetCmdArgs() < 3+i)
 					break;
@@ -436,7 +490,8 @@ stock Action:SetCurrentCmd(client, args)
 
 				if(StrEqual(param,"invert",false))
 				{
-					value = -_ori[i];
+					new Float:d = (g_Player[MapCenter][i] - _ori[i])
+					value = g_Player[MapCenter][i] + d;
 				} else if(StringToFloatEx(param,value) < 1) {
 					PrintToConsole(client,"Expected float value or string same|invert; invalid value %s", param);
 					return Plugin_Handled;
@@ -554,6 +609,72 @@ stock Action:SetCurrentCmd(client, args)
 			RemoveFromArray(g_Player[DefaultCluster], idx);
 		}
 		DisplayDefaultClusterToClient(client,g_Player[DefaultCluster]);
+	} else if(!strcmp(param,"mapcenter", false)) {
+		new iArg;
+		if((iArg = GetCmdArgs()) < 3)
+		{
+			if(!client)
+			{
+				PrintToConsole(client,"usage: sm_gen set mapcenter <x> <y> <z>");
+				PrintToConsole(client,"usage: sm_gen set mapcenter <entity>");
+				return Plugin_Handled;
+			}
+			new Float:ori[3];
+			GetClientEyePosition(client,ori);
+			
+			g_Player[MapCenter][0] = ori[0];
+			g_Player[MapCenter][1] = ori[1];
+			g_Player[MapCenter][2] = ori[2];
+	
+		} else {
+			new idx;
+
+			if(iArg == 3)
+			{
+				GetCmdArg(3,param,sizeof(param));
+				new cent = INVALID_ENT_REFERENCE;
+				if(!IsCharNumeric(param[0]))
+				{
+					if((cent = Entity_FindByName(param)) != INVALID_ENT_REFERENCE)
+					{
+						new Float:ori[3];
+						GetEntityAbsOrigin(cent,ori);
+						//Entity_GetAbsOrigin(cent, ori);
+
+						g_Player[MapCenter][0] = ori[0];
+						g_Player[MapCenter][1] = ori[1];
+						g_Player[MapCenter][2] = ori[2];
+	
+						idx = 4;
+					} else {
+						PrintToConsole(client,"No entity found named %s",param);
+						return Plugin_Handled;
+					}
+				
+				}
+			}
+
+			new Float:value;
+			for(;idx < 3;++idx)
+			{
+				if(iArg < 3 + idx)
+					break;
+
+				GetCmdArg(3 + idx, param,sizeof(param));
+
+				if(StringToFloatEx(param,value) < 1)
+				{
+					PrintToConsole(client,"Expected float value instead of %s",param);
+					return Plugin_Handled;
+				}
+
+				g_Player[MapCenter][idx] = value;
+			}
+
+		}
+
+		PrintToConsole(client,"Map center set to %.2f %.2f %.2f", g_Player[MapCenter][0], g_Player[MapCenter][1], g_Player[MapCenter][2]);
+
 	} else {
 		PrintToConsole(client,"unknown sm_gen set command %s", param);
 	}
