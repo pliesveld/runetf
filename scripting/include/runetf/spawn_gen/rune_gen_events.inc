@@ -256,6 +256,8 @@ public Action:Event_Round(Handle:event, const String:strName[], bool:bDontBroadc
 		startover = GetEventInt(event,"fullreset");
 		if(startover) 
 		{ 
+			if(g_RuneSpawn[bRoundStartClear])
+				KillAllPlayerRunes();
 
 #if defined DEBUG_GEN_EVENT
 			LogMessage("round start: fullreset");
@@ -269,13 +271,15 @@ public Action:Event_Round(Handle:event, const String:strName[], bool:bDontBroadc
 	} else if(StrEqual(strName,"teamlpay_round_win",false)) {
 		miniRound = GetEventInt(event, "full_round"); // 1 -> mini round, 0 -> full round
 
-		if(g_RuneSpawn[bRoundEndClear])
+		if(miniRound && g_RuneSpawn[bRoundEndClear])
 		{
 			KillAllPlayerRunes();
 		}
 		
 		if(miniRound) 
 		{
+
+
 #if defined DEBUG_GEN_EVENT
 			LogMessage("round win: mini round");
 #endif
