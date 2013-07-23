@@ -21,11 +21,11 @@ stock ArrayToString(&Handle:a_array, String:buf[], len, &i = 0)
 		decl String:t_id[8];
 		new b_towrite = Format(t_id,sizeof(t_id), "%3d ", GetArrayCell(a_array, i));
 		if(b_towrite + b_written > len)
-			return i;
-		b_written += StrCat(buf, len, t_id);
+			return true;
+		b_written += Format(buf[b_written],len - b_written,"%s",t_id);
 	}
 
-	return i;
+	return false;
 }
 
 stock PrintArray(&Handle:a_array, client=0)

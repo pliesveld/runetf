@@ -7,6 +7,9 @@ static t_Event[GenEvent];
 const EVENT_BLOCK_SIZE = sizeof(t_Event)
 
 
+/*
+	Default handler for events.  Should not be called.
+*/
 public HandleGenEvent(const String:output[], caller, activator, Float:delay)
 {
 	LogMessage("HandleGenEvent");
@@ -363,7 +366,6 @@ stock CloseClusters()
 
 public Action:OnClusterCmd(client, args)
 {
-	new String:buffer[1024];
 #if defined DEBUG_GEN_EVENT
 	PrintToConsole(client,"ClusterSize arr %d trie %d events %d",
 		GetArraySize(g_ClusterNames), GetTrieSize(g_vGenCluster), g_vGenEvent == INVALID_HANDLE ? -1 : GetArraySize(g_vGenEvent));
@@ -377,11 +379,21 @@ public Action:OnClusterCmd(client, args)
 		GetCmdArg(1,s_cluster,sizeof(s_cluster));
 	}
 	
-	for(new i; i < GetArraySize(g_ClusterNames);++i)
+
+	new String:buffer[1024];
+	decl String:buffer_header[32] = "";
+	const MAX_BUFFER_LEN = sizeof(buffer)
+	new len = 0;
+	new nClusters = GetArraySize(g_ClusterNames);
+
+	for(new i; i < nClusters && !found ;++i)
 	{
 		new String:cname[MAX_CLUSTER_LEN];
 		GetArrayString(g_ClusterNames, i, cname, sizeof(cname));
-		Format(buffer, sizeof(buffer), "Cluster %-14s: ", cname);
+
+		//new header_len = Format(buffer, sizeof(buffer), "Cluster %-14s: ", cname);
+		new header_len = Format(buffer_header, sizeof(buffer_header), "\nCluster %-14s: ", cname);
+
 		if(s_cluster[0] != '\0')
 		{
 			if(!strcmp(s_cluster,cname))
@@ -390,13 +402,34 @@ public Action:OnClusterCmd(client, args)
 			} else
 				continue;
 		}
-		PrintToConsole(client,buffer);
+
+		if(header_len + len > MAX_BUFFER_LEN)
+		{
+			PrintToConsole(client,buffer);
+			len = 0;
+		}
+
+		len += Format(buffer[len],MAX_BUFFER_LEN - len,"%s", buffer_header);
+
 		new Handle:array;
 		if(GetTrieValue(g_vGenCluster,cname,array))
 		{
-			PrintArray(array, client);
+			new cnt;
+			//new num_gen = GetArraySize(array);
+			while(ArrayToString(array, buffer, MAX_BUFFER_LEN, cnt))
+			{
+				PrintToConsole(client,buffer);
+				buffer[0] = '\0';
+			}
+
+			len = strlen(buffer);
 		}
+
+
 	}
+
+	if(len)
+		PrintToConsole(client,buffer);
 
 	if(s_cluster[0] != '\0' && !found)
 	{
@@ -404,11 +437,16 @@ public Action:OnClusterCmd(client, args)
 	}
 
 	found = false;
-	for(new i; i < GetArraySize(g_vGenEvent) && !found;i++)
+
+	new nClusterEvents = GetArraySize(g_vGenEvent);
+	len = 0;
+	for(new i; i < nClusterEvents  && !found;i++)
 	{
 		new a_Cluster[RuneCluster];
 		GetArrayArray(g_vGenEvent,i,a_Cluster[0], CLUSTER_BLOCK_SIZE);
-		Format(buffer,sizeof(buffer), "Events for %s",a_Cluster[ClusterName]);
+
+		new header_len = Format(buffer_header,sizeof(buffer_header), "\nEvents for %-14s",a_Cluster[ClusterName]);
+
 		if(s_cluster[0] != '\0')
 		{
 			if(!strcmp(s_cluster, a_Cluster[ClusterName]))
@@ -416,10 +454,45 @@ public Action:OnClusterCmd(client, args)
 			else
 				continue;
 		}
-		PrintToConsole(client,buffer);
-		PrintEvents(client, a_Cluster[EventArray]);
+
+		if(header_len + len > MAX_BUFFER_LEN)
+		{
+			PrintToConsole(client,buffer);
+			len = 0;
+		}
+		len += Format(buffer[len],MAX_BUFFER_LEN - len, "%s",buffer_header);
+		
+		new nEvents = ( a_Cluster[EventArray] == INVALID_HANDLE ? 0 : GetArraySize(a_Cluster[EventArray]));
+
+		if(nEvents == 0)
+		{
+			header_len = Format(buffer_header,sizeof(buffer_header),"none.");
+			if(header_len + len > MAX_BUFFER_LEN)
+			{
+				PrintToConsole(client,buffer);
+				len = 0;
+			}
+
+			len += Format(buffer[len],MAX_BUFFER_LEN - len,"%s",buffer_header);
+		} else {
+			decl String:buffer_event[52 + 2*MAX_EVENTGEN_CNAME + MAX_EVENT_OUTPUTNAME] = "";
+			for(new j; j < nEvents;++j)
+			{
+				new event_str_len = EventsToString(a_Cluster[EventArray], j, buffer_event, sizeof(buffer_event));
+
+				if( event_str_len + len > MAX_BUFFER_LEN )
+				{
+					PrintToConsole(client,buffer);
+					len = 0;
+				}
+				len += Format(buffer[len],MAX_BUFFER_LEN - len,"%s",buffer_event);
+			}
+		}
 	}
 
+	if(len)
+		PrintToConsole(client,buffer);
+	
 	if(s_cluster[0] != '\0' && !found)
 	{
 		PrintToConsole(client,"No events for cluster %s found.",s_cluster);
@@ -428,29 +501,19 @@ public Action:OnClusterCmd(client, args)
 	return Plugin_Continue;
 }
 
-stock PrintEvents(client, Handle:event_arr)
+stock EventsToString(Handle:event_arr, i, String:event_buffer[], event_len)
 {
-	new size;
-	if(event_arr == INVALID_HANDLE || (size = GetArraySize(event_arr)) < 1)
-	{
-		PrintToConsole(client, "none.");
-		return;
-	}
+	new a_Event[GenEvent];
+	GetArrayArray(event_arr, i, a_Event[0], EVENT_BLOCK_SIZE);
 
-	for(new i; i < size;++i)
-	{
-		new a_Event[GenEvent];
-		GetArrayArray(event_arr, i, a_Event[0], EVENT_BLOCK_SIZE);
-		decl String:buffer[1024];
-		Format(buffer,sizeof(buffer),
-		"%16s %16s: %s %s %s",
-		actionString[ a_Event[ClusterType] ],
-		entityString[ a_Event[EventType] ],
-		a_Event[ EventCName ],
-		a_Event[ EventEntity ],
-		a_Event[ EventOutput ]);
-		PrintToConsole(client, buffer);
-	}
+	return Format(event_buffer,event_len,
+	"\n%-12s %24s %8s %14s %-24s",
+	actionString[ a_Event[ClusterType] ][9],
+	a_Event[ EventCName ],
+	entityString[ a_Event[EventType] ][9],
+	a_Event[ EventEntity ],
+	a_Event[ EventOutput ]);
+
 }
 
 GetClustersContainingId(id, String:buffer[], buf_len, &start = 0)
