@@ -47,18 +47,26 @@ stock NearPlayer(client, team, clients[], Float:distance = 475.0)
 	return total;
 }
 
+stock OriginNearTraj(Float:ori[3], Float:ang[3], Float:loc[3], range = 100)
+{
+	new Float:temp = ang[0];
+
+	loc[0] = (ori[0]+(range*((Cosine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));    
+	loc[1] = (ori[1]+(range*((Sine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));      
+	temp -= (2*temp);                                                                 
+	loc[2] = (ori[2]+(range*(Sine(DegToRad(ang[0])))));                                     
+
+}
+
+
+
 stock OriginNearPlayer(client, Float:loc[3], range = 100)
 {
 	new Float:ori[3];
 	new Float:ang[3];
 	GetClientEyePosition(client, ori)
 	GetClientEyeAngles(client, ang); 
-
-	loc[0] = (ori[0]+(range*((Cosine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));    
-	loc[1] = (ori[1]+(range*((Sine(DegToRad(ang[1]))) * (Cosine(DegToRad(ang[0]))))));      
-	ang[0] -= (2*ang[0]);                                                                 
-	loc[2] = (ori[2]+(range*(Sine(DegToRad(ang[0])))));                                     
-
+	OriginNearTraj(ori,ang,loc,range);
 }
 
 
