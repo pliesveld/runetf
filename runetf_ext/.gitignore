@@ -1,5 +1,4 @@
-MyEventManager/
-RuneHandle/
 *.so
+Release.orangeboxvalve/
 Debug.orangeboxvalve/
 spawn_rune.cpp

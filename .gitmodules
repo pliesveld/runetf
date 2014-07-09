@@ -18,6 +18,7 @@
 	path = scripting/include/smlib
 	url = git@github.com:bcserv/smlib.git
 	ignore = all
+
 [submodule "alliedmods/amtl"]
 	path = alliedmods/amtl
 	url = git@github.com:alliedmodders/amtl.git
