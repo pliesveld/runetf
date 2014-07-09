@@ -5,13 +5,13 @@
 ### EDIT THESE PATHS FOR YOUR OWN SETUP ###
 ###########################################
 
-SMSDK = ../sourcemod
-HL2SDK_ORIG = ../hl2sdk
-HL2SDK_OB = ../hl2sdk-ob
-HL2SDK_OB_VALVE = ../hl2sdk-ob-valve
-HL2SDK_L4D = ../hl2sdk-l4d
-HL2SDK_L4D2 = ../hl2sdk-l4d2
-MMSOURCE18 = ../mmsource-central
+SMSDK = ../alliedmods/sourcemod
+HL2SDK_ORIG = ../alliedmods/hl2sdk
+HL2SDK_OB = ../alliedmods/hl2sdk-ob
+HL2SDK_OB_VALVE = ../alliedmods/hl2sdk-ob-valve
+HL2SDK_L4D = ../alliedmods/hl2sdk-l4d
+HL2SDK_L4D2 = ../alliedmods/hl2sdk-l4d2
+MMSOURCE18 = ../alliedmods/metamod-source
 
 #####################################
 ### EDIT BELOW FOR OTHER PROJECTS ###
@@ -177,8 +177,8 @@ check:
 
 extension: check $(OBJ_BIN)
 	$(CPP) $(INCLUDE) $(OBJ_BIN) $(LINK) -o $(BIN_DIR)/$(BINARY)
-	cscope $(INCLUDE) -s "$(SMSDK)/core"  -R -b
-	cp "$(BIN_DIR)/$(BINARY)" "/opt/hlds/orangebox/tf/addons/sourcemod/extensions/"
+#	cscope $(INCLUDE) -s "$(SMSDK)/core"  -R -b
+#	cp "$(BIN_DIR)/$(BINARY)" "/opt/hlds/orangebox/tf/addons/sourcemod/extensions/"
 
 debug:
 	$(MAKE) -f Makefile all DEBUG=true

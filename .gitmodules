@@ -1,0 +1,20 @@
+[submodule "sourcemod"]
+	path = alliedmods/sourcemod
+	url = git://git@github.com/alliedmodders/sourcemod.git
+	ignore = all
+
+[submodule "metamod-source"]
+	path = alliedmods/metamod-source
+	url = git://git@github.com/alliedmodders/metamod-source.git
+	ignore = all
+
+[submodule "hl2sdk"]
+	path = alliedmods/hl2sdk
+	url = git://git@github.com:alliedmodders/hl2sdk.git
+	branch = tf2
+	ignore = all
+
+[submodule "smlib"]
+	path = scripting/include/smlib
+	url = git@github.com:bcserv/smlib.git
+	ignore = all
