@@ -457,6 +457,8 @@ if SM.use_auto_versioning():
 if builder.backend =='amb2':
    BuildScripts += [
 #      'scripting/AMBuilder',
+      'runetf_sourcemod_resources/PackageScript',
+      'runetf_tf2_resources/PackageScript',
       'buildbot/PackageScript',
    ]
 

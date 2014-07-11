@@ -1,0 +1,155 @@
+# vim: set ts=8 sts=2 sw=2 tw=99 et ft=python: 
+import os
+
+builder.SetBuildFolder('package')
+
+folder_list = [
+  'addons/sourcemod/extensions',
+  'addons/sourcemod/scripting',
+  'addons/sourcemod/scripting/include',
+  'addons/sourcemod/scripting/include/smlib',
+  'addons/sourcemod/scripting/include/runetf',
+  'addons/sourcemod/scripting/include/runetf/runes_stock',
+  'addons/sourcemod/scripting/include/runetf/spawn_gen',
+]
+
+
+# Create the distribution folder hierarchy.
+folder_map = {}
+for folder in folder_list:
+  norm_folder = os.path.normpath(folder)
+  folder_map[folder] = builder.AddFolder(norm_folder)
+
+# Copy binaries.
+for cxx_task in SM.extensions:
+  builder.AddCopy(cxx_task.binary, folder_map['addons/sourcemod/extensions'])
+
+# Export PDB files. We write to a file in the build folder which is pretty
+# verboten, but it's okay if it's in the root since AMBuild will never try
+# to rmdir the root.
+full_binary_list = SM.extensions
+with open(os.path.join(builder.buildPath, 'pdblog.txt'), 'w') as fp:
+  for task in full_binary_list:
+    fp.write(task.debug.path + '\n')
+
+# Do all straight-up file copies from the source tree.
+def CopyFiles(src, dest, files):
+  if not dest:
+    dest = src
+  dest_entry = folder_map[dest]
+  for source_file in files:
+    source_path = os.path.join(builder.sourcePath, src, source_file)
+    builder.AddCopy(source_path, dest_entry)
+
+CopyFiles('scripting/include/runetf', 'addons/sourcemod/scripting/include/runetf',
+  [ 'defines_debug.inc',
+  'rune_info.inc',
+  'runes_stock.inc',
+  'runetf.inc',
+  'rune_vote.inc',
+  'spawn_gen.inc',
+  'spawn_rune.inc',
+  ]
+)
+
+
+CopyFiles('scripting/include/runetf', 'addons/sourcemod/scripting/include/runetf/spawn_gen',
+  [
+  'spawn_gen/generator_stock.inc',
+  'spawn_gen/menu_build.inc',
+  'spawn_gen/menu_cluster.inc',
+  'spawn_gen/menu_create.inc',
+  'spawn_gen/menu_event.inc',
+  'spawn_gen/menu_iterate.inc',
+  'spawn_gen/menu_iterator_select.inc',
+  'spawn_gen/menu_main.inc',
+  'spawn_gen/menu_modify_generator.inc',
+  'spawn_gen/menu_util_handler.inc',
+  'spawn_gen/rune_gen_events.inc',
+  'spawn_gen/rune_gen_iterate.inc',
+  'spawn_gen/rune_gen_menu.inc',
+  'spawn_gen/rune_menu_test.inc',
+  'spawn_gen/spawn_gen_cluster.inc',
+  'spawn_gen/spawn_gen_create.inc',
+  'spawn_gen/spawn_gen_cvars_handler.inc',
+  'spawn_gen/spawn_gen_cvars.inc',
+  'spawn_gen/spawn_gen_read.inc',
+  'spawn_gen/spawn_gen_types.inc',
+  'spawn_gen/spawn_gen_util.inc',
+  'spawn_gen/spawn_gen_vars.inc',
+  'spawn_gen/spawn_gen_write.inc',
+  ]
+)
+
+
+CopyFiles('scripting/include/runetf', 'addons/sourcemod/scripting/include/runetf/runes_stock',
+  [
+  'runes_stock/eff_particles.inc',
+  'runes_stock/mergesort.inc',
+  'runes_stock/runegen_tempent.inc',
+  'runes_stock/rune_player_stock.inc',
+  'runes_stock/tf2_ammo.inc',
+  ]
+)
+
+
+CopyFiles('scripting/include/smlib/scripting/include', 'addons/sourcemod/scripting/include',
+  [
+	'smlib.inc',
+  ]
+)
+
+CopyFiles('scripting/include/smlib/scripting/include/smlib', 'addons/sourcemod/scripting/include/smlib',
+  [
+  'arrays.inc',
+  'clients.inc',
+  'colors.inc',
+  'concommands.inc',
+  'convars.inc',
+  'crypt.inc',
+  'debug.inc',
+  'dynarrays.inc',
+  'edicts.inc',
+  'effects.inc',
+  'entities.inc',
+  'files.inc',
+  'game.inc',
+  'general.inc',
+  'math.inc',
+  'server.inc',
+  'sql.inc',
+  'strings.inc',
+  'teams.inc',
+  'vehicles.inc',
+  'weapons.inc',
+  'world.inc',
+  ]
+)
+
+CopyFiles('scripting','addons/sourcemod/scripting',
+  [
+  'rune_ammo.sp',
+  'rune_assault.sp',
+  'rune_awareness.sp',
+  'rune_berserker.sp',
+  'rune_chooser.sp',
+  'rune_engineer.sp',
+  'rune_help.sp',
+  'rune_info.sp',
+  'rune_kit.sp',
+  'rune_plugin_updater.sp',
+  'rune_pounce.sp',
+  'rune_powerplay.sp',
+  'rune_rage.sp',
+  'rune_recall.sp',
+  'rune_redirect.sp',
+  'rune_repulsion.sp',
+  'rune_rocket.sp',
+  'rune_speed.sp',
+  'rune_updater.sp',
+  'rune_vote.sp',
+  'spawn_gen.sp',
+  'spawn_test.sp',
+  ]
+)
+

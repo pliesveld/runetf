@@ -1,0 +1,69 @@
+# vim: set ts=8 sts=2 sw=2 tw=99 et ft=python: 
+import os
+
+builder.SetBuildFolder('package')
+
+folder_list = [
+  'cfg',
+  'custom/runetf/materials/models/quake',
+  'custom/runetf/models/props',
+  'custom/runetf/sound',
+]
+
+
+# Create the distribution folder hierarchy.
+folder_map = {}
+for folder in folder_list:
+  norm_folder = os.path.normpath(folder)
+  folder_map[folder] = builder.AddFolder(norm_folder)
+
+
+# Do all straight-up file copies from the source tree.
+def CopyFiles(resource_src, dest, files):
+  src = os.path.join('runetf_tf2_resources',resource_src)
+  if not dest:
+    dest = src
+  dest_entry = folder_map[dest]
+  for source_file in files:
+    source_path = os.path.join(builder.sourcePath, src, source_file)
+    builder.AddCopy(source_path, dest_entry)
+
+CopyFiles('cfg', 'cfg',
+  [ 'happs.cfg',
+  ]
+)
+
+CopyFiles('custom/runetf/materials/models/quake', 'custom/runetf/materials/models/quake',
+  [
+  'rune_01n.vtf',
+  'rune_01n.vtf.ztmp',
+  'rune_01.vmt',
+  'rune_01.vtf',
+  'rune_01.vtf.ztmp',
+
+  ]
+)
+
+CopyFiles('custom/runetf/models/props', 'custom/runetf/models/props',
+  [
+  'rune_01.dx80.vtx',
+  'rune_01.dx80.vtx.ztmp',
+  'rune_01.dx90.vtx',
+  'rune_01.dx90.vtx.ztmp',
+  'rune_01.mdl',
+  'rune_01.mdl.ztmp',
+  'rune_01.phy',
+  'rune_01.phy.ztmp',
+  'rune_01.sw.vtx',
+  'rune_01.sw.vtx.ztmp',
+  'rune_01.vvd',
+  'rune_01.vvd.ztmp',
+  ]
+)
+
+CopyFiles('custom/runetf/sound','custom/runetf/sound',
+ [
+ 'sonarping.mp3',
+ 'sonarpong.mp3',
+ ]
+)
