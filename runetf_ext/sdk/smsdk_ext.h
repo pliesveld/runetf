@@ -1,5 +1,5 @@
 /**
- * vim: set ts=4 :
+ * vim: set ts=4 sw=4 tw=99 noet:
  * =============================================================================
  * SourceMod Base Extension Code
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
@@ -103,6 +103,10 @@
 #include <eiface.h>
 #endif
 
+#if !defined METAMOD_PLAPI_VERSION
+#include <metamod_wrappers.h>
+#endif
+
 using namespace SourceMod;
 using namespace SourcePawn;
 
@@ -127,7 +131,7 @@ public:
 	virtual bool SDK_OnLoad(char *error, size_t maxlength, bool late);
 	
 	/**
-	 * @brief This is called right before the extension is unloaded.
+	 * @brief This is called once the extension unloading process begins.
 	 */
 	virtual void SDK_OnUnload();
 
@@ -140,6 +144,12 @@ public:
 	 * @brief Called when the pause state is changed.
 	 */
 	virtual void SDK_OnPauseChange(bool paused);
+
+	/**
+	 * @brief Called after SDK_OnUnload, once all dependencies have been
+	 * removed, and the extension is about to be removed from memory.
+	 */
+	virtual void SDK_OnDependenciesDropped();
 
 #if defined SMEXT_CONF_METAMOD
 	/**
@@ -203,6 +213,9 @@ public: //IExtensionInterface
 	virtual const char *GetExtensionDescription();
 	/** Returns date string */
 	virtual const char *GetExtensionDateString();
+
+	/** Called after OnExtensionUnload, once dependencies have been dropped. */
+	virtual void OnDependenciesDropped();
 #if defined SMEXT_CONF_METAMOD
 public: //ISmmPlugin
 	/** Called when the extension is attached to Metamod. */
@@ -297,6 +310,9 @@ extern ITranslator *translator;
 #endif
 #if defined SMEXT_ENABLE_NINVOKE
 extern INativeInterface *ninvoke;
+#endif
+#if defined SMEXT_ENABLE_ROOTCONSOLEMENU
+extern IRootConsole *rootconsole;
 #endif
 
 #if defined SMEXT_CONF_METAMOD

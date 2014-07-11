@@ -1,0 +1,21 @@
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
+import os
+
+
+for sdk_name in SM.sdks:
+  sdk = SM.sdks[sdk_name]
+
+  binary = SM.HL2Library(builder, 'runetf.ext.' + sdk.ext, sdk)
+  binary.compiler.cxxincludes += [
+    os.path.join(sdk.path, 'game', 'shared')
+  ]
+  if binary.compiler.cxx.behavior == 'gcc':
+    binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+
+  smsdk_ext_file = os.path.join(SM.sourcemod_root,'public','smsdk_ext.cpp')
+
+  binary.sources += [
+    'extension.cpp',
+    smsdk_ext_file
+  ]
+  SM.extensions += [builder.Add(binary)]
