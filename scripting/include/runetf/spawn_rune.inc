@@ -160,7 +160,7 @@ stock SpawnRune(&rune_ent,&trigger_ent, EntityOutput:onPickup, Float:loc[3], Flo
 		AcceptEntityInput(trigger_ent, "Enable");
 
 
-#if 0
+#if defined DEBUG_RUNE_SPAWN_DETAIL
 	new Float:ori[3];
 	GetEntityAbsOrigin(rune_ent,ori);
 	LogMessage("model abs ori %f %f %f",ori[0], ori[1], ori[2]);

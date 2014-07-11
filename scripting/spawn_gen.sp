@@ -14,7 +14,6 @@
 
 #define REQUIRE_EXTENSIONS
 #define AUTOLOAD_EXTENSIONS
-#define DEBUG
 #include <runetf/defines_debug>
 
 #include <runetf/runetf>
