@@ -115,7 +115,7 @@ class SMConfig(object):
 
     self.sourcemod_root = ResolveEnvPath('SOURCEMOD16', 'sourcemod-1.6')
     if not self.sourcemod_root:
-      self.sourcemod_root = ResolveEnvPath('SOURCEMOD_DEV', 'sourcemod-central')
+      self.sourcemod_root = ResolveEnvPath('SOURCEMOD_DEV', 'sourcemod')
       if not self.sourcemod_root:
         raise Exception('Could not find a source copy of SourceMod')
 

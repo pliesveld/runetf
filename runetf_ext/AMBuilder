@@ -16,6 +16,13 @@ for sdk_name in SM.sdks:
 
   binary.sources += [
     'extension.cpp',
+    'natives.cpp',
+    'player.cpp',
+    'rune.cpp',
+    'runemanager.cpp',
+    'runeplugin.cpp',
+    'sm_trie.cpp',
+    'util.cpp',
     smsdk_ext_file
   ]
   SM.extensions += [builder.Add(binary)]
