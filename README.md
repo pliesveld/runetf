@@ -1,7 +1,11 @@
-runetf - gamemode for Team Fortress 2
+runetf - servermod for Team Fortress 2
 =================
 
 RuneTF is a server mod for Team Fortress 2. Runes are power-ups that grant special abilities. You can have only one rune active at a time, and remain active until death.
+
+Changelog
+========
+> [runetf v1.0](https://forums.alliedmods.net/showthread.php?p=1979837)
 
 
 Design Rationale
