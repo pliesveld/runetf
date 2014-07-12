@@ -143,14 +143,14 @@ Spawn points have unique numbers assiociated with them.  You can group spawn poi
 
 When adding new spawn points, make sure to merge the working-set into the master list and save.  Test your changes with `test_spawn`.
 
-Compilating
+Building
 ===
 
 $ git clone http://github.com/pliesveld/runetf
+
 $ cd runetf/
 
 $ git submodule init
-
 
 If you just wish to compile the sourepawn scripts, copy the contents of ``scripting/`` and into your sourcemod's root folder.
 
@@ -159,6 +159,8 @@ To compile the extension:
 $ git submodule update
 
 $ mkdir build
+
+$ cd build/
 
 $ python ../configure.py -s tf2
 
