@@ -62,13 +62,18 @@ Repulsion - Enemy rockets, flares, and arrows are pushed away from the player.
 
 Installation
 =====
-Copy contents of folder ``runetf_tf2_resources/`` into the server's ``tf/`` mod folder.
-Copy contents of folder ``runetf_sourcemod_resources/`` into sourcemod's folder, ``addons/sourcemod/``.
-Copy contents of folder ``plugins/`` into sourcemod's plugins folder, ``addons/sourcemod/plugins/``.
+Copy contents of the folder ``runetf_tf2_resources/`` into your ``tf/`` folder.
+
+Copy contents of the folder ``runetf_sourcemod_resources/`` into your sourcemod's root folder, ``addons/sourcemod/``.
+
+Copy contents of the folder ``plugins/`` into sourcemod's plugins folder, ``addons/sourcemod/plugins/``.
+
 Copy runetf.ext.2.tf2.so from ``extensions/`` into sourcemod's extenesion folder, ``addons/sourcemod/extensions``.
 
 Add to your `server.cfg` 
-`tf_allow_player_use 1` is required.
+
+`tf_allow_player_use 1`
+
 `sv_pure 0`  or add custom runetf folder to your whitelist.
 
 or add `exec happs.cfg` for additional utility commands.
@@ -143,13 +148,18 @@ Compilating
 
 $ git clone http://github.com/pliesveld/runetf
 $ cd runetf/
+
 $ git submodule init
+
 
 If you just wish to compile the sourepawn scripts, copy the contents of ``scripting/`` and into your sourcemod's root folder.
 
 To compile the extension:
 
 $ git submodule update
+
 $ mkdir build
+
 $ python ../configure.py -s tf2
+
 $ ambuild
