@@ -10,7 +10,7 @@ Changelog
 
 Design Rationale
 ======
-The original Quake Runes mod was a free-for-all player deathmatch. Many of the runes had abilities increasing the player's survivability or fragging efficiency. When porting the concept to Team Fortress, it became apparent that some of the runes were too strong in a team-based objective setting. Similar to the design philosophy of the weapon alternatives, runes that increase a player's damage output come with negative effects.
+The original [Quake Runes](http://www.runequake.com/docs/Playing.htm) mod was a free-for-all player deathmatch. Many of the runes had abilities increasing the player's survivability or fragging efficiency. When porting the concept to Team Fortress, it became apparent that some of the runes were too strong in a team-based objective setting. Similar to the design philosophy of the weapon alternatives, runes that increase a player's damage output come with negative effects.
 
 When designing new runes, the focus was to complement team-play more than buffing individual players. Some runes can become more effective when used in coordination with the team. Because of the random nature of the rune drops, runes that only effect certain classes were avoided. However some runes are certainly more effective in the hands of certain classes. As such, runes can be shared with teammates by dropping them on the ground.
 
