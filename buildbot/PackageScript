@@ -93,13 +93,19 @@ CopyFiles('scripting/include/runetf', 'addons/sourcemod/scripting/include/runetf
 )
 
 
-CopyFiles('scripting/include/smlib/scripting/include', 'addons/sourcemod/scripting/include',
+
+# $ git init smlib
+# $ git update smlib
+
+# if smlib submodule was updated, copy it's contents to the package dir
+if os.path.isdir('scripting/include/smlib/scripting/include'):
+  CopyFiles('scripting/include/smlib/scripting/include', 'addons/sourcemod/scripting/include',
   [
 	'smlib.inc',
   ]
 )
 
-CopyFiles('scripting/include/smlib/scripting/include/smlib', 'addons/sourcemod/scripting/include/smlib',
+  CopyFiles('scripting/include/smlib/scripting/include/smlib', 'addons/sourcemod/scripting/include/smlib',
   [
   'arrays.inc',
   'clients.inc',
