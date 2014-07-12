@@ -99,23 +99,17 @@ rune_round_start_clear      Clear runes on map and from players when a new round
 rune_round_end_clear        Clear runes on map and from players when a mini-round ends
 
 st_gamedesc_override        Changes game type to RuneTF.  Set to empty string to disable.
-
-rune_vote_threshold         Percentage of players needed to toggle runetf
-
-rune_vote_allow_enable      Allow rune voting to enable
-
-rune_vote_allow_disable     Allow rune voting to disable
-
-rune_update_mapcfg          If you modify the map spawn configuration files, you should set this to 0
-
-rune_update_branch          Change the branch the autoupdater will use to sync with
 ```
+
+
 
 You can change these cvars on a per map basis by adding them to a cfg/mapname.cfg file.
 
 
 User Commands
 ===
+
+
 ``+use`` _players must have bound a key to +use_
 
 ``!drop`` _drop your currently held rune_
