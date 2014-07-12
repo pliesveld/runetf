@@ -83,18 +83,33 @@ Currently, only stock maps have rune spawn points.  But an in-game menu is provi
 
 cvars
 ===
+```
+rune_enable                 Enables runetf game-mode
 
-rune_enable
-rune_spawn_interval
-rune_spawn_lifetime
-rune_spawn_droptime
-rune_round_start_clear
-rune_round_end_clear
+rune_version                Version
 
-rune_vote_threshold
-rune_vote_allow_enable
-rune_vote_allow_disable
+rune_spawn_interval         Time between random spawns
 
+rune_spawn_lifetime         Time until a spawned rune expires
+
+rune_spawn_droptime         Time until a rune dropped by a player expires
+
+rune_round_start_clear      Clear runes on map and from players when a new round starts
+
+rune_round_end_clear        Clear runes on map and from players when a mini-round ends
+
+st_gamedesc_override        Changes game type to RuneTF.  Set to empty string to disable.
+
+rune_vote_threshold         Percentage of players needed to toggle runetf
+
+rune_vote_allow_enable      Allow rune voting to enable
+
+rune_vote_allow_disable     Allow rune voting to disable
+
+rune_update_mapcfg          If you modify the map spawn configuration files, you should set this to 0
+
+rune_update_branch          Change the branch the autoupdater will use to sync with
+```
 
 You can change these cvars on a per map basis by adding them to a cfg/mapname.cfg file.
 
