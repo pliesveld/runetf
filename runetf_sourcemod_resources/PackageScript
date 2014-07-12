@@ -1,0 +1,89 @@
+# vim: set ts=8 sts=2 sw=2 tw=99 et ft=python: 
+import os
+
+builder.SetBuildFolder('package')
+
+folder_list = [
+  'addons/sourcemod/gamedata',
+  'addons/sourcemod/data/runetf',
+]
+
+
+# Create the distribution folder hierarchy.
+folder_map = {}
+for folder in folder_list:
+  norm_folder = os.path.normpath(folder)
+  folder_map[folder] = builder.AddFolder(norm_folder)
+
+
+# Do all straight-up file copies from the source tree.
+def CopyFiles(resource_src, dest, files):
+  src = os.path.join('runetf_sourcemod_resources',resource_src)
+  if not dest:
+    dest = src
+  dest_entry = folder_map[dest]
+  for source_file in files:
+    source_path = os.path.join(builder.sourcePath, src, source_file)
+    builder.AddCopy(source_path, dest_entry)
+
+CopyFiles('gamedata', 'addons/sourcemod/gamedata',
+  [ 'runetf.txt',
+  ]
+)
+
+CopyFiles('data/runetf', 'addons/sourcemod/data/runetf',
+  [ 
+  'arena_badlands.cfg',
+  'arena_granary.cfg',
+  'arena_lumberyard.cfg',
+  'arena_ravine.cfg',
+  'arena_sawmill.cfg',
+  'arena_watchtower.cfg',
+  'arena_well.cfg',
+  'cp_5gorge.cfg',
+  'cp_badlands.cfg',
+  'cp_coldfront.cfg',
+  'cp_degrootkeep.cfg',
+  'cp_dustbowl.cfg',
+  'cp_egypt_final.cfg',
+  'cp_fastlane.cfg',
+  'cp_foundry.cfg',
+  'cp_freight_final1.cfg',
+  'cp_gorge.cfg',
+  'cp_granary.cfg',
+  'cp_gravelpit.cfg',
+  'cp_gullywash_final1.cfg',
+  'cp_junction_final.cfg',
+  'cp_mountainlab.cfg',
+  'cp_process_final.cfg',
+  'cp_standin_final.cfg',
+  'cp_steel.cfg',
+  'cp_well.cfg',
+  'cp_yukon_final.cfg',
+  'ctf_2fort.cfg',
+  'ctf_doublecross.cfg',
+  'ctf_sawmill.cfg',
+  'ctf_turbine.cfg',
+  'ctf_well.cfg',
+  'koth_badlands.cfg',
+  'koth_harvest_final.cfg',
+  'koth_king.cfg',
+  'koth_lakeside_final.cfg',
+  'koth_nucleus.cfg',
+  'koth_sawmill.cfg',
+  'koth_viaduct.cfg',
+  'pl_badwater.cfg',
+  'pl_barnblitz.cfg',
+  'pl_frontier_final.cfg',
+  'pl_goldrush.cfg',
+  'pl_hoodoo_final.cfg',
+  'plr_hightower.cfg',
+  'plr_nightfall_final.cfg',
+  'plr_pipeline.cfg',
+  'pl_thundermountain.cfg',
+  'pl_upward.cfg',
+  'sd_doomsday.cfg',
+  'tc_hydro.cfg',
+  ]
+)
+
