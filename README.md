@@ -62,12 +62,16 @@ Repulsion - Enemy rockets, flares, and arrows are pushed away from the player.
 
 Installation
 =====
-Requires sdkhooks
+Copy contents of folder ``runetf_tf2_resources/`` into the server's ``tf/`` mod folder.
+Copy contents of folder ``runetf_sourcemod_resources/`` into sourcemod's folder, ``addons/sourcemod/``.
+Copy contents of folder ``plugins/`` into sourcemod's plugins folder, ``addons/sourcemod/plugins/``.
+Copy runetf.ext.2.tf2.so from ``extensions/`` into sourcemod's extenesion folder, ``addons/sourcemod/extensions``.
 
-Copy materials, models, sound, plugins, extensions, gamedata, data into the respective sourcemod folder.
+Add to your `server.cfg` 
+`tf_allow_player_use 1` is required.
+`sv_pure 0`  or add custom runetf folder to your whitelist.
 
-Add exec happs.cfg to your server.cfg - namely `tf_allow_player_use 1` is required.
-
+or add `exec happs.cfg` for additional utility commands.
 
 Currently, only stock maps have rune spawn points.  But an in-game menu is provided to add spawn points to custom maps.
 
@@ -134,3 +138,18 @@ Spawn points have unique numbers assiociated with them.  You can group spawn poi
 
 When adding new spawn points, make sure to merge the working-set into the master list and save.  Test your changes with `test_spawn`.
 
+Compilating
+===
+
+$ git clone http://github.com/pliesveld/runetf
+$ cd runetf/
+$ git submodule init
+
+If you just wish to compile the sourepawn scripts, copy the contents of ``scripting/`` and into your sourcemod's root folder.
+
+To compile the extension:
+
+$ git submodule update
+$ mkdir build
+$ python ../configure.py -s tf2
+$ ambuild
