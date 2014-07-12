@@ -70,13 +70,13 @@ Copy contents of the folder ``plugins/`` into sourcemod's plugins folder, ``addo
 
 Copy runetf.ext.2.tf2.so from ``extensions/`` into sourcemod's extenesion folder, ``addons/sourcemod/extensions``.
 
-Add to your `server.cfg` 
+Add to your `server.cfg`:
+```
+tf_allow_player_use 1
+sv_pure 0
+```
 
-`tf_allow_player_use 1`
-
-`sv_pure 0`  or add custom runetf folder to your whitelist.
-
-or add `exec happs.cfg` for additional utility commands.
+or add `exec happs.cfg`
 
 Currently, only stock maps have rune spawn points.  But an in-game menu is provided to add spawn points to custom maps.
 
