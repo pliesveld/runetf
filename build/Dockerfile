@@ -18,9 +18,9 @@ RUN bash -xc "mkdir -p /opt/alliedmodders/ && cd /opt/alliedmodders && git clone
 
 RUN bash -xc 'cd alliedmodders/sourcemod/sourcepawn && mkdir -p build && cd build && python ../configure.py && ambuild'
 
-## Copy runetf sourcepawn files
 
 ## Compile runetf plugins
+RUN bash -xc 'mkdir -p /opt/build/dist/ && cd /opt/alliedmodders/ && git clone -b update_build_env http://github.com/pliesveld/runetf && pushd runetf && mkdir -p build && cd build/ && python ../configure.py -s tf2 && ambuild'
 
-#RUN bash -xc 'mkdir -p /opt/build/dist/ && cd /opt/alliedmodders/ && git clone -b update_build_env http://github.com/pliesveld/runetf && pushd runetf && mkdir -p build && cd build/ && python ../configure.py -s tf2 && ambuild'
 
+## Copy runetf sourcepawn files

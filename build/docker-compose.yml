@@ -5,6 +5,10 @@ services:
     image: runetf_build
     build:
       context: .
+    volumes:
+    - "./package:/tmp/package/"
+    command: "tar -C /opt/alliedmodders/runetf/build/package/ -zcvf /tmp/package/runetf.tar.gz ."
+
 
 
 
