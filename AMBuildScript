@@ -302,6 +302,7 @@ class SMConfig(object):
       os.path.join(self.sourcemod_root, 'public'),
       os.path.join(self.sourcemod_root, 'public', 'extensions'),
       os.path.join(self.sourcemod_root, 'public', 'sourcepawn'),
+      os.path.join(self.sourcemod_root, 'sourcepawn', 'include'),
       os.path.join(self.sourcemod_root, 'public', 'amtl'),
     ]
     return compiler
