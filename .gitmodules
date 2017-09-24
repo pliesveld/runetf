@@ -1,11 +1,12 @@
-[submodule "sourcemod-1.6"]
-	path = alliedmodders/sourcemod-1.6
+[submodule "sourcemod"]
+	path = alliedmodders/sourcemod
 	url = http://github.com/alliedmodders/sourcemod.git
 	ignore = all
 
 [submodule "metamod-source"]
 	path = alliedmodders/mmsource-1.10
 	url = http://github.com/alliedmodders/metamod-source.git
+    branch = 1.10-dev
 	ignore = all
 
 [submodule "hl2sdk"]
