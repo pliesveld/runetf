@@ -1,28 +1,28 @@
 [submodule "sourcemod-1.6"]
 	path = alliedmodders/sourcemod-1.6
-	url = git@github.com:alliedmodders/sourcemod.git
+	url = http://github.com/alliedmodders/sourcemod.git
 	ignore = all
 
 [submodule "metamod-source"]
 	path = alliedmodders/mmsource-1.10
-	url = git@github.com:alliedmodders/metamod-source.git
+	url = http://github.com/alliedmodders/metamod-source.git
 	ignore = all
 
 [submodule "hl2sdk"]
 	path = alliedmodders/hl2sdk-tf2
-	url = git@github.com:alliedmodders/hl2sdk.git
+	url = http://github.com/alliedmodders/hl2sdk.git
 	branch = tf2
 	ignore = all
 
 [submodule "smlib"]
 	path = scripting/include/smlib
-	url = git@github.com:bcserv/smlib.git
+	url = http://github.com/bcserv/smlib.git
 	ignore = all
 
 [submodule "alliedmodders/amtl"]
 	path = alliedmodders/amtl
-	url = git@github.com:alliedmodders/amtl.git
+	url = http://github.com/alliedmodders/amtl.git
 
 [submodule "alliedmodders/ambuild"]
 	path = alliedmodders/ambuild
-	url = git@github.com:alliedmodders/ambuild.git
+	url = http://github.com/alliedmodders/ambuild.git
