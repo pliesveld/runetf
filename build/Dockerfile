@@ -14,7 +14,7 @@ RUN bash -xc 'mkdir -p /opt/alliedmodders'
 
 ## Clone dev repos
 ## Configure ambuild
-RUN bash -xc 'mkdir -p /opt/alliedmodders/ && cd /opt/alliedmodders && git clone --recursive https://github.com/alliedmodders/sourcemod && bash sourcemod/tools/checkout-deps.sh && pushd ambuild && python setup.py install && popd && pushd sourcemod/ && mkdir -p build && python ../configure.py -s tf2 --hl2sdk-root ../../ --mms-path ../../mmsource-1.10/ --no-mysql'
+RUN bash -xc "mkdir -p /opt/alliedmodders/ && cd /opt/alliedmodders && git clone --recursive https://github.com/alliedmodders/sourcemod && sed -i '{s/sdks=.*/sdks=( tf2 sdk2013 )/}' sourcemod/tools/checkout-deps.sh && bash sourcemod/tools/checkout-deps.sh && pushd ambuild && python setup.py install && popd && pushd sourcemod/ && mkdir -p build && cd build/ && python ../configure.py -s tf2 --hl2sdk-root ../../ --mms-path ../../mmsource-1.10/ --no-mysql"
 
 RUN bash -xc 'cd alliedmodders/sourcemod/sourcepawn && mkdir -p build && cd build && python ../configure.py && ambuild'
 
@@ -22,6 +22,6 @@ RUN bash -xc 'cd alliedmodders/sourcemod/sourcepawn && mkdir -p build && cd buil
 
 ## Compile runetf plugins
 
-RUN bash -xc 'mkdir -p /opt/build/dist/ && git clone http://github.com/pliesveld/runetf && pushd runetf && git submodule init && git submodule update && popd && && pushd runetf && mkdir -p build && cd build/ && python ../configure -s tf2 && ambuild && cp runetf_ext/runetf.ext.2.tf2/runetf.ext.2.tf2.so /opt/build/dist/'
+RUN bash -xc 'mkdir -p /opt/build/dist/ && git clone http://github.com/pliesveld/runetf && pushd runetf && git submodule init && git submodule update && popd && && pushd runetf && mkdir -p build && cd build/ && python ../configure -s tf2 && ambuild'
 
 

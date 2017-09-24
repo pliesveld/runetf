@@ -1,9 +1,12 @@
-version: "3.2"
+version: "2.0"
 
 services:
   extension_build:
     image: runetf_build
     build:
       context: .
+    volumes:
+    - "./dist:/opt/"
+
 
 
