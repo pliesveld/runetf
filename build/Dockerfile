@@ -2,7 +2,7 @@ FROM ubuntu
 
 ENV TERM linux
 
-RUN bash -xc 'apt-get update && apt-get install -y gcc gcc-multilib g++ g++-multilib python git'
+RUN bash -xc 'apt-get update && apt-get install -y gcc gcc-multilib g++ g++-multilib python git curl wget'
 
 RUN bash -xc 'apt-get -y install lib32stdc++-4.8-dev ; apt-get -y install lib32z1 lib32z1-dev ; apt-get -y install libc6-dev-i386 libc6-i386'
 
