@@ -149,6 +149,7 @@ class SMConfig(object):
         '-Wno-switch',
         '-msse',
         '-m32',
+        '-std=c++11',
       ]
 
       have_gcc = cxx.name == 'gcc'
@@ -302,6 +303,7 @@ class SMConfig(object):
       os.path.join(self.sourcemod_root, 'public'),
       os.path.join(self.sourcemod_root, 'public', 'extensions'),
       os.path.join(self.sourcemod_root, 'public', 'sourcepawn'),
+      os.path.join(self.sourcemod_root, 'sourcepawn', 'include'),
       os.path.join(self.sourcemod_root, 'public', 'amtl'),
     ]
     return compiler
