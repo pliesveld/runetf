@@ -5,8 +5,6 @@ services:
     image: runetf_build
     build:
       context: .
-    volumes:
-    - "./dist:/opt/"
 
 
 
