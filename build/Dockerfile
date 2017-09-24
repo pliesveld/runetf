@@ -22,6 +22,6 @@ RUN bash -xc 'cd alliedmodders/sourcemod/sourcepawn && mkdir -p build && cd buil
 
 ## Compile runetf plugins
 
-RUN bash -xc 'mkdir -p /opt/build/dist/ && git clone http://github.com/pliesveld/runetf && pushd runetf && git submodule init && git submodule update && popd && pushd runetf && mkdir -p build && cd build/ && python ../configure -s tf2 && ambuild'
+RUN bash -xc 'mkdir -p /opt/build/dist/ && cd /opt/alliedmodders/ && git clone http://github.com/pliesveld/runetf && pushd runetf && mkdir -p build && cd build/ && python ../configure.py -s tf2 && ambuild'
 
 
