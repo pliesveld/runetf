@@ -3,8 +3,6 @@
 
 #include <string>
 using std::string;
-#include <boost/lexical_cast.hpp>
-using boost::lexical_cast;
 
 #include "extension.h"
 #include "player.hpp"
