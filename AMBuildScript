@@ -149,6 +149,7 @@ class SMConfig(object):
         '-Wno-switch',
         '-msse',
         '-m32',
+        '-std=c++11',
       ]
 
       have_gcc = cxx.name == 'gcc'
