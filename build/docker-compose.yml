@@ -15,8 +15,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.hlserver
+    expose:
+    - "27015"
+    ports:
+    - "27015:27015"
     volumes:
-    - "/opt/hlserver:/opt/hlserver"
+    - ./hlserver:/opt/hlserver
+
+
+
 
 
 

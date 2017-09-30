@@ -2,20 +2,25 @@ FROM ubuntu
 
 ENV TERM linux
 
-RUN bash -xc 'dpkg --add-architecture i386; apt-get update;apt-get install -y mailutils util-linux tmux lib32gcc1 libstdc++6 libstdc++6:i386 libcurl4-gnutls-dev:i386 lib32z1 lib32z1 lib32ncurses5 lib32gcc1 lib32stdc++6'
+RUN bash -xc 'dpkg --add-architecture i386; apt-get update;apt-get install -y mailutils util-linux tmux lib32gcc1 libstdc++6 libstdc++6:i386 libcurl4-gnutls-dev:i386 lib32z1 lib32z1 lib32ncurses5 lib32gcc1 lib32stdc++6 wget'
 
-RUN bash -xc 'mkdir /opt/hlserver/'
+RUN bash -xc 'mkdir -p /opt/hlserver/ ; mkdir -p /usr/src/'
+
+RUN bash -xc 'cd /usr/src/; wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz'
+
+RUN bash -xc 'cd /usr/src/; wget https://mms.alliedmods.net/mmsdrop/1.10/mmsource-1.10.7-git959-linux.tar.gz'
+
+RUN bash -xc 'cd /usr/src/; wget https://sm.alliedmods.net/smdrop/1.8/sourcemod-1.8.0-git6027-linux.tar.gz'
 
 WORKDIR /opt/hlserver
 
-COPY ./tf2_ds.txt .
+COPY ./tf2_ds.txt /usr/src/
+
+COPY /scripts/ /usr/local/bin/
+
+COPY /entrypoint.sh /
 
 
-RUN bash -xc 'wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz && tar -zxvf steamcmd_linux.tar.gz && rm steamcmd_linux.tar.gz'
-
-
-RUN bash -xc './steamcmd.sh +runscript tf2_ds.txt'
-
-
-
+CMD ./orangebox/srcds_run -game tf -steam_dir /opt/hlserver -steamcmd_script /opt/hlserver/tf2_ds.txt -autoupdate -nohltv +sv_pure 0 +map cp_snakewater_final1 +maxplayers 24
+ENTRYPOINT ["/entrypoint.sh" ]
 
