@@ -1,0 +1,21 @@
+FROM ubuntu
+
+ENV TERM linux
+
+RUN bash -xc 'sudo dpkg --add-architecture i386; sudo apt-get update;sudo apt-get install -y mailutils util-linux tmux lib32gcc1 libstdc++6 libstdc++6:i386 libcurl4-gnutls-dev:i386 lib32z1 lib32z1 lib32ncurses5 lib32gcc1 lib32stdc++6'
+
+RUN bash -xc 'mkdir /opt/hlserver/'
+
+WORKDIR /opt/hlserver
+
+COPY ./tf2_ds.txt .
+
+
+RUN bash -xc 'wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz && tar -zxvf steamcmd_linux.tar.gz && rm steamcmd_linux.tar.gz'
+
+
+RUN bash -xc './steamcmd.sh +runscript tf2_ds.txt'
+
+
+
+

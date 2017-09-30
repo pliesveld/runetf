@@ -10,5 +10,13 @@ services:
     command: "tar -C /opt/alliedmodders/runetf/build/package/ -zcvf /tmp/package/runetf.tar.gz ."
 
 
+  runetf:
+    image: runetf
+    build:
+      context: .
+      dockerfile: Dockerfile.hlserver
+    volumes:
+    - "/opt/hlserver:/opt/hlserver"
+
 
 
